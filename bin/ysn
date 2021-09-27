@@ -1,21 +1,9 @@
 #!/usr/bin/env python3
 
-import os
-import sys
 import argparse
 
-from engine import resolve
-from run import compile, compile_if_modified, exec, exec_path_of
-
-def execute(source_path, just=False, force=False):
-
-    if force:
-        compile(source_path)
-    else:
-        compile_if_modified(source_path)
-
-    if not just:
-        exec(exec_path_of(source_path))
+from engine import rewrite, resolve, dependency
+from run import execute
 
 if __name__ == "__main__":
     
@@ -32,5 +20,4 @@ if __name__ == "__main__":
     if args.install is None and args.remove is None:
         execute(args.source_path, just=args.just, force=args.force)
     else:
-        now_dep = resolve(args.source_path)
-        print("Install or Remove!")
+        rewrite(args.source_path, args.install, args.remove)

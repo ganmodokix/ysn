@@ -3,7 +3,7 @@ import os
 import inspect
 from typing import Optional
 
-def debug_print(message, prefix: Optional[str] = None):
+def debug_print(message, prefix: Optional[str] = None, err = False):
     """
     Show a debug message in the form of "[prefix] message" to stderr.
     message: message to show
@@ -17,4 +17,4 @@ def debug_print(message, prefix: Optional[str] = None):
 
     prefix_message = f"{script_path}:{script_line}" if prefix is None else str(prefix)
 
-    print(f"[{prefix_message}] {str(message)}", file=sys.stderr)
+    print(f"\x1b[{31 if err else 32}m\x1b[1m[{prefix_message}]\x1b[m {str(message)}", file=sys.stderr)
