@@ -1,5 +1,5 @@
 // #REQ: modint
-using modint = moduloint<1000000007LL>;
+using modint = moduloint<998244353LL>;
 constexpr modint operator"" _p(unsigned long long _x) noexcept { return modint(_x); }
 ostream& operator<< (ostream& ost, const modint a) { return ost << a.x; }
 istream& operator>> (istream& ist, modint &a) { return ist >> a.x; }
