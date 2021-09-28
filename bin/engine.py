@@ -42,14 +42,15 @@ def dependency(template_id: str, abs=False):
     if template_id in dependency_cache:
         return dependency_cache[template_id]
 
+    result = []
     with open(template_id, "r", encoding="utf8") as fp:
-        line = fp.readline().strip()
+        for line in fp.readlines():
+            line = line.strip()
+            if line.startswith(HEADER_TOKEN):
+                result = line[len(HEADER_TOKEN):].strip().split()
+                break
 
-    if not line.startswith(HEADER_TOKEN):
-        result = []
-    else:
-        result = line[len(HEADER_TOKEN):].strip().split()
-
+    result = list(map(normalize, result))
     dependency_cache[template_id] = result
     return result
 
@@ -77,8 +78,6 @@ def resolve(*dependencies: List[str]):
     Resolves the dependencies
     """
 
-    dependencies = list(map(normalize, dependencies))
-
     # List nodes
     nodes = reachable_nodes_from(*dependencies)
 
@@ -91,13 +90,15 @@ def resolve(*dependencies: List[str]):
 
     # Topological Sort
     topology = nx.topological_sort(dependency_graph)
-    return list(topology)[::-1]
+    topology = list(topology)[::-1]
+    return topology
 
 def link(*dependencies: List[str]):
 
     linked = ""
 
     for template_id in map(normalize, dependencies):
+        linked += f"// <!-- {os.path.relpath(template_id, start=TEMPLATE_PATH)} -->\n"
         with open(template_id, "r", encoding="utf8") as fp:
             linked += fp.read()
             if not linked.endswith("\n"):
@@ -112,16 +113,18 @@ def rewrite(source_path: str, installed: List[str], removed: List[str]):
 
     if removed is not None:
         for template_id in removed:
+            template_id = normalize(template_id)
             if template_id in dependencies:
                 dependencies.remove(template_id)
     
     if installed is not None:
         for template_id in installed:
+            template_id = normalize(template_id)
             if template_id not in dependencies:
                 dependencies.append(template_id)
 
-    debug_print(f"""\x1b[1mBEFORE\x1b[m: {" ".join(dependencies_before)}""")
-    debug_print(f"""\x1b[1mAFTER \x1b[m: {" ".join(dependencies)}""")
+    relpaths = list(map(lambda template_id: os.path.relpath(template_id, start=TEMPLATE_PATH), dependencies))
+    debug_print(f"""Installed templates: {" ".join(relpaths)}""")
 
     source_path = normalize(source_path, abs=True)
 
@@ -142,7 +145,7 @@ def rewrite(source_path: str, installed: List[str], removed: List[str]):
             else:
                 if line.strip().startswith(HEADER_TOKEN):
                     ignoring = True
-                    dep_list = " ".join(dependencies)
+                    dep_list = " ".join(relpaths)
                     new_source += f"{HEADER_TOKEN} {dep_list}\n"
                     new_source += f"// <!-- GENERATED BEGIN -->\n"
                     resolved = resolve(*dependencies)
@@ -157,4 +160,4 @@ def rewrite(source_path: str, installed: List[str], removed: List[str]):
 
         fp.write(new_source)
 
-    debug_print("Done")
+    debug_print("Successfully linked")
