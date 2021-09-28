@@ -1,6 +1,12 @@
 {
-    "C_Cpp.files.exclude": {
-        "**/.vscode": true,
-        "**/template/**": true,
+    "files.associations": {
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp"
     }
-}
+} // {
+//     "C_Cpp.files.exclude": {
+//         "${workspaceRoot}/template/*.cpp": true,
+//     }
+// }
