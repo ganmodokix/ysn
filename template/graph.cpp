@@ -14,7 +14,7 @@ struct graph {
         }
         return e;
     }
-    graph reverse_edges() const {
+    graph edge_reversed() const {
         graph g(size());
         REP(u, size()) {
             for (auto [v, d] : adjacent_list[u]) {

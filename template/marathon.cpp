@@ -1,7 +1,7 @@
 // #REQ: xor128
 namespace marathon {
     clock_t start_clock;
-    constexpr double time_limit = 1.919114514; // 実行時間[s]より0.1ms程度余裕をあける
+    constexpr double time_limit = 2; // 実行時間[s]
     constexpr double time_limit_inv = 1.0 / time_limit;
     constexpr double CLOCKS_PER_SEC_INV = 1.0 / CLOCKS_PER_SEC;
     inline double nowtime() { return CLOCKS_PER_SEC_INV * (clock() - start_clock); }
