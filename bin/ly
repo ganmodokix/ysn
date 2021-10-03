@@ -1,7 +1,6 @@
 #!/bin/bash
-
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
-PROJ_DIR=$(dirname $(pwd))
+PROJ_DIR=$(dirname $SCRIPT_DIR)
 TEMPLATE_DIR=$PROJ_DIR/template
 
 tree $TEMPLATE_DIR
