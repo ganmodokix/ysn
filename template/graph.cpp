@@ -5,7 +5,7 @@ struct graph {
     void add_arc(ll u, ll v, ll cost = 1) { adjacent_list[u].emplace_back(v, cost); }
     void add_edge(ll u, ll v, ll cost = 1) { add_arc(u, v, cost); add_arc(v, u, cost); }
     auto size() const { return adjacent_list.size(); }
-    auto edge_list() const {
+    auto arcs() const {
         vector<tuple<ll, ll, ll>> e;
         REP(u, size()) {
             for (auto [v, d] : adjacent_list[u]) {
@@ -14,7 +14,7 @@ struct graph {
         }
         return e;
     }
-    graph edge_reversed() const {
+    graph arc_reversed_graph() const {
         graph g(size());
         REP(u, size()) {
             for (auto [v, d] : adjacent_list[u]) {
