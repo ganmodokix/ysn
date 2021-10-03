@@ -46,6 +46,7 @@ template <typename ...T, typename U, U... Seq> void DUMP_PROC(tuple<T...> &x, in
 template <typename ...T> void DUMP_PROC(tuple<T...> x) {cerr << "{"; DUMP_PROC(x, index_sequence_for<T...>()); cerr << "}";}
 template <typename T> void DUMP_PROC(vector<T> x) { cerr << "["; for (auto &xi : x) { DUMP_PROC(xi); cerr << (&xi != &*x.rbegin()?", ":""); } cerr << "]"; }
 template <typename T> void DUMP_FUNC(T x, const char* name, const char* fn, int ln) { cerr << "\e[32m[DEBUG]\e[m " << name << ": "; DUMP_PROC(x); cerr << " @ " << fn << "(" << ln << ")" << endl; }
+#define DUMPT(...) DUMP(tuple(__VA_ARGS__))
 
 // gcc拡張マクロ
 #define popcount __builtin_popcount
