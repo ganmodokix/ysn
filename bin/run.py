@@ -53,10 +53,7 @@ def exec(exec_path):
 
     start_time = time.time()
 
-    execution = subprocess.run([os.path.join(".", exec_path)],
-        stdin=sys.stdin,
-        stdout=sys.stdout,
-        stderr=sys.stderr)
+    execution = subprocess.run([os.path.join(".", exec_path)])
 
     end_time = time.time()
     duration = end_time - start_time
