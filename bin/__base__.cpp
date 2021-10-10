@@ -19,8 +19,13 @@ constexpr bool DEBUG_MODE = true;
 // using mll = boost::multiprecision::cpp_int;
 
 // 汎用マクロ
-#define ALLOF(x) (begin(x)), (end(x))
+#define ALL(x) (begin(x)), (end(x))
+#define RALL(x) (rbegin(x)), (rend(x))
 #define RPE REP
+#define ERP REP
+#define EPR REP
+#define PER REP
+#define PRE REP
 #define REP(i,n) for (long long i=0, i##_len=(n); i<i##_len; i++)
 #define RANGE(i,is,ie) for (long long i=(is), i##_end=(ie); i<=i##_end; i++)
 #define DSRNG(i,is,ie) for (long long i=(is), i##_end=(ie); i>=i##_end; i--)
