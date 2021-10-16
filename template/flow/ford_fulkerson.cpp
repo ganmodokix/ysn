@@ -40,7 +40,7 @@ struct ford_fulkerson {
         if (s == t) return 0;
         Capacity f = 0;
         while (true) {
-            fill(ALLOF(used), false);
+            fill(ALL(used), false);
             Capacity d = dfs(s, t, numeric_limits<Capacity>::max());
             if (d == 0) return f;
             f += d;

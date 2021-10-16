@@ -25,7 +25,7 @@ struct dinic {
     }
     void bfs(size_t s) {
         constexpr ll ZINF = numeric_limits<size_t>::max();
-        fill(ALLOF(level), ZINF);
+        fill(ALL(level), ZINF);
         deque<size_t> q = {s};
         level[s] = 0;
         while (q.size()) {
@@ -60,7 +60,7 @@ struct dinic {
         while (true) {
             bfs(s);
             if (level[t] == ZINF) return f;
-            fill(ALLOF(iter), 0);
+            fill(ALL(iter), 0);
             Capacity d;
             while ((d = dfs(s, t, numeric_limits<Capacity>::max())) > 0) {
                 f += d;

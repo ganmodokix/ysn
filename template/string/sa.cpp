@@ -12,7 +12,7 @@ struct suffix_array {
         vector rank(n+1, 0LL);
 
         // prefix 1 文字のみでソート
-        iota(ALLOF(sa), 0LL);
+        iota(ALL(sa), 0LL);
         REP(i, n+1) {
             rank[i] = s[i];
         }
@@ -23,7 +23,7 @@ struct suffix_array {
         };
         for (ll k = 1; k <= n; k *= 2) {
             const auto compare_sa = [&](ll i, ll j) { return rank_sa(i, k) < rank_sa(j, k); };
-            sort(ALLOF(sa), compare_sa);
+            sort(ALL(sa), compare_sa);
             vector tmp(n+1, 0LL);
             RANGE(i, 1, n) {
                 tmp[sa[i]] = tmp[sa[i-1]] + compare_sa(sa[i-1], sa[i]);

@@ -1,4 +1,4 @@
-// #REQ: xor128
+// #REQ: marathon/xor128
 namespace marathon {
     clock_t start_clock;
     constexpr double time_limit = 2; // 実行時間[s]

@@ -12,7 +12,7 @@ graph tree(const vector<ll> &parent) {
 vector<ll> tree_dist_rank(ll root, const graph &g) {
     auto dist_from = dist_01bfs(root, g);
     vector<ll> rank(g.size());
-    iota(ALLOF(rank), 0LL);
-    sort(ALLOF(rank), [&](ll i, ll j) { return dist_from.first[i] < dist_from.first[j]; });
+    iota(ALL(rank), 0LL);
+    sort(ALL(rank), [&](ll i, ll j) { return dist_from.first[i] < dist_from.first[j]; });
     return rank;
 }
