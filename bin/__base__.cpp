@@ -20,7 +20,9 @@ constexpr bool DEBUG_MODE = true;
 
 // 汎用マクロ
 #define ALL(x) (begin(x)), (end(x))
+#define ALLOF(x) (begin(x)), (end(x))
 #define RALL(x) (rbegin(x)), (rend(x))
+#define RALLOF(x) (rbegin(x)), (rend(x))
 #define RPE REP
 #define ERP REP
 #define EPR REP
