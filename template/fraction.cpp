@@ -20,8 +20,8 @@ struct fraction {
     constexpr fraction operator+ (ll a) noexcept { auto x = *this; return x += fraction(a); }
     constexpr fraction operator- (ll a) noexcept { auto x = *this; return x -= fraction(a); }
     constexpr fraction operator- () const noexcept { return fraction(-p, q); }
-    constexpr bool operator< (const fraction &a) const noexcept { return p * other.q < a.p * q; }
-    constexpr bool operator<= (const fraction &a) const noexcept { return p * other.q <= a.p * q; }
+    constexpr bool operator< (const fraction &a) const noexcept { return p * a.q < a.p * q; }
+    constexpr bool operator<= (const fraction &a) const noexcept { return p * a.q <= a.p * q; }
 };
 constexpr fraction operator"" _f(unsigned long long _x) noexcept { return fraction(_x); }
 ostream& operator<< (ostream& ost, const fraction a) { return ost << a.p << "/" << a.q; }
