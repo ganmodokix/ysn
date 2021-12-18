@@ -5,7 +5,7 @@ import subprocess
 
 from engine import normalize
 from message import debug_print
-from path import BIN_PATH, ACL_PATH
+from path import BIN_PATH
 
 import time
 
