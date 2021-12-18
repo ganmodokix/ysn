@@ -43,7 +43,6 @@ def compile(source_path):
         "-Wall", "-Wextra",
         "-O2",
         "-DYSN_DEBUG",
-        f"-I{ACL_PATH}",
         source_path,
         "-o", exec_path
     ])
