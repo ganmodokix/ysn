@@ -5,7 +5,7 @@ import subprocess
 
 from engine import normalize
 from message import debug_print
-from path import BIN_PATH
+from path import BIN_PATH, ACL_PATH
 
 import time
 
@@ -37,7 +37,16 @@ def compile(source_path):
 
     debug_print(f"Compiling {source_path} ...")
     start_time = time.time()
-    compilation = subprocess.run(["g++", "-std=gnu++17", "-Wall", "-Wextra", "-O2", "-DYSN_DEBUG", source_path, "-o", exec_path])
+    compilation = subprocess.run([
+        "g++",
+        "-std=gnu++17",
+        "-Wall", "-Wextra",
+        "-O2",
+        "-DYSN_DEBUG",
+        f"-I{ACL_PATH}",
+        source_path,
+        "-o", exec_path
+    ])
     end_time = time.time()
     duration = end_time - start_time
 
