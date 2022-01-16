@@ -8,8 +8,8 @@ istream& operator>> (istream& ist, modint &a) { return ist >> a.x; }
 
 // Factorial n!
 factorial_cache<modint> fac_cache;
-modint    fac(long long n) { fac_cache.prepare_fac(n); return fac_cache.fac[n]; }
-modint invfac(long long n) { fac_cache.prepare_fac(n); return fac_cache.invfac[n]; }
+modint    fac(long long n) { fac_cache.prepare(n); return fac_cache.fac[n]; }
+modint invfac(long long n) { fac_cache.prepare(n); return fac_cache.invfac[n]; }
 constexpr bool isinpascal(long long n, long long r) noexcept { return 0 <= r && r <= n; }
 modint nCr(long long n, long long r) { return !isinpascal(n, r) ? 0_p : fac(n) * invfac(r) * invfac(n-r); }
 modint nPr(long long n, long long r) { return !isinpascal(n, r) ? 0_p : fac(n) * invfac(n-r); }

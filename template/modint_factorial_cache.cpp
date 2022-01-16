@@ -3,7 +3,7 @@ struct factorial_cache {
 
     vector<T> fac = {T(1)}, invfac = {T(1)};
 
-    void prepare_fac(long long nmax) {
+    void prepare(long long nmax) {
 
         if (nmax < (long long)fac.size()) return;
         while (!(nmax < (long long)fac.size())) {
