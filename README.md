@@ -2,7 +2,7 @@
 Template tools for competitive programming
 
 ## Usage
-Runs `hoge.cpp` (copy the base template if not created) by
+Runs `hoge.cpp` (create and copy the base template if not created) by
 ```
 $ bin/ysn hoge
 ```
