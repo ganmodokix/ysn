@@ -1,4 +1,4 @@
-// #REQ: base_template/575
+// #REQ: base_template
 // Union-Find モジュール
 struct union_find {
     vector<size_t> par;
