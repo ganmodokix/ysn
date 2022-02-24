@@ -15,3 +15,9 @@ or briefly
 ```
 $ bin/ysn hoge -i modint1e9p7 -r modint998244353
 ```
+
+(for debigging) you can see the dependency graph by
+```
+$ bin/ysn hoge -i modint1e9p7 -r modint998244353 -d hoge.svg
+```
+(`.svg` can be replaced by `.pdf`, `.png` etc)
