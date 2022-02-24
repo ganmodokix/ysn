@@ -1,7 +1,11 @@
 #!/bin/bash
 
-python3.9 -m venv .env
+if [ -d .env ]; then
+    python3.9 -m venv .env
+fi
 
 source .env/bin/activate
-sudo apt install tree
-pip install networkx
+sudo apt install tree graphviz -y
+pip install -U pip
+pip install wheel
+pip install networkx graphviz

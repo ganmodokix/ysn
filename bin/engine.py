@@ -2,9 +2,10 @@ import os
 import copy
 import collections
 from re import template
-from typing import List
+from typing import List, Optional
 
 import networkx as nx
+import graphviz
 from message import debug_print
 
 from path import TEMPLATE_PATH
@@ -91,7 +92,7 @@ def resolve(*dependencies: List[str]):
     # Topological Sort
     topology = nx.topological_sort(dependency_graph)
     topology = list(topology)[::-1]
-    return topology
+    return topology, dependency_graph
 
 def link(*dependencies: List[str]):
 
@@ -106,7 +107,10 @@ def link(*dependencies: List[str]):
     
     return linked
 
-def rewrite(source_path: str, installed: List[str], removed: List[str]):
+def rewrite(
+    source_path: str, installed: List[str], removed: List[str],
+    dependency_graph_path: Optional[str] = None
+):
 
     dependencies_before = dependency(source_path, abs=True)
     dependencies = copy.deepcopy(dependencies_before)
@@ -148,10 +152,19 @@ def rewrite(source_path: str, installed: List[str], removed: List[str]):
                     dep_list = " ".join(relpaths)
                     new_source += f"{HEADER_TOKEN} {dep_list}\n"
                     new_source += f"// <!-- GENERATED BEGIN -->\n"
-                    resolved = resolve(*dependencies)
+                    resolved, dependency_graph = resolve(*dependencies)
                     new_source += link(*resolved)
                     new_source += f"// <!-- GENERATED END -->\n"
                     new_source += FOOTER_TOKEN + "\n"
+
+                    if dependency_graph_path is not None:
+                        filename, ext = os.path.splitext(dependency_graph_path)
+                        dg = graphviz.Digraph(format=ext[1:])
+                        for node_from, node_to in dependency_graph.edges:
+                            node_from = os.path.relpath(node_from, start=TEMPLATE_PATH)
+                            node_to = os.path.relpath(node_to, start=TEMPLATE_PATH)
+                            dg.edge(node_from, node_to)
+                        dg.render(filename)
                 
             if not ignoring:
                 new_source += line
