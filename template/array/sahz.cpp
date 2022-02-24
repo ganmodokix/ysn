@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 座圧 {写像, 逆写像} が返る O(NlogN)
 template <typename T>
 pair<map<T, int>, vector<T>> sahz(const vector<T> &x0) {

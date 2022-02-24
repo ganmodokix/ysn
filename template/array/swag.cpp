@@ -1,3 +1,4 @@
+// #REQ: base_template
 // Sliding Window Aggregation
 // - モノイド (T, Opr, e) に対し総和を返す (半群でもできるが、めんどい)
 // - litr/ritr を一つ進めるのは Θ(1) amortized

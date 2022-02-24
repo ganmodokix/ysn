@@ -1,3 +1,4 @@
+// #REQ: base_template
 // Cooley-Tukey型 高速フーリエ変換 O(NlogN)
 template <typename T>
 void fft_inplace(vector<complex<T>> &a, const bool inv = false) {

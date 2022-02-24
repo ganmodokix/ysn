@@ -1,0 +1,1 @@
+base_template: 575; や ll や REP や DUMP などの共通ライブラリ

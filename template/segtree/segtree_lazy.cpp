@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 遅延評価セグ木 T: 値の型, U: 操作の型
 template<typename T, typename U, typename JOIN_T, typename APPLY_U, typename JOIN_U, typename MULTIPLY_U, typename HALF_U>
 class segtree {

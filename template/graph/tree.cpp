@@ -1,4 +1,4 @@
-// #REQ: graph graph/01bfs
+// #REQ: base_template graph graph/01bfs
 graph tree(const vector<ll> &parent) {
     graph g(parent.size());
     REP(i, g.size()) {

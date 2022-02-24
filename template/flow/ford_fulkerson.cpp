@@ -1,3 +1,4 @@
+// #REQ: base_template
 // Ford-Fulkerson法による最大流
 // Capacityには必ず整数型を指定すること
 // Capacityが整数ならば，停止しないときDFS1回O(E)で必ず1以上フローが新たに流れるためO(FE)

@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 線形篩を用いた素数列挙 O(N)
 vector<ll> primes_under(size_t n) {
     vector<ll> lp(n, 0);

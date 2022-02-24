@@ -1,3 +1,4 @@
+// #REQ: base_template.cpp
 struct fraction {
     ll p = 0, q = 1;
     fraction() = default;

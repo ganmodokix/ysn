@@ -1,3 +1,4 @@
+// #REQ: base_template/575
 namespace opf {
     struct min { template <typename T> T operator() (const T &x, const T &y) const { return std::min(x, y); } };
     struct max { template <typename T> T operator() (const T &x, const T &y) const { return std::max(x, y); } };

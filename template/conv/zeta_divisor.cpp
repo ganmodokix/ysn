@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 高速約数ゼータ変換 O(VlogV); V being x.size()
 // fzt(x)[s] == Σ_{s|t/t|s} x[t] (ただし∀i,0|iとする)
 // inv: これをtrueにするとメビウス, subset: これをtrueにするとt|s

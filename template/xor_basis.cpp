@@ -1,3 +1,4 @@
+// #REQ: base_template/575
 // (Z/2Z)^hoge上のXOR基底, raw_valueが真の場合aから選んで線形独立なベクトルを返す
 // https://twitter.com/noshi91/status/1200702280128856064
 template <typename T>

@@ -1,3 +1,4 @@
+// #REQ: base_template.cpp
 // 剰余演算ライブラリ (小): 剰余と逆元だけ欲しいときに使う軽量ライブラリ
 // mod pdiv 上での a^n (pdiv は素数である必要はない)
 ll modpow(ll a, ll n, const ll pdiv) {

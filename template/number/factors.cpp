@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 素因数分解 O(√N)
 template <typename T>
 vector<T> factorize(T x) {

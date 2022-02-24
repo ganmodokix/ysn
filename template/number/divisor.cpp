@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 約数列挙 O(√N)
 template <typename T>
 vector<T> divisor(const T n) {

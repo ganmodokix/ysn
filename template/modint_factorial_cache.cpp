@@ -1,3 +1,4 @@
+// #REQ: base_template.cpp
 template <typename T>
 struct factorial_cache {
 

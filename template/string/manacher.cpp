@@ -1,3 +1,4 @@
+// #REQ: base_template
 // Manacher's Algorithm: {s[i] = iを中心にした最長の回文の半径} を返す．線形時間．
 template<typename RandomAccessIterator>
 vector<size_t> manacher(RandomAccessIterator first, RandomAccessIterator last) {

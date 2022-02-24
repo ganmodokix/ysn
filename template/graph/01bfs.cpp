@@ -1,4 +1,4 @@
-// #REQ: graph
+// #REQ: base_template graph
 pair<vector<ll>, vector<ll>> dist_01bfs(ll root, const graph &g) {
     vector<ll> dist(g.size(), LINF);
     vector<ll> from(g.size(), -1LL);

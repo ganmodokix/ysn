@@ -1,3 +1,4 @@
+// #REQ: base_template.cpp
 struct graph {
     vector<vector<pair<ll, ll>>> adjacent_list;
     graph() = default;

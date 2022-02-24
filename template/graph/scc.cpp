@@ -1,4 +1,4 @@
-// #REQ: graph
+// #REQ: base_template graph
 // Verified by https://atcoder.jp/contests/practice2/tasks/practice2_g?lang=ja
 void scc_dfs(ll u, const graph &g, vector<ll> &vs, vector<bool> &used, ll &idx) {
     used[u] = true;

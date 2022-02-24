@@ -3,7 +3,7 @@ import sys
 from posixpath import relpath
 import subprocess
 
-from engine import normalize
+from engine import normalize, rewrite
 from message import debug_print
 from path import BIN_PATH
 
@@ -26,14 +26,16 @@ def compile(source_path):
     exec_path = exec_path_of(source_path)
 
     if not os.path.isfile(source_path):
+        
         if os.path.exists(source_path):
             raise ValueError(f"{source_path} is not a file")
-        else:
-            debug_print(f"Creating {source_path} ...")
-            with open(os.path.join(BIN_PATH, "__base__.cpp"), "r", encoding="utf8") as fp:
-                base_cpp = fp.read()
-            with open(source_path, "w", encoding="utf8") as fp:
-                fp.write(base_cpp)
+        
+        debug_print(f"Creating {source_path} ...")
+        with open(os.path.join(BIN_PATH, "__base__.cpp"), "r", encoding="utf8") as fp:
+            base_cpp = fp.read()
+        with open(source_path, "w", encoding="utf8") as fp:
+            fp.write(base_cpp)
+        rewrite(source_path, [], [])
 
     debug_print(f"Compiling {source_path} ...")
     start_time = time.time()

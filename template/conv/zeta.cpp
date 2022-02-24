@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 高速ゼータ変換 x.size()は2べきである必要がある O(K2^K); K being |U|
 // fzt(x)[s] == Σ_{t⊇s/t⊆s} x[t]
 // inv: これをtrueにするとメビウス, subset: これをtrueにするとt⊆s

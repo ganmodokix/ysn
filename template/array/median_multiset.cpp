@@ -1,3 +1,4 @@
+// #REQ: base_template
 // 中央値付き multiset
 template <typename T>
 struct median_multiset {

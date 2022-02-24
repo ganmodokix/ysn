@@ -1,4 +1,4 @@
-// #REQ: modint modint_factorial_cache
+// #REQ: base_template modint modint_factorial_cache
 using modint = moduloint<1000000007LL>;
 
 // IO

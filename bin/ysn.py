@@ -2,7 +2,7 @@
 
 import argparse
 
-from engine import rewrite, resolve, dependency
+from engine import rewrite
 from run import execute
 
 if __name__ == "__main__":

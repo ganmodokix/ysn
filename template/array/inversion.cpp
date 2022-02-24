@@ -1,4 +1,4 @@
-// #REQ: segtree/bit
+// #REQ: base_template segtree/bit
 // BITを用いて数列の転倒数を求める　O(NlogN)
 template <typename T>
 size_t inversion(vector<T> &x0) {

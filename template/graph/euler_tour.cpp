@@ -1,4 +1,4 @@
-// #REQ: graph
+// #REQ: base_template graph
 void euler_tour_dfs(
     ll u, const graph &g,
     vector<ll> depth,

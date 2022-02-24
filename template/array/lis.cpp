@@ -1,4 +1,4 @@
-// #REQ: array/sahz
+// #REQ: base_template array/sahz
 // LIS の長さを返す O(NlogN)
 template <typename T>
 size_t lis_length(const vector<T> &x) {

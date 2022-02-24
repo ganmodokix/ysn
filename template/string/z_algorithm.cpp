@@ -1,3 +1,4 @@
+// #REQ: base_template
 // Z-algorithm
 template <class RandomAccessIterator>
 vector<ll> common_prefix(RandomAccessIterator first, RandomAccessIterator last) {
