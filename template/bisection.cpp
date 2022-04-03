@@ -20,9 +20,7 @@ template <typename T, typename Predicate>
 T bisection(T false_side, T true_side, Predicate pred, T tolerant = 1) {
     assert(!is_integral_v<T> || tolerant == 1);
     while ((false_side > true_side ? false_side - true_side : true_side - false_side) > tolerant) {
-        T mid_value = is_integral_v<T>
-            ? false_side / 2 + true_side / 2 + ("AABBC"[2 + false_side % 2 + true_side % 2] - 'B')
-            : (false_side + true_side) * 0.5;
+        T mid_value = bisection_mid(false_side, true_side);
         (pred(mid_value) ? true_side : false_side) = mid_value;
     }
     return true_side;
