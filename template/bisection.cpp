@@ -1,4 +1,15 @@
 // #REQ: base_template.cpp
+
+template <typename T, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>
+T bisection_mid(T false_side, T true_side) {
+    return false_side / 2 + true_side / 2 + ("AABBC"[2 + false_side % 2 + true_side % 2] - 'B');
+}
+
+template <typename T, typename enable_if<is_floating_point_v<T>, nullptr_t>::type = nullptr>
+T bisection_mid(T false_side, T true_side) {
+    return (false_side + true_side) * 0.5;
+}
+
 // 二分法 O(log(true_side - false_side) * predの時間計算量)
 // false_sideを含まずtrue_sideを含む区間でpredがtrueとなる最もtrue_sideに近い値を返す
 // pred(false_side) == false かつ pred(true_side) == true かつ pred が広義単調　が必要
