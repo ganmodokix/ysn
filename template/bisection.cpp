@@ -15,7 +15,8 @@ T bisection(T false_side, T true_side, Predicate pred) {
 
 template <typename T, typename Predicate, typename enable_if<is_floating_point_v<T>, nullptr_t>::type = nullptr>
 T bisection(T false_side, T true_side, Predicate pred) {
-    for (size_t i = 0, n = sizeof(T) * 8; i < n; i++) {
+    constexpr size_t num_bisections = sizeof(T) * 8;
+    for (size_t i = 0; i < num_bisections; i++) {
         T mid_value = (false_side + true_side) * 0.5;
         (pred(mid_value) ? true_side : false_side) = mid_value;
     }
