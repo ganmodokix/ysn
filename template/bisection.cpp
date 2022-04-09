@@ -1,26 +1,22 @@
 // #REQ: base_template.cpp
 
-template <typename T, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>
-T bisection_mid(T false_side, T true_side) {
-    return false_side / 2 + true_side / 2 + ("AABBC"[2 + false_side % 2 + true_side % 2] - 'B');
-}
-
-template <typename T, typename enable_if<is_floating_point_v<T>, nullptr_t>::type = nullptr>
-T bisection_mid(T false_side, T true_side) {
-    return (false_side + true_side) * 0.5;
-}
-
 // 二分法 O(log(true_side - false_side) * predの時間計算量)
 // false_sideを含まずtrue_sideを含む区間でpredがtrueとなる最もtrue_sideに近い値を返す
 // pred(false_side) == false かつ pred(true_side) == true かつ pred が広義単調　が必要
 // ⚠️ pred(false_side) および pred(true_side) は呼ばれない
-// T が整数型かつ tolerant == 1 のとき厳密解を返す
-// T が浮動小数点数型のときはtolerant未満だけ真の境界からtrue_sideにずれる
-template <typename T, typename Predicate>
-T bisection(T false_side, T true_side, Predicate pred, T tolerant = 1) {
-    assert(!is_integral_v<T> || tolerant == 1);
-    while ((false_side > true_side ? false_side - true_side : true_side - false_side) > tolerant) {
-        T mid_value = bisection_mid(false_side, true_side);
+template <typename T, typename Predicate, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>
+T bisection(T false_side, T true_side, Predicate pred) {
+    while ((false_side > true_side ? false_side - true_side : true_side - false_side) > 1) {
+        T mid_value = false_side / 2 + true_side / 2 + ("AABBC"[2 + false_side % 2 + true_side % 2] - 'B');
+        (pred(mid_value) ? true_side : false_side) = mid_value;
+    }
+    return true_side;
+}
+
+template <typename T, typename Predicate, typename enable_if<is_floating_point_v<T>, nullptr_t>::type = nullptr>
+T bisection(T false_side, T true_side, Predicate pred) {
+    for (size_t i = 0, n = sizeof(T) * 8; i < n; i++) {
+        T mid_value = (false_side + true_side) * 0.5;
         (pred(mid_value) ? true_side : false_side) = mid_value;
     }
     return true_side;
