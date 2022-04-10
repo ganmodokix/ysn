@@ -14,7 +14,7 @@ auto euler_tour(ll root, const graph &g) {
 
     vector<ll> depth(g.size(), LINF);
     vector<ll> parent(g.size(), -1);
-    deque<pair<ll, ll>> q = {{-root, 0LL}, {root, 0LL}};
+    deque<pair<ll, ll>> q = {{~root, 0LL}, {root, 0LL}};
     depth[root] = 0;
     
     while (q.size()) {
