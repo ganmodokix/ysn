@@ -1,9 +1,13 @@
 // #REQ: base_template graph
 // 無向グラフ g に対して root の属する連結成分の全域木のオイラーツアーを返す
-// returns {direction, vertex, edge cost}
-// direction: 'A' なら arrival, 'D' なら departure
-// vertex: 見ている頂点で，directionが'A'のときは遷移*先*，'D'のときは遷移*元* (それぞれ元/先でない方の頂点はそのparent)
-// edge cost: 来た/行く辺の重み、vertex == root のときは 0
+// returns {tour, depth, parent},
+// ただし
+// tour: {direction, vertex, edge cost} のvector,
+//     direction: 'A' なら arrival, 'D' なら departure
+//     vertex: 見ている頂点で，directionが'A'のときは遷移*先*，'D'のときは遷移*元* (それぞれ元/先でない方の頂点はそのparent)
+//     edge cost: 来た/行く辺の重み、vertex == root のときは 0
+// depth: rootを根付き木としたときの深さ
+// edge cost: directionの操作での辺のコスト
 auto euler_tour(ll root, const graph &g) {
 
     vector<tuple<char, ll, ll>> tour;
@@ -16,13 +20,13 @@ auto euler_tour(ll root, const graph &g) {
     while (q.size()) {
         auto [u, costu] = q.back(); q.pop_back();
         if (u >= 0) {
+            tour.emplace_back('A', u, costu);
             for (auto [v, costv] : g.adjacent_list[u]) {
                 if (depth[v] == LINF) {
                     depth[v] = depth[u] + 1;
                     parent[v] = u;
-                    tour.emplace_back('A', v, costv);
-                    q.emplace_back(v, costv);
                     q.emplace_back(~v, costv);
+                    q.emplace_back(v, costv);
                 }
             }
         } else {
