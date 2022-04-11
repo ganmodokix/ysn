@@ -37,8 +37,7 @@ struct min_cost_flow {
                 yet = false;
                 REP(i, n) if (dist[i] < CINF) {
                     REP(j, g[i].size()) {
-                        size_t to, rev; Capacity cap; Cost cost;
-                        tie(to, cap, cost, rev) = g[i][j];
+                        auto [to, cap, cost, rev] = g[u][i];
                         if (cap > 0 && chmin(dist[to], dist[i] + cost)) {
                             prevv[to] = i;
                             preve[to] = j;
