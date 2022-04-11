@@ -1,6 +1,6 @@
 // #REQ: base_template
 // 最小費用流 ポテンシャル付き O(FElogV)
-// 費用は非負である必要がある（負費用辺がある場合ポテンシャル無しverが必要）
+// 費用について負閉路がない必要がある
 // CapacityとCostは符号付き整数型である必要がある（整数型でないと停止しない場合がある，符号付きでないと逆辺がバグる）
 // Verified by AOJ GRL_6_B http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_6_B
 // Verified by ABC247-G https://atcoder.jp/contests/abc247/tasks/abc247_g
