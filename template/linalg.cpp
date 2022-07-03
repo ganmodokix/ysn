@@ -16,8 +16,8 @@ struct matrix {
     const T& at(size_t i, size_t j = 0) const { return values.at(i * cols + j); }
     pair<size_t, size_t> size() const { return {rows, cols}; }
     // 用途に合わせて書き換える箇所 はじめ
-    const static T T_ADD_IDENTITY = 0;
-    const static T T_MUL_IDENTITY = 1;
+    constexpr static T T_ADD_IDENTITY = 0;
+    constexpr static T T_MUL_IDENTITY = 1;
     static T add(T a, T b) { return a + b; } // 半環
     static T mul(T a, T b) { return a * b; } // 半環
     static T sub(T a, T b) { return a - b; } // 環として使う場合
