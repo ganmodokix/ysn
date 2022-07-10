@@ -25,7 +25,7 @@ struct dinic {
         add_arc(v, u, cap);
     }
     void bfs(size_t s) {
-        constexpr ll ZINF = numeric_limits<size_t>::max();
+        constexpr size_t ZINF = numeric_limits<size_t>::max();
         fill(ALL(level), ZINF);
         deque<size_t> q = {s};
         level[s] = 0;
@@ -55,7 +55,7 @@ struct dinic {
     }
     Capacity max_flow(size_t s, size_t t) {
         assert(0 <= s && s < n && 0 <= t && t < n);
-        constexpr ll ZINF = numeric_limits<size_t>::max();
+        constexpr size_t ZINF = numeric_limits<size_t>::max();
         if (s == t) return 0;
         Capacity f = 0;
         while (true) {
