@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -d .env ]; then
+if [ ! -d .env ]; then
     python3.9 -m venv .env
 fi
 
