@@ -1,7 +1,7 @@
 // #REQ: base_template.cpp
 
 // 二分法 O(log(true_side - false_side) * predの時間計算量)
-// false_sideを含まずtrue_sideを含む区間でpredがtrueとなる最もtrue_sideに近い値を返す
+// false_sideを含まずtrue_sideを含む区間の元であって、predがtrueとなるような、最もfalse_sideに近い値を返す
 // pred(false_side) == false かつ pred(true_side) == true かつ pred が広義単調　が必要
 // ⚠️ pred(false_side) および pred(true_side) は呼ばれない
 template <typename T, typename Predicate, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>
