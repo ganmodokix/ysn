@@ -12,8 +12,8 @@ struct matrix {
     matrix(initializer_list<U> init) : rows(init.size()), cols(1), values(init.begin(), init.end()) {}
     template <typename U>
     matrix(initializer_list<initializer_list<U>> init) : rows(init.size()), cols(init.begin()->size()), values(rows * cols, (T)T_ADD_IDENTITY) { size_t i = 0, j = 0; for (const auto &initi : init) { for (const auto &initij : initi) { at(i, j) = initij; j++; } i++; j = 0; } }
-    T& at(size_t i, size_t j = 0) { return values.at(i * cols + j); }
-    const T& at(size_t i, size_t j = 0) const { return values.at(i * cols + j); }
+    T& at(size_t i = 0, size_t j = 0) { return values.at(i * cols + j); }
+    const T& at(size_t i = 0, size_t j = 0) const { return values.at(i * cols + j); }
     pair<size_t, size_t> size() const { return {rows, cols}; }
     // 用途に合わせて書き換える箇所 はじめ
     constexpr static T T_ADD_IDENTITY = 0;
