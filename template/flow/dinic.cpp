@@ -15,7 +15,7 @@ struct dinic {
     dinic() : n(0), g(), level(), iter() {}
     dinic(size_t _n) : n(_n), g(n), level(n), iter(n) {}
     void add_arc(size_t from, size_t to, Capacity cap) {
-        assert(0 <= from && from < n && 0 <= to && to < n);
+        assert(from < n && to < n);
         assert(cap >= 0);
         g[from].emplace_back(to  , cap, g[to  ].size());
         g[to  ].emplace_back(from,   0, g[from].size() - 1);
@@ -54,7 +54,7 @@ struct dinic {
         return 0;
     }
     Capacity max_flow(size_t s, size_t t) {
-        assert(0 <= s && s < n && 0 <= t && t < n);
+        assert(s < n && t < n);
         constexpr size_t ZINF = numeric_limits<size_t>::max();
         if (s == t) return 0;
         Capacity f = 0;
