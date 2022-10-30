@@ -4,7 +4,7 @@
 template <ll pdiv = 998244353, ll prim = 3>
 void ntt_inplace(vector<ll> &a, const bool inv = false) {
     // Shita-goshirae
-    ll n = 1, h = 0;
+    size_t n = 1, h = 0;
     while (n < a.size()) n <<= 1, h++;
     a.resize(n, 0);
     for (size_t i = 0; i < n; i++) {
@@ -60,7 +60,6 @@ vector<ll> convolve(const vector<ll> &x, const vector<ll> &y, const ll pdiv) {
     // const auto conv2 = convolve_p<998244353, 3>(x, y);
     const auto conv3 = convolve_p<469762049, 3>(x, y);
     const auto conv4 = convolve_p<167772161, 3>(x, y);
-    ll n = conv1.size();
     ll t = x.size() + y.size() - 1;
     vector<ll> result(t, 0);
     for (ll i = 0; i < t; i++) {
