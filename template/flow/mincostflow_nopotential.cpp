@@ -20,14 +20,18 @@ struct min_cost_flow {
         g[to  ].emplace_back(from,   0, -cost, g[from].size()-1);
     }
 
-    // 頂点 s から t に最大 f だけ *追加で* フローを流す
-    // {新たにかかったコスト, 流れなかった残りのフロー} が返る
-    pair<Cost, Capacity> min_cost(size_t s, size_t t, Capacity f) {
+    // 頂点 s から t に最大 maxf (デフォルトでは流せるだけ流す) だけ *追加で* フローを流す
+    // {流量, コスト}の折れ線が返る
+    vector<pair<Capacity, Cost>> min_cost_slope(size_t s, size_t t, Capacity maxf = numeric_limits<Capacity>::max()) {
 
         Cost CINF = numeric_limits<Cost>::max();
         Cost result = 0;
+        Capacity flown = 0;
+        vector<pair<Capacity, Cost>> slope; // slope
 
-        while (f > 0) {
+        slope.emplace_back(flown, result);
+
+        while (maxf > 0) {
 
             // Bellman-Ford法で最短路を見つける
             vector<Cost> dist(n, CINF);
@@ -37,7 +41,7 @@ struct min_cost_flow {
                 yet = false;
                 REP(i, n) if (dist[i] < CINF) {
                     REP(j, g[i].size()) {
-                        auto [to, cap, cost, rev] = g[u][i];
+                        auto [to, cap, cost, rev] = g[i][j];
                         if (cap > 0 && chmin(dist[to], dist[i] + cost)) {
                             prevv[to] = i;
                             preve[to] = j;
@@ -46,15 +50,16 @@ struct min_cost_flow {
                     }
                 }
             }
-            if (dist[t] == CINF) return {result, f};
+            if (dist[t] == CINF) return slope;
 
             // 最短路に流す
-            Capacity d = f;
+            Capacity d = maxf;
             for (size_t i = t; i != s; i = prevv[i]) {
                 auto &e = g[prevv[i]][preve[i]];
                 chmin(d, get<1>(e));
             }
-            f -= d;
+            maxf -= d;
+            flown += d;
             result += d * dist[t];
             for (size_t i = t; i != s; i = prevv[i]) {
                 auto &e = g[prevv[i]][preve[i]];
@@ -63,10 +68,19 @@ struct min_cost_flow {
                 get<1>(r) += d;
             }
 
+            slope.emplace_back(flown, result);
+
         }
 
-        return {result, 0};
+        return slope;
 
+    }
+
+    // 頂点 s から t に最大 f (デフォルトでは流せるだけ流す) だけ *追加で* フローを流す
+    // {流量, コスト} が返る
+    pair<Capacity, Cost> min_cost_max_flow(size_t s, size_t t, Capacity maxf = numeric_limits<Capacity>::max()) {
+        auto slope = min_cost_slope(s, t, maxf);
+        return slope.back();
     }
 
 };
