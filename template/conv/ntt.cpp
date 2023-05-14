@@ -1,28 +1,34 @@
 // #REQ: base_template modint_petit.cpp garner.cpp conv/butterfly.cpp
 // 精度に寄りけりだがconv1回で済むFFTの方がいい場合もあることに留意
 // Cooley-Tukey型 高速フーリエ変換 O(NlogN)
-template <ll pdiv = 998244353, ll prim = 3>
-inline vector<ll> ntt(vector<ll> a, const bool inv = false) {
+template <ll pdiv = 998244353, ll prim = 3, typename T>
+auto ntt(T&& a, const bool inv = false) {
     if (inv) {
-        butterfly_inv_inplace<pdiv, prim>(a);
+        return butterfly_inv<pdiv, prim>(forward<T>(a));
     } else {
-        butterfly_inplace<pdiv, prim>(a);
+        return butterfly<pdiv, prim>(forward<T>(a));
     }
-    return a;
 }
+template <ll pdiv = 998244353, ll prim = 3, typename T>
+T intt(T&& a) {
+    return ntt(forward<T>(a), true);
+}
+
 // 適切な原始根の存在する法での畳み込み
-template <ll pdiv, ll prim>
-vector<ll> convolve_p(const vector<ll> &x, const vector<ll> &y) {
+template <ll pdiv, ll prim, typename T, typename U>
+vector<ll> convolve_p(T&& x, U&& y) {
     size_t t = x.size() + y.size() - 1;
-    auto a = x; a.resize(t, 0);
-    auto b = y; b.resize(t, 0);
-    butterfly_inplace<pdiv, prim>(a);
-    butterfly_inplace<pdiv, prim>(b);
+    size_t h = 1; while (h < t) h <<= 1;
+    auto a = forward<T>(x); a.resize(h, 0);
+    auto b = forward<U>(y); b.resize(h, 0);
+    a = butterfly<pdiv, prim>(move(a));
+    b = butterfly<pdiv, prim>(move(b));
     for (size_t i = 0; i < a.size(); i++) (a[i] *= b[i]) %= pdiv;
-    butterfly_inv_inplace<pdiv, prim>(a);
+    a = butterfly_inv<pdiv, prim>(move(a));
     a.resize(t);
     return a;
 }
+
 // 任意MODでの畳み込み演算
 vector<ll> convolve(const vector<ll> &x, const vector<ll> &y, const ll pdiv) {
     if (pdiv == 998244353) return convolve_p<998244353, 3>(x, y);
