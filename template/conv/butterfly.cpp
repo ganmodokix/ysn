@@ -50,7 +50,10 @@ struct butterfly_proprocess {
 
 // ACL実装のバタフライ演算
 template <ll pdiv = 998244353, ll prim = 3>
-void butterfly_inplace(vector<ll> &a) {
+vector<ll> butterfly(vector<ll>&& a_) {
+    assert(!a_.empty() && popcountll(a_.size()) == 1);
+
+    vector<ll> a = move(a_);
     
     ll n = a.size();
     ll h = 0; while ((1LL << h) < n) ++h;
@@ -107,11 +110,20 @@ void butterfly_inplace(vector<ll> &a) {
         }
     }
 
+    return a;
+}
+
+template <ll pdiv = 998244353, ll prim = 3>
+vector<ll> butterfly(const vector<ll>& a) {
+    return butterfly<pdiv, prim>(vector<ll>(a));
 }
 
 // ACL実装の逆バタフライ演算
 template <ll pdiv = 998244353, ll prim = 3>
-void butterfly_inv_inplace(vector<ll> &a) {
+vector<ll> butterfly_inv(vector<ll>&& a_) {
+    assert(!a_.empty() && popcountll(a_.size()) == 1);
+
+    vector<ll> a = move(a_);
     
     ll n = a.size();
     ll h = 0; while ((1LL << h) < n) ++h;
@@ -169,4 +181,10 @@ void butterfly_inv_inplace(vector<ll> &a) {
     ll iz = modinv(1 << h, pdiv);
     for (auto &x : a) (x *= iz) %= pdiv;
 
+    return a;
+}
+
+template <ll pdiv = 998244353, ll prim = 3>
+vector<ll> butterfly_inv(const vector<ll>& a) {
+    return butterfly_inv<pdiv, prim>(vector<ll>(a));
 }
