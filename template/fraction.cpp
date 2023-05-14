@@ -8,21 +8,24 @@ struct fraction {
     constexpr fraction& operator/= (fraction a) noexcept { p *= a.q; q *= a.p; regularize(); return *this; }
     constexpr fraction& operator+= (fraction a) noexcept { ll x = q * a.q; p = p * a.q + q * a.p; q = x; regularize(); return *this; }
     constexpr fraction& operator-= (fraction a) noexcept { ll x = q * a.q; p = p * a.q - q * a.p; q = x; regularize(); return *this; }
-    constexpr fraction operator+ (fraction b) { auto x = *this; return x += b; }
-    constexpr fraction operator- (fraction b) { auto x = *this; return x -= b; }
-    constexpr fraction operator* (fraction b) { auto x = *this; return x *= b; }
-    constexpr fraction operator/ (fraction b) { auto x = *this; return x /= b; }
+    constexpr fraction operator+ (fraction b) const noexcept { auto x = *this; return x += b; }
+    constexpr fraction operator- (fraction b) const noexcept { auto x = *this; return x -= b; }
+    constexpr fraction operator* (fraction b) const noexcept { auto x = *this; return x *= b; }
+    constexpr fraction operator/ (fraction b) const noexcept { auto x = *this; return x /= b; }
     constexpr fraction& operator*= (ll a) noexcept { return *this *= fraction(a); }
     constexpr fraction& operator/= (ll a) noexcept { return *this /= fraction(a); }
     constexpr fraction& operator+= (ll a) noexcept { return *this += fraction(a); }
     constexpr fraction& operator-= (ll a) noexcept { return *this -= fraction(a); }
-    constexpr fraction operator* (ll a) noexcept { auto x = *this; return x *= fraction(a); }
-    constexpr fraction operator/ (ll a) noexcept { auto x = *this; return x /= fraction(a); }
-    constexpr fraction operator+ (ll a) noexcept { auto x = *this; return x += fraction(a); }
-    constexpr fraction operator- (ll a) noexcept { auto x = *this; return x -= fraction(a); }
+    constexpr fraction operator* (ll a) const noexcept { auto x = *this; return x *= fraction(a); }
+    constexpr fraction operator/ (ll a) const noexcept { auto x = *this; return x /= fraction(a); }
+    constexpr fraction operator+ (ll a) const noexcept { auto x = *this; return x += fraction(a); }
+    constexpr fraction operator- (ll a) const noexcept { auto x = *this; return x -= fraction(a); }
     constexpr fraction operator- () const noexcept { return fraction(-p, q); }
     constexpr bool operator< (const fraction &a) const noexcept { if (!q && !a.q) return p < a.p; else return p * a.q < a.p * q; }
+    constexpr bool operator> (const fraction &a) const noexcept { return a < *this; }
     constexpr bool operator<= (const fraction &a) const noexcept { if (!q && !a.q) return p <= a.p; else return p * a.q <= a.p * q; }
+    constexpr bool operator>= (const fraction &a) const noexcept { return a <= *this; }
+    constexpr bool operator== (const fraction &a) const noexcept { return a <= *this && *this <= a; }
 };
 constexpr fraction operator"" _f(unsigned long long _x) noexcept { return fraction(_x); }
 ostream& operator<< (ostream& ost, const fraction a) { return ost << a.p << "/" << a.q; }

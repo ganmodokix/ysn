@@ -90,7 +90,12 @@ def resolve(*dependencies: List[str]):
             dependency_graph.add_edge(src, dst)
 
     # Topological Sort
-    topology = nx.topological_sort(dependency_graph)
+    def regularize_key(name):
+        if "/base_template/575.cpp" in name:
+            return "\uffff" * 256
+        else:
+            return name
+    topology = nx.lexicographical_topological_sort(dependency_graph, key=regularize_key)
     topology = list(topology)[::-1]
     return topology, dependency_graph
 
