@@ -1,4 +1,4 @@
-// #REQ: base_template modint_petit.cpp garner.cpp conv/butterfly.cpp
+// #REQ: base_template modint_petit.cpp garner.cpp conv/butterfly.cpp number/ceillog2.cpp
 // 精度に寄りけりだがconv1回で済むFFTの方がいい場合もあることに留意
 // Cooley-Tukey型 高速フーリエ変換 O(NlogN)
 template <ll pdiv = 998244353, ll prim = 3, typename T>
@@ -18,7 +18,7 @@ T intt(T&& a) {
 template <ll pdiv, ll prim, typename T, typename U>
 vector<ll> convolve_p(T&& x, U&& y) {
     size_t t = x.size() + y.size() - 1;
-    size_t h = 1; while (h < t) h <<= 1;
+    size_t h = 1LL << ceillog2(t);
     auto a = forward<T>(x); a.resize(h, 0);
     auto b = forward<U>(y); b.resize(h, 0);
     a = butterfly<pdiv, prim>(move(a));

@@ -1,4 +1,4 @@
-// #REQ: base_template modint_petit
+// #REQ: base_template modint_petit number/ceillog2
 // 2段ずつのバタフライ演算
 // 参考実装: ACL https://github.com/atcoder/ac-library/blob/master/atcoder/convolution.hpp
 
@@ -56,7 +56,7 @@ vector<ll> butterfly(vector<ll>&& a_) {
     vector<ll> a = move(a_);
     
     ll n = a.size();
-    ll h = 0; while ((1LL << h) < n) ++h;
+    ll h = ceillog2(n);
 
     static auto prep = butterfly_proprocess<pdiv, prim>::singleton();
 
@@ -126,7 +126,7 @@ vector<ll> butterfly_inv(vector<ll>&& a_) {
     vector<ll> a = move(a_);
     
     ll n = a.size();
-    ll h = 0; while ((1LL << h) < n) ++h;
+    ll h = ceillog2(n);
 
     static const auto prep = butterfly_proprocess<pdiv, prim>::singleton();
 
