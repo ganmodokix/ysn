@@ -14,7 +14,7 @@ struct butterfly_proprocess {
     array<ll, max(0LL, rank2 - 2)> rate3;
     array<ll, max(0LL, rank2 - 2)> irate3;
 
-    butterfly_proprocess() {
+    constexpr butterfly_proprocess() noexcept {
         root[rank2] = modpow(prim, (pdiv - 1) >> rank2, pdiv);
         iroot[rank2] = modinv(root[rank2], pdiv);
         DSRNG(i, rank2 - 1, 0) {
@@ -41,7 +41,7 @@ struct butterfly_proprocess {
         }
     }
 
-    static butterfly_proprocess<pdiv, prim>& singleton() {
+    static butterfly_proprocess<pdiv, prim>& singleton() noexcept {
         static butterfly_proprocess<pdiv, prim> prep;
         return prep;
     }
@@ -55,23 +55,23 @@ vector<ll> butterfly(vector<ll>&& a_) {
 
     vector<ll> a = move(a_);
     
-    ll n = a.size();
-    ll h = ceillog2(n);
+    const ll n = a.size();
+    const ll h = ceillog2(n);
 
-    static auto prep = butterfly_proprocess<pdiv, prim>::singleton();
+    static const auto& prep = butterfly_proprocess<pdiv, prim>::singleton();
 
     // 飛ばし飛ばしのバタフライ演算で定数倍を改善
     for (ll len = 0; len < h; ) {
+        ll rot = 1;
         if (len + 1 == h) {
-            ll p = 1LL << (h - len - 1);
-            ll rot = 1;
+            const ll p = 1LL << (h - len - 1);
             REP(s, 1 << len) {
-                ll offset = s << (h - len);
+                const ll offset = s << (h - len);
                 REP(i, p) {
                     auto &al = a[i + offset];
                     auto &ar = a[i + offset + p];
-                    ll l = al;
-                    ll r = ar * rot % pdiv;
+                    const ll l = al;
+                    const ll r = ar * rot % pdiv;
                     al = l + r; if (al >= pdiv) al -= pdiv;
                     ar = l + pdiv - r; if (ar >= pdiv) ar -= pdiv;
                 }
@@ -82,21 +82,21 @@ vector<ll> butterfly(vector<ll>&& a_) {
             len++;
         } else {
             // 4-base
-            ll p = 1 << (h - len - 2);
-            ll rot = 1, imag = prep.root[2];
+            const ll p = 1 << (h - len - 2);
+            const ll imag = prep.root[2];
             REP(s, 1 << len) {
-                ll rot2 = rot * rot % pdiv;
-                ll rot3 = rot2 * rot % pdiv;
-                ll offset = s << (h - len);
+                const ll rot2 = rot * rot % pdiv;
+                const ll rot3 = rot2 * rot % pdiv;
+                const ll offset = s << (h - len);
                 REP(i, p) {
-                    ull pdiv2 = (ull)pdiv * (ull)pdiv;
-                    ull a0 = a[i + offset        ];
-                    ull a1 = a[i + offset + p    ] * rot;
-                    ull a2 = a[i + offset + p * 2] * rot2;
-                    ull a3 = a[i + offset + p * 3] * rot3;
-                    ull a1na3 = (a1 + pdiv2 - a3) % pdiv;
-                    ull a1na3imag = a1na3 * (ull)imag % pdiv;
-                    ull na2 = pdiv2 - a2;
+                    const ull pdiv2 = (ull)pdiv * (ull)pdiv;
+                    const ull a0 = a[i + offset        ];
+                    const ull a1 = a[i + offset + p    ] * rot;
+                    const ull a2 = a[i + offset + p * 2] * rot2;
+                    const ull a3 = a[i + offset + p * 3] * rot3;
+                    const ull a1na3 = (a1 + pdiv2 - a3) % pdiv;
+                    const ull a1na3imag = a1na3 * (ull)imag % pdiv;
+                    const ull na2 = pdiv2 - a2;
                     (a[i + offset        ] = a0 + a2 + a1 + a3) %= pdiv;
                     (a[i + offset + p    ] = a0 + a2 + (pdiv2 * 2 - (a1 + a3))) %= pdiv;
                     (a[i + offset + p * 2] = a0 + na2 + a1na3imag) %= pdiv;
@@ -125,23 +125,23 @@ vector<ll> butterfly_inv(vector<ll>&& a_) {
 
     vector<ll> a = move(a_);
     
-    ll n = a.size();
-    ll h = ceillog2(n);
+    const ll n = a.size();
+    const ll h = ceillog2(n);
 
-    static const auto prep = butterfly_proprocess<pdiv, prim>::singleton();
+    static const auto& prep = butterfly_proprocess<pdiv, prim>::singleton();
 
     // 飛ばし飛ばしのバタフライ演算で定数倍を改善
     for (ll len = h; len; ) {
+        const ll p = 1 << (h - len);
+        ll irot = 1;
         if (len == 1) {
-            ll p = 1 << (h - len);
-            ll irot = 1;
             REP(s, 1 << (len - 1)) {
-                ll offset = s << (h - len + 1);
+                const ll offset = s << (h - len + 1);
                 REP(i, p) {
                     auto &al = a[i + offset];
                     auto &ar = a[i + offset + p];
-                    ll l = al;
-                    ll r = ar;
+                    const ll l = al;
+                    const ll r = ar;
                     al = l + r; if (al >= pdiv) al -= pdiv;
                     ar = l + pdiv - r; if (ar >= pdiv) ar -= pdiv;
                     (ar *= irot) %= pdiv;
@@ -153,18 +153,17 @@ vector<ll> butterfly_inv(vector<ll>&& a_) {
             len--;
         } else {
             // 4-base
-            ll p = 1 << (h - len);
-            ll irot = 1, iimag = prep.iroot[2];
+            const ll iimag = prep.iroot[2];
             REP(s, 1 << (len - 2)) {
-                ll irot2 = irot * irot % pdiv;
-                ll irot3 = irot2 * irot % pdiv;
-                ll offset = s << (h - len + 2);
+                const ll irot2 = irot * irot % pdiv;
+                const ll irot3 = irot2 * irot % pdiv;
+                const ll offset = s << (h - len + 2);
                 REP(i, p) {
-                    ull a0 = a[i + offset        ];
-                    ull a1 = a[i + offset + p    ];
-                    ull a2 = a[i + offset + p * 2];
-                    ull a3 = a[i + offset + p * 3];
-                    ull a2na3iimag = (a2 + pdiv - a3) * iimag % pdiv;
+                    const ull a0 = a[i + offset        ];
+                    const ull a1 = a[i + offset + p    ];
+                    const ull a2 = a[i + offset + p * 2];
+                    const ull a3 = a[i + offset + p * 3];
+                    const ull a2na3iimag = (a2 + pdiv - a3) * iimag % pdiv;
                     (a[i + offset        ] = a0 + a1 + a2 + a3) %= pdiv;
                     (a[i + offset + p    ] = (a0 + (pdiv - a1) + a2na3iimag) * irot) %= pdiv;
                     (a[i + offset + p * 2] = (a0 + a1 + (pdiv - a2) + (pdiv - a3)) * irot2) %= pdiv;
@@ -178,8 +177,8 @@ vector<ll> butterfly_inv(vector<ll>&& a_) {
         }
     }
 
-    ll iz = modinv(1 << h, pdiv);
-    for (auto &x : a) (x *= iz) %= pdiv;
+    const ll iz = modinv(1 << h, pdiv);
+    for (auto&& x : a) (x *= iz) %= pdiv;
 
     return a;
 }
