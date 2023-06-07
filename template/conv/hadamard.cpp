@@ -11,10 +11,11 @@ vector<T> fht(vector<T> a, const bool inv = false) {
             const auto v = a[j + i];
             a[j  ] = u + v;
             a[j + i] = u - v;
-            if (inv) {
-                a[j] /= 2;
-                a[j + i] /= 2;
-            }
+        }
+    }
+    if (inv) {
+        for (auto&& x : a) {
+            x /= n;
         }
     }
     return a;
