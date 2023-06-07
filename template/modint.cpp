@@ -31,6 +31,8 @@ struct moduloint {
     template <typename T> constexpr moduloint operator* (T a) const noexcept { return moduloint(*this) *= a; }
     template <typename T> constexpr moduloint operator/ (T a) const noexcept { return moduloint(*this) /= a; }
     constexpr moduloint operator- () const noexcept { return moduloint(pdiv - x); }
+    friend constexpr bool operator==(const moduloint& x, const moduloint& y) { return regularize(x) == regularize(y); }
+    friend constexpr bool operator!=(const moduloint& x, const moduloint& y) { return !(x == y); }
     static auto modulo() { return pdiv; }
 };
 template <long long pdiv>
