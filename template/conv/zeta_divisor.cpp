@@ -52,17 +52,17 @@ vector<T> fdzt(const vector<T> &a, const bool inv = false, const bool subset = f
     return fdzt(vector<T>(a), inv, subset);
 }
 // GCD/LCM畳み込み (x*y)[d] = Σ_{gcd/lcm(i,j)=d} x[i]*y[j], 但しgcd(x,0)==lcm(0,x)==x
-template <typename T>
-vector<T> convolve_zeta(const vector<T> &x, const vector<T> &y, const bool subset) {
+template <typename T, typename U>
+vector<T> convolve_zeta(T&& x, U&& y, const bool subset) {
     size_t n = max(x.size(), y.size());
-    auto xc = x; xc.resize(n, 0);
-    auto yc = y; yc.resize(n, 0);
-    auto X = fdzt(xc, false, subset);
-    auto Y = fdzt(yc, false, subset);
+    auto xc = forward<T>(x); xc.resize(n, 0);
+    auto yc = forward<U>(y); yc.resize(n, 0);
+    auto X = fdzt(move(xc), false, subset);
+    auto Y = fdzt(move(yc), false, subset);
     for (size_t i = n; i--;) {
         X[i] *= Y[i];
     }
-    return fdzt(X, true, subset);
+    return fdzt(move(X), true, subset);
 }
 template <typename T> vector<T> convolve_gcd(const vector<T> &x, const vector<T> &y) { return convolve_zeta(x, y, false); }
 template <typename T> vector<T> convolve_lcm(const vector<T> &x, const vector<T> &y) { return convolve_zeta(x, y, true ); }
