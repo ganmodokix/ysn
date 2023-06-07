@@ -65,10 +65,10 @@ vector<T> convolve_zeta(T&& x, U&& y, const bool subset) {
     return fdzt(move(X), true, subset);
 }
 template <typename T, typename U>
-vector<T> convolve_gcd(T&& x, U&& y) {
+auto convolve_gcd(T&& x, U&& y) {
     return convolve_zeta(forward<T>(x), forward<U>(y), false);
 }
 template <typename T, typename U>
-vector<T> convolve_lcm(T&& x, U&& y) {
+auto convolve_lcm(T&& x, U&& y) {
     return convolve_zeta(forward<T>(x), forward<U>(y), true);
 }
