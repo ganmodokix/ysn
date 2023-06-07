@@ -53,7 +53,7 @@ vector<T> fdzt(const vector<T> &a, const bool inv = false, const bool subset = f
 }
 // GCD/LCM畳み込み (x*y)[d] = Σ_{gcd/lcm(i,j)=d} x[i]*y[j], 但しgcd(x,0)==lcm(0,x)==x
 template <typename T, typename U>
-vector<T> convolve_zeta(T&& x, U&& y, const bool subset) {
+auto convolve_zeta(T&& x, U&& y, const bool subset) {
     size_t n = max(x.size(), y.size());
     auto xc = forward<T>(x); xc.resize(n, 0);
     auto yc = forward<U>(y); yc.resize(n, 0);
