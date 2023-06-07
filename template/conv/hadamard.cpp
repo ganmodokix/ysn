@@ -20,3 +20,13 @@ vector<T> fht(vector<T> a, const bool inv = false) {
     }
     return a;
 }
+template <typename T, typename U>
+auto convolve_xor(T&& x, U&& y) {
+    assert(x.size() == y.size());
+    auto a = fht(forward<T>(x));
+    const auto b = fht(forward<U>(y));
+    for (auto i = size_t{0}; i < a.size(); ++i) {
+        a[i] *= b[i];
+    }
+    return fht(move(a), true);
+}
