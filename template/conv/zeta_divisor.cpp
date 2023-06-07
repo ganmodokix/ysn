@@ -49,7 +49,7 @@ vector<T> fdzt(vector<T>&& a_, const bool inv = false, const bool subset = false
 }
 template<typename T>
 vector<T> fdzt(const vector<T> &a, const bool inv = false, const bool subset = false) {
-    return fdzt(move(vector<T>(a)), inv, subset);
+    return fdzt(vector<T>(a), inv, subset);
 }
 // GCD/LCM畳み込み (x*y)[d] = Σ_{gcd/lcm(i,j)=d} x[i]*y[j], 但しgcd(x,0)==lcm(0,x)==x
 template <typename T>
