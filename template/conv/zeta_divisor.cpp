@@ -3,7 +3,8 @@
 // fzt(x)[s] == Σ_{s|t/t|s} x[t] (ただし∀i,0|iとする)
 // inv: これをtrueにするとメビウス, subset: これをtrueにするとt|s
 template<typename T>
-void fdzt_inplace(vector<T> &a, const bool inv = false, const bool subset = false) {
+vector<T> fdzt(vector<T>&& a_, const bool inv = false, const bool subset = false) {
+    auto a = vector<T>(move(a_));
     const size_t n = a.size();
     vector<uint_fast8_t> sieve(n, true);
     if (inv) {
@@ -44,25 +45,30 @@ void fdzt_inplace(vector<T> &a, const bool inv = false, const bool subset = fals
             a[i] += a[0];
         }
     }
+    return a;
 }
 template<typename T>
 vector<T> fdzt(const vector<T> &a, const bool inv = false, const bool subset = false) {
-    vector<T> x = a;
-    fdzt_inplace(x, inv, subset);
-    return x;
+    return fdzt(vector<T>(a), inv, subset);
 }
 // GCD/LCM畳み込み (x*y)[d] = Σ_{gcd/lcm(i,j)=d} x[i]*y[j], 但しgcd(x,0)==lcm(0,x)==x
-template <typename T>
-vector<T> convolve_zeta(const vector<T> &x, const vector<T> &y, const bool subset) {
+template <typename T, typename U>
+auto convolve_zeta(T&& x, U&& y, const bool subset) {
     size_t n = max(x.size(), y.size());
-    auto xc = x; xc.resize(n, 0);
-    auto yc = y; yc.resize(n, 0);
-    auto X = fdzt(xc, false, subset);
-    auto Y = fdzt(yc, false, subset);
+    auto xc = forward<T>(x); xc.resize(n, 0);
+    auto yc = forward<U>(y); yc.resize(n, 0);
+    auto X = fdzt(move(xc), false, subset);
+    auto Y = fdzt(move(yc), false, subset);
     for (size_t i = n; i--;) {
         X[i] *= Y[i];
     }
-    return fdzt(X, true, subset);
+    return fdzt(move(X), true, subset);
 }
-template <typename T> vector<T> convolve_gcd(const vector<T> &x, const vector<T> &y) { return convolve_zeta(x, y, false); }
-template <typename T> vector<T> convolve_lcm(const vector<T> &x, const vector<T> &y) { return convolve_zeta(x, y, true ); }
+template <typename T, typename U>
+auto convolve_gcd(T&& x, U&& y) {
+    return convolve_zeta(forward<T>(x), forward<U>(y), false);
+}
+template <typename T, typename U>
+auto convolve_lcm(T&& x, U&& y) {
+    return convolve_zeta(forward<T>(x), forward<U>(y), true);
+}
