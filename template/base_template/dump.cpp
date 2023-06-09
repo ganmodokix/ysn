@@ -20,7 +20,7 @@ namespace ganmodokix {
     }
     template <typename T, template <typename> typename Container>
     ostream& __dump_single(const Container<T>& value) {
-        cerr << "{";
+        cerr << "c{";
         auto first = true;
         for (const auto& x : value) {
             cerr << ", " + first * 2;
@@ -39,6 +39,25 @@ namespace ganmodokix {
     ostream& __dump_single(basic_string_view<T> value) {
         cerr << "\e[32m\"" << value << "\"sv\e[m";
         return cerr;
+    }
+    template <typename T, typename U>
+    ostream& __dump_single(const pair<T, U>& value) {
+        cerr << "pair{";
+        __dump_single(value.first) << ", ";
+        __dump_single(value.second);
+        return cerr << "}";
+    }
+    template <typename Tuple, typename T, size_t... Seq>
+    void __dump_tuple(const Tuple& t, integer_sequence<T, Seq...>)
+    {
+        auto first = true;
+        ((cerr << ", " + first * 2, __dump_single(get<Seq>(t)), first = false), ...);
+    }
+    template <typename... Args>
+    ostream& __dump_single(const tuple<Args...>& value) {
+        cerr << "tuple{";
+        __dump_tuple(value, index_sequence_for<Args...>{});
+        return cerr << "}";
     }
     template <typename... Args>
     void __dump(const char* const file, int line, const char* const title, const Args&... args) {
