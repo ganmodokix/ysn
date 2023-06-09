@@ -12,7 +12,7 @@ namespace ganmodokix {
             cerr << boolalpha << value;
             if constexpr (is_same_v<remove_cv_t<remove_reference_t<T>>, char>) { cerr << "\'"; }
             if constexpr (is_floating_point_v<T>) { cerr << "f"; }
-            if constexpr (is_unsigned_v<T> && !is_convertible_v<T, bool>) { cerr << "U"; }
+            if constexpr (is_unsigned_v<T> && !is_same_v<remove_cv_t<remove_reference_t<T>>, bool>) { cerr << "U"; }
         } else {
             cerr << value;
         }
