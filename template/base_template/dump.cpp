@@ -1,11 +1,58 @@
 // #REQ: base_template/575 base_template/debug_mode
-#define DUMP(q) DUMP_FUNC(q, #q, __FILE__, __LINE__)
-template <typename T> void DUMP_PROC(T x) { if (is_integral<T>() || is_floating_point<T>()) cerr << "\e[32m" << x << "\e[m"; else cerr << x; }
-template<> void DUMP_PROC<char>(char x) { cerr << "\e[36m\'" << x << "\'\e[m"; }
-template<> void DUMP_PROC<string>(string x) { cerr << "\e[33m\"" << x << "\"\e[m"; }
-template <typename T, typename U> void DUMP_PROC(pair<T, U> x) { cerr << "{"; DUMP_PROC(x.first); cerr << ", "; DUMP_PROC(x.second); cerr << "}"; }
-template <typename ...T, typename U, U... Seq> void DUMP_PROC(tuple<T...> &x, integer_sequence<U, Seq...>) { (void)(int[]){(cerr << ((const char*[]){"", ", "})[!!Seq] << (DUMP_PROC(get<Seq>(x)), ""), 0)...}; }
-template <typename ...T> void DUMP_PROC(tuple<T...> x) {cerr << "{"; DUMP_PROC(x, index_sequence_for<T...>()); cerr << "}";}
-template <typename T> void DUMP_PROC(vector<T> x) { cerr << "["; for (auto &xi : x) { DUMP_PROC(xi); cerr << (&xi != &*x.rbegin()?", ":""); } cerr << "]"; }
-template <typename T> void DUMP_FUNC(T x, const char* name, const char* fn, int ln) { if (!DEBUG_MODE) return; cerr << "\e[32m[DEBUG]\e[m " << name << ": "; DUMP_PROC(x); cerr << " @ " << fn << "(" << ln << ")" << endl; }
-#define DUMPT(...) DUMP(tuple(__VA_ARGS__))
+#define DUMP(...) ::ganmodokix::__dump(__FILE__, __LINE__, #__VA_ARGS__, __VA_ARGS__)
+namespace ganmodokix {
+    template <typename T>
+    ostream& __dump_single(const T& value) {
+        if constexpr (is_convertible_v<T, string_view>) {
+            cerr << "\e[32m\"" << value << "\"\e[m";
+        } else if constexpr (is_arithmetic_v<T>) {
+            if constexpr (is_integral_v<T>) { cerr << "\e[33m"; }
+            if constexpr (is_floating_point_v<T>) { cerr << "\e[35m"; }
+            if constexpr (is_same_v<remove_cv_t<remove_reference_t<T>>, char>) { cerr << "\e[31m\'"; }
+            cerr << boolalpha << value;
+            if constexpr (is_same_v<remove_cv_t<remove_reference_t<T>>, char>) { cerr << "\'"; }
+            if constexpr (is_floating_point_v<T>) { cerr << "f"; }
+            if constexpr (is_unsigned_v<T> && !is_convertible_v<T, bool>) { cerr << "U"; }
+        } else {
+            cerr << value;
+        }
+        return cerr << "\e[m";
+    }
+    template <typename T, template <typename> typename Container>
+    ostream& __dump_single(const Container<T>& value) {
+        cerr << "{";
+        auto first = true;
+        for (const auto& x : value) {
+            cerr << ", " + first * 2;
+            __dump_single<T>(x);
+            first = false;
+        }
+        cerr << "}";
+        return cerr;
+    }
+    template <typename T>
+    ostream& __dump_single(basic_string<T> value) {
+        cerr << "\e[32m\"" << value << "\"\e[m";
+        return cerr;
+    }
+    template <typename T>
+    ostream& __dump_single(basic_string_view<T> value) {
+        cerr << "\e[32m\"" << value << "\"\e[m";
+        return cerr;
+    }
+    template <typename... Args>
+    void __dump(const char* const file, int line, const char* const title, const Args&... args) {
+        if (!DEBUG_MODE) return;
+        constexpr auto is_multiple = sizeof...(Args) > 1;
+        const auto kakko_first = "{" + !is_multiple;
+        const auto kakko_last = "}" + !is_multiple;
+        auto first = true;
+        cerr << "\e[33m\e[2m[" << file << "]\e[m ";
+        cerr << "\e[36m" << kakko_first << title << kakko_last << "\e[m: ";
+        cerr << kakko_first;
+        (((cerr << ", " + first * 2, __dump_single(args)), first = false), ...);
+        cerr << kakko_last;
+        cerr << " \e[37m(L" << line << ")\e[m";
+        cerr << endl;
+    }
+}
