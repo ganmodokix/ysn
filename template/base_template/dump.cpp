@@ -32,12 +32,12 @@ namespace ganmodokix {
     }
     template <typename T>
     ostream& __dump_single(basic_string<T> value) {
-        cerr << "\e[32m\"" << value << "\"\e[m";
+        cerr << "\e[32m\"" << value << "\"s\e[m";
         return cerr;
     }
     template <typename T>
     ostream& __dump_single(basic_string_view<T> value) {
-        cerr << "\e[32m\"" << value << "\"\e[m";
+        cerr << "\e[32m\"" << value << "\"sv\e[m";
         return cerr;
     }
     template <typename... Args>
