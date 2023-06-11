@@ -103,7 +103,6 @@ def resolve(*dependencies: List[str]):
     def regularize_key(name):
         priority = get_priority(name)
         priority_suffix = "\uffff" * (256 * priority)
-        print(name, priority)
         return priority_suffix + name
     topology = nx.lexicographical_topological_sort(dependency_graph, key=regularize_key)
     topology = list(topology)[::-1]
