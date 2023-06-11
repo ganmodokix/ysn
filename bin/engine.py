@@ -12,6 +12,7 @@ from path import TEMPLATE_PATH
 
 HEADER_TOKEN = "// #REQ:"
 FOOTER_TOKEN = "// #END"
+PRIORITY_TOKEN = "// #PRIORITY"
 
 def normalize(template_id: str, abs=False):
     """
@@ -74,6 +75,15 @@ def reachable_nodes_from(*dependencies: List[str]):
 
     return list(nodes)
 
+def get_priority(name) -> int:
+    with open(normalize(name, abs=True), "r") as fp:
+        for line in fp.readlines():
+            stripped_line = line.strip()
+            if stripped_line.startswith(PRIORITY_TOKEN):
+                command = stripped_line[len(PRIORITY_TOKEN):].strip()
+                return int(command)
+    return 0
+
 def resolve(*dependencies: List[str]):
     """
     Resolves the dependencies
@@ -91,10 +101,10 @@ def resolve(*dependencies: List[str]):
 
     # Topological Sort
     def regularize_key(name):
-        if "/base_template/575.cpp" in name:
-            return "\uffff" * 256
-        else:
-            return name
+        priority = get_priority(name)
+        priority_suffix = "\uffff" * (256 * priority)
+        print(name, priority)
+        return priority_suffix + name
     topology = nx.lexicographical_topological_sort(dependency_graph, key=regularize_key)
     topology = list(topology)[::-1]
     return topology, dependency_graph
