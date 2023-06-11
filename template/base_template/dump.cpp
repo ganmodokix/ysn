@@ -25,10 +25,7 @@ namespace ganmodokix {
     }
     template <typename T, typename U>
     ostream& __dump_single(const pair<T, U>& value) {
-        cerr << "pair{";
-        __dump_single(value.first) << ", ";
-        __dump_single(value.second);
-        return cerr << "}";
+        cerr << "pair{"; __dump_single(value.first) << ", "; __dump_single(value.second); return cerr << "}";
     }
     template <typename Tuple, typename T, size_t... Seq>
     void __dump_tuple(const Tuple& t, integer_sequence<T, Seq...>)
@@ -38,47 +35,28 @@ namespace ganmodokix {
     }
     template <typename... Args>
     ostream& __dump_single(const tuple<Args...>& value) {
-        cerr << "tuple{";
-        __dump_tuple(value, index_sequence_for<Args...>{});
-        return cerr << "}";
+        cerr << "tuple{"; __dump_tuple(value, index_sequence_for<Args...>{}); return cerr << "}";
     }
-    ostream& __dump_single(const char* const value) {
-        cerr << "\e[32m\"" << value << "\"\e[m";
-        return cerr;
-    }
-    ostream& __dump_single(const string& value) {
-        cerr << "\e[32m\"" << value << "\"s\e[m";
-        return cerr;
-    }
-    ostream& __dump_single(string_view value) {
-        cerr << "\e[32m\"" << value << "\"sv\e[m";
-        return cerr;
-    }
+    ostream& __dump_single(const char* const value) { cerr << "\e[32m\"" << value << "\"\e[m"; return cerr; }
+    ostream& __dump_single(const string& value) { cerr << "\e[32m\"" << value << "\"s\e[m"; return cerr; }
+    ostream& __dump_single(string_view value) { cerr << "\e[32m\"" << value << "\"sv\e[m"; return cerr; }
     template <typename Container>
     auto __dump_single(const Container& value) -> decltype(begin(value), end(value), (cerr)) {
         cerr << "c{";
         auto first = true;
-        for (const auto& x : value) {
-            cerr << ", " + first * 2;
-            __dump_single(x);
-            first = false;
-        }
-        cerr << "}";
-        return cerr;
+        for (const auto& x : value) { cerr << ", " + first * 2; __dump_single(x); first = false; }
+        return cerr << "}";
     }
     template <typename... Args>
     void __dump(const char* const file, int line, const char* const title, const Args&... args) {
         if (!DEBUG_MODE) return;
         constexpr auto is_multiple = sizeof...(Args) > 1;
-        const auto kakko_first = "{" + !is_multiple;
-        const auto kakko_last = "}" + !is_multiple;
+        const auto par_first = "{" + !is_multiple;
+        const auto par_last = "}" + !is_multiple;
         auto first = true;
         cerr << "\e[33m\e[2m[" << file << "]\e[m ";
-        cerr << "\e[36m" << kakko_first << title << kakko_last << "\e[m: ";
-        cerr << kakko_first;
-        (((cerr << ", " + first * 2, __dump_single(args)), first = false), ...);
-        cerr << kakko_last;
-        cerr << " \e[37m(L" << line << ")\e[m";
-        cerr << endl;
+        cerr << "\e[36m" << par_first << title << par_last << "\e[m: ";
+        cerr << par_first; (((cerr << ", " + first * 2, __dump_single(args)), first = false), ...); cerr << par_last;
+        cerr << " \e[37m(L" << line << ")\e[m" << endl;
     }
 }
