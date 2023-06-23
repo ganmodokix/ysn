@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp graph.cpp graph/01bfs.cpp array/argsort.cpp
+// #REQ: base_template.cpp graph.cpp
 
 // ラベル付き（頂点を区別する）木からPrüferコードへの変換
 std::vector<ll> tree_to_pruefer(const graph &tree) {
