@@ -25,7 +25,7 @@ struct matrix {
     // 用途に合わせて書き換える箇所 おわり
     matrix<T> operator+ (const matrix<T> &t) const { assert(size() == t.size()); matrix<T> r = *this; REP(i, rows) REP(j, cols) r.at(i, j) = add(r.at(i, j), t.at(i, j)); return r; }
     matrix<T> operator- (const matrix<T> &t) const { assert(size() == t.size()); matrix<T> r = *this; REP(i, rows) REP(j, cols) r.at(i, j) = sub(r.at(i, j), t.at(i, j)); return r; }
-    matrix<T> operator* (const matrix<T> &t) const { assert(cols == t.rows); matrix<T> r(rows, t.cols, (T)T_ADD_IDENTITY); REP(k, cols) REP(i, rows) REP(j, t.cols) r.at(i, j) = add(r.at(i, j), mul(at(i, k), t.at(k, j))); return r; }
+    matrix<T> operator* (const matrix<T> &t) const { assert(cols == t.rows); matrix<T> r(rows, t.cols, (T)T_ADD_IDENTITY); REP(i, rows) REP(k, cols) REP(j, t.cols) r.at(i, j) = add(r.at(i, j), mul(at(i, k), t.at(k, j))); return r; }
     template <typename S>
     matrix<T> operator* (const S &t) const { matrix<T> r = *this; REP(i, rows) REP(j, cols) at(i, j) = mul(at(i, j), t); return r; }
     template <typename S>
