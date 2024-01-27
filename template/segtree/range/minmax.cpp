@@ -1,3 +1,5 @@
+// #REQ: base_template opf segtree/range/monoid
+
 // range min, range update
 template <typename T>
 auto segtree_min_update(const vector<T> &v) {

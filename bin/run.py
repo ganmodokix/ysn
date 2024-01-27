@@ -40,10 +40,16 @@ def compile(source_path):
     debug_print(f"Compiling {source_path} ...")
     start_time = time.time()
     compilation = subprocess.run([
-        "g++",
-        "-std=gnu++17",
-        "-Wall", "-Wextra",
+        "g++-12",
+        "-std=gnu++2b",
         "-O2",
+        "-Wall",
+        "-Wextra",
+        "-mtune=native",
+        "-march=native",
+        "-fconstexpr-depth=2147483647",
+        "-fconstexpr-loop-limit=2147483647",
+        "-fconstexpr-ops-limit=2147483647",
         "-DYSN_DEBUG",
         source_path,
         "-o", exec_path

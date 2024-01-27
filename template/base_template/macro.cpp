@@ -1,9 +1,9 @@
 // #REQ: base_template/575 base_template/ll
 // 汎用マクロ
-#define ALL(x) (begin(x)), (end(x))
-#define ALLOF(x) (begin(x)), (end(x))
-#define RALL(x) (rbegin(x)), (rend(x))
-#define RALLOF(x) (rbegin(x)), (rend(x))
+#define ALL(x) (::std::ranges::begin(x)), (::std::ranges::end(x))
+#define ALLOF(x) (::std::ranges::begin(x)), (::std::ranges::end(x))
+#define RALL(x) (::std::ranges::rbegin(x)), (::std::ranges::rend(x))
+#define RALLOF(x) (::std::ranges::rbegin(x)), (::std::ranges::rend(x))
 #define RPE REP
 #define ERP REP
 #define EPR REP
