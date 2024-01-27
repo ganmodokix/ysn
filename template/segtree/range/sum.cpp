@@ -1,3 +1,4 @@
+// #REQ: base_template segtree/range/affine
 
 template<typename T>
 struct segtree_sum_add {
