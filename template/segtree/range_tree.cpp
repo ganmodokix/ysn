@@ -26,9 +26,7 @@ struct range_tree {
     bool compiled = false;
 
     map<index_type, index_type> sahz_i = {};
-    map<index_type, index_type> sahz_j = {};
     vector<index_type> inv_sahz_i = {};
-    vector<index_type> inv_sahz_j = {};
     
     range_tree(Join join_ = {}, Inv inv_ = {}, value_type id_ = {}):
         join(join_), inv(inv_), id(id_)
@@ -48,25 +46,18 @@ struct range_tree {
         // index compression
         for (const auto& [i, j, x] : items) {
             inv_sahz_i.push_back(i);
-            inv_sahz_j.push_back(j);
         }
         UNIQUE(inv_sahz_i);
-        UNIQUE(inv_sahz_j);
         for (const auto idx : views::iota(index_type{0}, static_cast<index_type>(inv_sahz_i.size()))) {
             sahz_i[inv_sahz_i[idx]] = idx;
         }
-        for (const auto idx : views::iota(index_type{0}, static_cast<index_type>(inv_sahz_j.size()))) {
-            sahz_j[inv_sahz_j[idx]] = idx;
-        }
         inv_sahz_i.push_back(numeric_limits<index_type>::max());
-        inv_sahz_j.push_back(numeric_limits<index_type>::max());
 
         // building binary tree
         binary_size = 1LL << ceillog2(ranges::size(inv_sahz_i) - 1);
         node = vector(binary_size * 2 - 1, vector<pair<index_type, value_type>>{});
-        for (auto&& [i_, j_, x] : items) {
+        for (auto&& [i_, j, x] : items) {
             const auto i = sahz_i[i_];
-            const auto j = sahz_j[j_];
             node[binary_size - 1 + i].emplace_back(j, forward<decltype(x)>(x));
         }
         for (auto idx = binary_size - 1; idx--; ) {
@@ -112,8 +103,7 @@ struct range_tree {
         return fetch_compressed(
             ranges::lower_bound(inv_sahz_i, ib) - ranges::begin(inv_sahz_i),
             ranges::lower_bound(inv_sahz_i, ie) - ranges::begin(inv_sahz_i),
-            ranges::lower_bound(inv_sahz_j, jb) - ranges::begin(inv_sahz_j),
-            ranges::lower_bound(inv_sahz_j, je) - ranges::begin(inv_sahz_j)
+            jb, je
         );
     }
 
