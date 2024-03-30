@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "defines": [],
+            "compilerPath": "/usr/bin/g++-12",
+            "cStandard": "c17",
+            "compilerArgs": [
+                "-std=gnu++20",
+                "-DYSN_DEBUG"
+            ],
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+        }
+    ],
+    "version": 4
+}
