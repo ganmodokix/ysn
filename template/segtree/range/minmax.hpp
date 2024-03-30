@@ -1,4 +1,4 @@
-// #REQ: base_template opf segtree/range/monoid
+// #REQ: base_template.hpp opf.hpp segtree/range/monoid.hpp
 
 // range min, range update
 template <typename T>

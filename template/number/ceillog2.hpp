@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp
+// #REQ: base_template.hpp
 
 // ceil(log_2(n)) を求める。n以上の2冪を求めるのに使う
 template <typename T, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>

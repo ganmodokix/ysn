@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp
+// #REQ: base_template.hpp
 template <typename T>
 struct matrix {
     size_t rows, cols;

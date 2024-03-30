@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp
+// #REQ: base_template.hpp
 
 // FPS 微分 O(N)
 template <ll pdiv, ll prim>

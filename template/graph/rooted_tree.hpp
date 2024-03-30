@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp graph.cpp graph/01bfs.cpp array/argsort.cpp
+// #REQ: base_template.hpp graph.hpp graph/01bfs.hpp array/argsort.hpp
 // 連結の根付き木
 struct rooted_tree {
 

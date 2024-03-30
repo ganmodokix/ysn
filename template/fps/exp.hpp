@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp fps/log.cpp conv/ntt.cpp
+// #REQ: base_template.hpp fps/log.hpp conv/ntt.hpp
 
 // FPS exp
 template <ll pdiv, ll prim>

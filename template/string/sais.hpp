@@ -1,4 +1,4 @@
-// #REQ: base_template bisection
+// #REQ: base_template.hpp bisection.hpp
 
 // SA-IS による Suffix Array 構築 O(N)
 // 参考: https://blog.knshnb.com/posts/sa-is/

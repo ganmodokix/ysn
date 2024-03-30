@@ -1,4 +1,4 @@
-// #REQ: base_template/575 base_template/ll base_template/macro
+// #REQ: base_template/575.hpp base_template/ll.hpp base_template/macro.hpp
 // 標準入出力
 struct qin { // query input
     size_t sz;

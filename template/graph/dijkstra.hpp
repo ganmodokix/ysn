@@ -1,4 +1,4 @@
-// #REQ: base_template graph
+// #REQ: base_template.hpp graph.hpp
 pair<vector<ll>, vector<ll>> dist_dijkstra(ll root, const graph &g) {
     vector<ll> dist(g.size(), LINF);
     vector<ll> from(g.size(), -1LL);

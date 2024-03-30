@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 // Binary Indexed Tree モジュール (0-indexed)
 template <typename T>
 class BIT {

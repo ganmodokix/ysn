@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 
 // SMAWK O(N + M)
 // (N, M)-shaped matrix A の各行の最小値添字 argmin_j A_{i, j} を求める

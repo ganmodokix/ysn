@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 // 拡張ユークリッド互除法
 ll extgcd(ll a, ll b, ll &x, ll &y) {
     if (abs(a) < abs(b)) return extgcd(b, a, y, x);

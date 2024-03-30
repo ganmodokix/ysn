@@ -1,4 +1,4 @@
-// #REQ: base_template opf segtree/lazy
+// #REQ: base_template.hpp opf.hpp segtree/lazy.hpp
 
 // 区間和/区間Affine
 template<typename T>

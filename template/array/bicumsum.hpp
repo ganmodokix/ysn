@@ -1,4 +1,4 @@
-// #REQ: base_template array/cumsum
+// #REQ: base_template.hpp array/cumsum.hpp
 template <typename T, typename Op>
 struct bicumsum {
     Op op;

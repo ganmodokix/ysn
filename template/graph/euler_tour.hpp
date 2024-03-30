@@ -1,4 +1,4 @@
-// #REQ: base_template graph
+// #REQ: base_template.hpp graph.hpp
 // 無向グラフ g に対して root の属する連結成分の全域木のオイラーツアーを返す
 // returns {tour, depth, parent},
 // ただし

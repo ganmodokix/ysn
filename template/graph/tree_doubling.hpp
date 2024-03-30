@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp graph.cpp/rooted_tree.cpp bisection.cpp
+// #REQ: base_template.hpp graph.hpp/rooted_tree.hpp bisection.hpp
 // 根付き木上でのダブリング
 struct tree_doubling {
     

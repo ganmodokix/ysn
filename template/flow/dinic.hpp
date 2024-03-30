@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 // Dinic法による最大流
 // Capacityには必ず整数型を指定すること
 // BFSとDFSを組み合わせてO(EV^2)だが実用的にはもっと速いらしい

@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 // 最小費用流 ポテンシャルなし O(FVE)
 // CapacityとCostは符号付き整数型である必要がある（整数型でないと停止しない場合がある，符号付きでないと逆辺がバグる）
 // Verified by AOJ GRL_6_B http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_6_B

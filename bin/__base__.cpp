@@ -1,5 +1,5 @@
 // モジュール
-// #REQ: base_template
+// #REQ: base_template.hpp
 // #END
 
 // 処理内容

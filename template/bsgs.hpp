@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp
+// #REQ: base_template.hpp
 
 // 可逆の関数 f について f^(i)(x) = y を満たす最小の整数 0 <= i < sup_steps を求める
 // 返値は {そのような i が存在するか, 存在するならばその i}

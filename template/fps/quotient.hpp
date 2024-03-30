@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp conv/ntt.cpp fps/inv.cpp
+// #REQ: base_template.hpp conv/ntt.hpp fps/inv.hpp
 
 // FPS 商 O(NlogN)
 template <ll pdiv, ll prim>

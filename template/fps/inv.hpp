@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp conv/ntt.cpp modint_petit.cpp
+// #REQ: base_template.hpp conv/ntt.hpp modint_petit.hpp
 
 // FPS逆元, 入力と同じ次数 O(NlogN)
 template <ll pdiv, ll prim>

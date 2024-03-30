@@ -1,4 +1,4 @@
-// #REQ: base_template monge/smawk
+// #REQ: base_template.hpp monge/smawk.hpp
 
 // C_i = min_j { A_j + B_{i-j} } (B: 下に凸) を求める O(|A|+|B|)
 // ⚠ idがlessの単位元である必要がある

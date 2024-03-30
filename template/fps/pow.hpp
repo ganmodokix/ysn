@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp modint_petit.cpp fps/log.cpp fps/exp.cpp
+// #REQ: base_template.hpp modint_petit.hpp fps/log.hpp fps/exp.hpp
 
 // FPS べき乗 f^n 
 // 注意: 0^0 = 1 を仮定

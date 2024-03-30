@@ -13,16 +13,17 @@ from path import TEMPLATE_PATH
 HEADER_TOKEN = "// #REQ:"
 FOOTER_TOKEN = "// #END"
 PRIORITY_TOKEN = "// #PRIORITY"
+TEMPLATE_EXTENSION_SUFFIX = ".hpp"
 
 def normalize(template_id: str, abs=False):
     """
     Normalizes a template ID
 
-    e.g., "hogehoge" -> "/root/ysn/template/hogehoge.cpp"
+    e.g., "hogehoge" -> "/root/ysn/template/hogehoge.hpp"
     """
 
-    if not template_id.endswith(".cpp"):
-        result = template_id + ".cpp"
+    if not template_id.endswith(TEMPLATE_EXTENSION_SUFFIX):
+        result = template_id + TEMPLATE_EXTENSION_SUFFIX
     else:
         result = template_id
 

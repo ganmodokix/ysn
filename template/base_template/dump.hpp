@@ -1,4 +1,4 @@
-// #REQ: base_template/575 base_template/debug_mode
+// #REQ: base_template/575.hpp base_template/debug_mode.hpp
 #define DUMP(...) ::ganmodokix::__dump(__FILE__, __LINE__, #__VA_ARGS__, __VA_ARGS__)
 namespace ganmodokix {
     ostream& __dump_single(const char* value);

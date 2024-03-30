@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp modint_petit.cpp
+// #REQ: base_template.hpp modint_petit.hpp
 
 // FPS 積分 O(N) 定数項は 0 とする
 template <ll pdiv, ll prim>

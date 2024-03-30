@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 // 関係式付き Union-Find モジュール
 // (型 Potential, 二項演算 op, 単位元 id, 逆元 Inv) は群をなす必要がある
 // "x_i = x_j op d" の集合を管理する

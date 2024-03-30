@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 // XORShift 擬似乱数発生器
 uint32_t xor128(void){
     static uint32_t x = 123456789;

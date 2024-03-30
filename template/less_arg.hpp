@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 // 偏角ソート用比較関数 (T: integral/floating point)
 // 型により挙動が変わるので注意
 struct less_arg {

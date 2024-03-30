@@ -1,4 +1,4 @@
-// #REQ: base_template opf segtree/lazy
+// #REQ: base_template.hpp opf.hpp segtree/lazy.hpp
 
 // range min, range add
 template <typename T>

@@ -1,4 +1,4 @@
-// #REQ: base_template
+// #REQ: base_template.hpp
 template <typename T, typename Op>
 struct cumsum {
     vector<ll> s;

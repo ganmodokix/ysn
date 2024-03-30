@@ -1,4 +1,4 @@
-// #REQ: base_template.cpp
+// #REQ: base_template.hpp
 
 // 二分法 O(log(true_side - false_side) * predの時間計算量)
 // false_sideを含まずtrue_sideを含む区間の元であって、predがtrueとなるような、最もfalse_sideに近い値を返す
