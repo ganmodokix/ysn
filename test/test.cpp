@@ -23,23 +23,18 @@ TEST(BaseTemplate, DumpMacro)
     DUMP("string"s);
     DUMP("string_view"sv);
 
-    const auto v = vector{1, 2, 3, 4, 5};
-    DUMP(v);
-    const auto p = pair(1, 2);
-    DUMP(p);
-    const auto p2 = pair(1, 'v');
-    DUMP(p2);
-    const auto pp = pair(1, pair(3, 2));
-    DUMP(pp);
-    const auto pv = tuple(vector(2, 0LL), 12345);
-    DUMP(pv);
-    const auto tvvi = tuple(vector(2, 0LL), vector(1, 0LL), 12345);
-    DUMP(tvvi);
-    const auto ve = vector<ll>{};
-    DUMP(ve);
-    const auto te = tuple<>{};
-    DUMP(te);
+    DUMP(vector{1, 2, 3, 4, 5});
+    DUMP(pair(1, 2));
+    DUMP(pair(1, 'v'));
+    DUMP(pair(1, pair(3, 2)));
+    DUMP(pair(vector(2, 0LL), 12345));
+    DUMP(tuple(vector(2, 0LL), vector(1, 0LL), 12345));
+    DUMP(vector<ll>{});
+    DUMP(tuple<>{});
+    DUMP(tuple<int>{1});
 
-    const auto tnested = tuple(tuple(tuple(tuple(tuple(tuple(1, 2, 3), tuple(2, 43))), tuple(1))));
-    DUMP(tnested);
+    DUMP(make_tuple(make_tuple(2)));
+    DUMP(make_tuple(make_tuple(make_tuple(2))));
+    DUMP(make_tuple(pair(2, 2), pair(1, 4)));
+    DUMP(pair(tuple(pair(1, 2), 1), tuple(pair(tuple(2), tuple(vector{tuple("sv"sv)})))));
 }

@@ -10,6 +10,11 @@ namespace ganmodokix {
     ostream& __dump_single(optional<T> value);
     template <typename Container>
     auto __dump_single(const Container& value) -> decltype(begin(value), end(value), (cerr));
+    template <typename... Args>
+    ostream& __dump_single(const tuple<Args...>& value);
+    template <typename T, typename U>
+    ostream& __dump_single(const pair<T, U>& value);
+
     template <typename T>
     auto __dump_single(const T& value) -> decltype((cerr << value)) {
         if constexpr (is_convertible_v<T, string_view>) {
