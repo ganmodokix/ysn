@@ -1,9 +1,7 @@
 import os
-import sys
-from posixpath import relpath
 import subprocess
 
-from engine import normalize, rewrite
+from engine import rewrite
 from message import debug_print
 from path import BIN_PATH
 
@@ -14,15 +12,13 @@ def exec_path_of(source_path):
 
 def compile_if_modified(source_path):
 
-    normalized_path = normalize(source_path, abs=True)
-    exec_path = exec_path_of(normalized_path)
+    exec_path = exec_path_of(source_path)
 
-    if (not os.path.exists(exec_path)) or os.stat(normalized_path).st_mtime > os.stat(exec_path).st_mtime:
+    if (not os.path.exists(exec_path)) or os.stat(source_path).st_mtime > os.stat(exec_path).st_mtime:
         compile(source_path)
 
 def compile(source_path):
 
-    source_path = normalize(source_path, abs=True)
     exec_path = exec_path_of(source_path)
 
     if not os.path.isfile(source_path):
