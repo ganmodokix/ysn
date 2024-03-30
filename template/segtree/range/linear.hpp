@@ -20,10 +20,10 @@ struct segtree_linear {
 
     segtree_linear(const vector<array<T, n>> &a) {
         value_type idv; REP(i, n) idv[i] = 0;
-        query_type idq; REP(i, n) REP(j, n) idv[i * n + j] = i == j;
+        query_type idq; REP(i, n) REP(j, n) idq[i * n + j] = i == j;
         vector<value_type> v(a.size(), idv);
         REP(i, a.size()) {
-            v[i].first = a[i];
+            v[i] = a[i];
         }
         seg = lazy_segtree(v.begin(), v.end(), &op, idv, &apply, &composite, idq);
     }
