@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp opf.hpp segtree/lazy.hpp
+#pragma once
+#include "base_template.hpp"
+#include "opf.hpp"
+#include "segtree/lazy.hpp"
 
 // 区間ベクトル和/区間線形変換
 template<typename T, size_t n>

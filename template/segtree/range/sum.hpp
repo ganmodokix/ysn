@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp segtree/range/affine.hpp
+#pragma once
+#include "base_template.hpp"
+#include "segtree/range/affine.hpp"
 
 template<typename T>
 struct segtree_sum_add {

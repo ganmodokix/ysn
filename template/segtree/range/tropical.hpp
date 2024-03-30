@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp opf.hpp segtree/lazy.hpp
+#pragma once
+#include "base_template.hpp"
+#include "opf.hpp"
+#include "segtree/lazy.hpp"
 
 // range min, range add
 template <typename T>

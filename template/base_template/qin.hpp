@@ -1,4 +1,7 @@
-// #REQ: base_template/575.hpp base_template/ll.hpp base_template/macro.hpp
+#pragma once
+#include "base_template/575.hpp"
+#include "base_template/ll.hpp"
+#include "base_template/macro.hpp"
 // 標準入出力
 struct qin { // query input
     size_t sz;

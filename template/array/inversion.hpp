@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp segtree/bit.hpp
+#pragma once
+#include "base_template.hpp"
+#include "segtree/bit.hpp"
 // BITを用いて数列の転倒数を求める　O(NlogN)
 template <typename T>
 size_t inversion(vector<T> &x0) {

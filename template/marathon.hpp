@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp marathon/xor128
+#pragma once
+#include "base_template.hpp"
+#include "marathon/xor128"
 namespace marathon {
     clock_t start_clock;
     constexpr double time_limit = 2; // 実行時間[s]

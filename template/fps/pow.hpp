@@ -1,4 +1,8 @@
-// #REQ: base_template.hpp modint_petit.hpp fps/log.hpp fps/exp.hpp
+#pragma once
+#include "base_template.hpp"
+#include "modint_petit.hpp"
+#include "fps/log.hpp"
+#include "fps/exp.hpp"
 
 // FPS べき乗 f^n 
 // 注意: 0^0 = 1 を仮定

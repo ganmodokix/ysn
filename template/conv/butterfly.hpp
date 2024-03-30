@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp modint_petit.hpp number/ceillog2.hpp
+#pragma once
+#include "base_template.hpp"
+#include "modint_petit.hpp"
+#include "number/ceillog2.hpp"
 // 2段ずつのバタフライ演算
 // 参考実装: ACL https://github.com/atcoder/ac-library/blob/master/atcoder/convolution.hpp
 

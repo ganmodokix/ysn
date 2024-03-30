@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp array/cumsum.hpp
+#pragma once
+#include "base_template.hpp"
+#include "array/cumsum.hpp"
 template <typename T, typename Op>
 struct bicumsum {
     Op op;

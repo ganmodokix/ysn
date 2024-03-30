@@ -1,4 +1,7 @@
-// #REQ: base_templat.hpp modint.hpp modint_factorial_cache.hpp
+#pragma once
+#include "base_templat.hpp"
+#include "modint.hpp"
+#include "modint_factorial_cache.hpp"
 using modint = moduloint<998244353LL>;
 
 // IO

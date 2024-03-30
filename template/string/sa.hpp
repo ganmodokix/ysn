@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // ダブリングによる O(Nlog^2N) での Suffix Array 構築
 // Validated by https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_14_D&lang=jp
 struct suffix_array {

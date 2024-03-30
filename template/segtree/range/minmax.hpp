@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp opf.hpp segtree/range/monoid.hpp
+#pragma once
+#include "base_template.hpp"
+#include "opf.hpp"
+#include "segtree/range/monoid.hpp"
 
 // range min, range update
 template <typename T>

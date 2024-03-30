@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 ll binom_naive(ll n, ll m) {
     static auto cache = map<pair<ll, ll>, ll>{};
     if (n < 0 || m < 0 || m > n) return 0;

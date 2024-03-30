@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 
 // 中央値が取れるmultiset。追加・削除・中央値取得などがならしO(logN)となるはず。
 // SetTypeをset<T>にすることで重複無しが可能。

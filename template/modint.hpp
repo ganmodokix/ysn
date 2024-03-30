@@ -1,3 +1,4 @@
+#pragma once
 template <long long pdiv>
 struct moduloint {
     long long x = 0;

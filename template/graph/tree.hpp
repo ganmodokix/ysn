@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp graph.hpp graph/01bfs.hpp
+#pragma once
+#include "base_template.hpp"
+#include "graph.hpp"
+#include "graph/01bfs.hpp"
 graph tree(const vector<ll> &parent) {
     graph g(parent.size());
     REP(i, g.size()) {

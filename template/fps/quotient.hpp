@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp conv/ntt.hpp fps/inv.hpp
+#pragma once
+#include "base_template.hpp"
+#include "conv/ntt.hpp"
+#include "fps/inv.hpp"
 
 // FPS 商 O(NlogN)
 template <ll pdiv, ll prim>

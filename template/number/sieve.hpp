@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // 線形篩 O(N)
 // lp[i] := i の最小素因数 (2 <= i < n)
 // pr: n 未満の素数リスト

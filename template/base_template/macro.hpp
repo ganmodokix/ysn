@@ -1,4 +1,6 @@
-// #REQ: base_template/575.hpp base_template/ll.hpp
+#pragma once
+#include "base_template/575.hpp"
+#include "base_template/ll.hpp"
 // 汎用マクロ
 #define ALL(x) (::std::ranges::begin(x)), (::std::ranges::end(x))
 #define ALLOF(x) (::std::ranges::begin(x)), (::std::ranges::end(x))

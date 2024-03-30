@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 struct graph {
     vector<vector<pair<ll, ll>>> adjacent_list;
     graph() = default;

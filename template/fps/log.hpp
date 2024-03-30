@@ -1,4 +1,9 @@
-// #REQ: base_template.hpp fps/derivative.hpp fps/integral.hpp fps/inv.hpp conv/ntt.hpp
+#pragma once
+#include "base_template.hpp"
+#include "fps/derivative.hpp"
+#include "fps/integral.hpp"
+#include "fps/inv.hpp"
+#include "conv/ntt.hpp"
 
 // FPS log O(NlogN)
 template <ll pdiv, ll prim>

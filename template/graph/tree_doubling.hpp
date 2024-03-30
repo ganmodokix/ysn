@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp graph.hpp/rooted_tree.hpp bisection.hpp
+#pragma once
+#include "base_template.hpp"
+#include "graph.hpp/rooted_tree.hpp"
+#include "bisection.hpp"
 // 根付き木上でのダブリング
 struct tree_doubling {
     

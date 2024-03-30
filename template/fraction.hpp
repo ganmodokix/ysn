@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 struct fraction {
     ll p = 0, q = 1;
     fraction() = default;

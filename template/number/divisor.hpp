@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // 約数列挙 O(√N)
 template <typename T>
 vector<T> divisor(const T n) {

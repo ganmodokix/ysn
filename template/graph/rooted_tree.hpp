@@ -1,4 +1,8 @@
-// #REQ: base_template.hpp graph.hpp graph/01bfs.hpp array/argsort.hpp
+#pragma once
+#include "base_template.hpp"
+#include "graph.hpp"
+#include "graph/01bfs.hpp"
+#include "array/argsort.hpp"
 // 連結の根付き木
 struct rooted_tree {
 

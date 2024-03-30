@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 
 // Monotone-minima O(M + NlogM)
 // (N, M)-shaped matrix A の各行の最小値添字 argmin_j A_{i, j} を求める

@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // Union-Find モジュール
 struct union_find {
     vector<size_t> par;

@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // 中身なしランレングス圧縮 O(N*(中身の比較))
 template <class Iterator>
 vector<size_t> run_length(Iterator first, Iterator last) {

@@ -1,4 +1,7 @@
-// #REQ: base_template.hpp fps/log.hpp conv/ntt.hpp
+#pragma once
+#include "base_template.hpp"
+#include "fps/log.hpp"
+#include "conv/ntt.hpp"
 
 // FPS exp
 template <ll pdiv, ll prim>

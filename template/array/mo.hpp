@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // {Shink,Expand}{Left,Right} の引数は操作前の区間 (Index l, Index r)
 // 半開区間で扱う [left, right). 最初は [initial_l, initial_r) から始まる
 template <typename Solution, // コピーたくさんしても大丈夫な軽いもの，重いコンテクストとかはラムダ式のキャプチャで

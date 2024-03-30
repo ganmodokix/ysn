@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // 素因数分解 O(√N)
 template <typename T>
 vector<T> factorize(T x) {

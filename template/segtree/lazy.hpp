@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 
 // 非再帰遅延セグ木
 // (Value, Op): モノイド

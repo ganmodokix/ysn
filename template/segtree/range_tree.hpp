@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp number/ceillog2.hpp
+#pragma once
+#include "base_template.hpp"
+#include "number/ceillog2.hpp"
 // 領域木：矩形領域の総和をオンラインクエリで取る
 // compile(): 前処理 O(NlogN)
 // fetch(l1, l2, r1, r2): [l1, l2)×[r1, r2) を取得 O((logN)^2)

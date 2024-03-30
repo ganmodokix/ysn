@@ -1,4 +1,5 @@
-// #REQ: base_template.hpp
+#pragma once
+#include "base_template.hpp"
 // 中身付きランレングス圧縮 O(N * (中身の比較+コピー))
 template <class Iterator>
 vector<pair<size_t, typename remove_reference<decltype(*Iterator())>::type>> run_length(Iterator first, Iterator last) {

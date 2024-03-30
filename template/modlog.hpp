@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp modint_petit.hpp
+#pragma once
+#include "base_template.hpp"
+#include "modint_petit.hpp"
 // a^x === b mod p を満たす最小の非負整数 x を返す
 // {そのような x が存在するか, 存在する場合は最小の x}
 // p は合成数でもok

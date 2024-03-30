@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp array/sahz.hpp
+#pragma once
+#include "base_template.hpp"
+#include "array/sahz.hpp"
 // LIS の長さを返す O(NlogN)
 template <typename T>
 size_t lis_length(const vector<T> &x) {

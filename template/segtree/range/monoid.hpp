@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp segtree/lazy.hpp
+#pragma once
+#include "base_template.hpp"
+#include "segtree/lazy.hpp"
 
 // 区間モノイド区間更新
 template <typename T, typename Op>

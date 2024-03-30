@@ -1,4 +1,6 @@
-// #REQ: base_template.hpp number/ceillog2.hpp
+#pragma once
+#include "base_template.hpp"
+#include "number/ceillog2.hpp"
 
 // 高速 Walsh-Hadamard 変換 O(N log N)
 template <typename T>
