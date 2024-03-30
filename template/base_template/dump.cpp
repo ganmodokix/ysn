@@ -4,6 +4,8 @@ namespace ganmodokix {
     ostream& __dump_single(const char* value);
     ostream& __dump_single(string_view value);
     ostream& __dump_single(const string& value);
+    template <typename T>
+    ostream& __dump_single(optional<T> value);
     template <typename Container>
     auto __dump_single(const Container& value) -> decltype(begin(value), end(value), (cerr));
     template <typename T>
@@ -46,6 +48,14 @@ namespace ganmodokix {
         auto first = true;
         for (const auto& x : value) { cerr << ", " + first * 2; __dump_single(x); first = false; }
         return cerr << "}";
+    }
+    template <typename T>
+    ostream& __dump_single(optional<T> value) {
+        if (!value.has_value()) {
+        return cerr << "\e[30mnullopt\e[m";
+        } else {
+            return __dump_single(value.value());
+        }
     }
     template <typename... Args>
     void __dump(const char* const file, int line, const char* const title, const Args&... args) {
