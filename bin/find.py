@@ -1,9 +1,7 @@
-import os
 from pathlib import Path
 import argparse
-import glob
 
-from .engine import TEMPLATE_EXTENSION_SUFFIX
+from engine import TEMPLATE_EXTENSION_SUFFIX
 
 if __name__ == "__main__":
     ysn_path = Path(__file__).parent.parent

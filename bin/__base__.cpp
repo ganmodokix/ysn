@@ -1,6 +1,7 @@
-// モジュール
-// #REQ: base_template.hpp
-// #END
+//  Modules below installed 
+//      base_template.hpp
+//  Quote 
+//  Unquote 
 
 // 処理内容
 int main() {
