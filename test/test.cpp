@@ -31,7 +31,10 @@ TEST(BaseTemplate, DumpMacro)
     DUMP(tuple(vector(2, 0LL), vector(1, 0LL), 12345));
     DUMP(vector<ll>{});
     DUMP(tuple<>{});
+    DUMP(tuple<int>{1});
 
     DUMP(make_tuple(make_tuple(2)));
     DUMP(make_tuple(make_tuple(make_tuple(2))));
+    DUMP(make_tuple(pair(2, 2), pair(1, 4)));
+    DUMP(pair(tuple(pair(1, 2), 1), tuple(pair(tuple(2), tuple(vector{tuple("sv"sv)})))));
 }
