@@ -21,8 +21,8 @@ find_package(GTest CONFIG REQUIRED)
 target_link_libraries(
     ${PROJECT_NAME} PRIVATE
     GTest::gtest GTest::gtest_main)
-    
-target_include_directories(${PROJECT_NAME} INTERFACE
+
+target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/template)
 
 enable_testing()
