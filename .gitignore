@@ -1,6 +1,9 @@
 # User-specified
 /sandbox
-/.vscode
+/.vscode/*
+!/.vscode/settings.json
+!/.vscode/c_cpp_properties.json
+!/.vscode/launch.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
