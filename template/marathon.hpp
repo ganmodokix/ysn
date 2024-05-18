@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "marathon/xor128"
+#include "marathon/xor128.hpp"
 namespace marathon {
     clock_t start_clock;
     constexpr double time_limit = 2; // 実行時間[s]
