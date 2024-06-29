@@ -32,9 +32,19 @@ struct lazy_fill_vector {
         return self.value[index];
     }
 
+    template <typename MaybeConstSelf>
+    static auto& _index_checking_accessor(MaybeConstSelf& self, const size_t index) {
+        if (index >= size()) {
+            throw invalid_argument("Index out of range");
+        }
+        return _accessor(self, index);
+    }
+
     // 要素アクセス O(1)
     T& operator[](const size_t index) { return _accessor(*this, index); }
     const T& operator[](const size_t index) const { return _accessor(*this, index); }
+    T& at(const size_t index) { return _index_checking_accessor(*this, index); }
+    const T& at(const size_t index) const { return _index_checking_accessor(*this, index); }
 
     // すべての要素を value にする O(1)
     template<typename TT>
@@ -59,5 +69,10 @@ struct lazy_fill_vector {
     void pop_back() {
         value.pop_back();
         last_modified.pop_back();
+    }
+
+    // サイズ
+    size_t size() const noexcept {
+        return value.size();
     }
 };
