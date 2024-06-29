@@ -1,11 +1,11 @@
 #pragma once
 #include "base_template.hpp"
-template <typename T>
-vector<size_t> argsort(const vector<T> &arr) {
-    vector<size_t> rank(arr.size());
-    iota(ALL(rank), 0);
-    sort(ALL(rank), [&](auto i, auto j) {
-        return arr[i] < arr[j];
-    });
+template <ranges::random_access_range R>
+vector<size_t> argsort(R&& arr) {
+    const auto size = ranges::size(arr);
+    auto rank = vector<size_t>(size);
+    ::std::iota(ALL(rank), size_t{0});
+    const auto accessor = [&arr](const auto i) { return *(ranges::begin(arr) + i); };
+    ranges::sort(rank, less{}, accessor);
     return rank;
 }

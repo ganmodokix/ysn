@@ -2,7 +2,7 @@
 #include "base_template.hpp"
 template <typename T, typename Op>
 struct cumsum {
-    vector<ll> s;
+    vector<T> s;
     // a: array, op: monoid, it: identity element of (T, op)
     cumsum(const vector<T> &a, Op op, T id) {
         s.resize(a.size()+1, id);
