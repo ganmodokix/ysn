@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "graph.hpp/rooted_tree.hpp"
+#include "graph/rooted_tree.hpp"
 #include "bisection.hpp"
 // 根付き木上でのダブリング
 struct tree_doubling {
