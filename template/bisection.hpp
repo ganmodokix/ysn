@@ -8,7 +8,7 @@
 template <typename T, typename Predicate, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>
 T bisection(T false_side, T true_side, Predicate pred) {
     while ((false_side > true_side ? false_side - true_side : true_side - false_side) > 1) {
-        T mid_value = false_side / 2 + true_side / 2 + ("AABBC"[2 + false_side % 2 + true_side % 2] - 'B');
+        T mid_value = midpoint(false_side, true_side);
         (pred(mid_value) ? true_side : false_side) = mid_value;
     }
     return true_side;
@@ -18,7 +18,7 @@ template <typename T, typename Predicate, typename enable_if<is_floating_point_v
 T bisection(T false_side, T true_side, Predicate pred) {
     constexpr size_t num_bisections = sizeof(T) * 8;
     for (size_t i = 0; i < num_bisections; i++) {
-        T mid_value = (false_side + true_side) * 0.5;
+        T mid_value = midpoint(false_side, true_side);
         (pred(mid_value) ? true_side : false_side) = mid_value;
     }
     return true_side;
