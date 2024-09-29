@@ -4,7 +4,7 @@
 // 区間sの和集合を最小個数の区間で表す、つまり閉包に共通部分のない区間の集合で表す
 // e.g., [3,5) ∪ [5,7) -> [3,7)
 template <typename T = ll>
-requires integral<T>
+requires ::std::integral<T>
 struct segment_union {
 
     using value_type = T;
@@ -61,9 +61,11 @@ struct segment_union {
 
     // 区間 [l, r) を追加; S <- S ∪ [l, r)
     // 区間数に対してならし対数時間
-    void insert(const value_type l, const value_type r) {
+    // 削除した区間を返す
+    vector<segment_type> insert(const value_type l, const value_type r) {
 
         auto added_segment = pair{l, r};
+        auto removed_segments = vector<segment_type>{};
 
         // 左につなげる
         if (
@@ -73,6 +75,7 @@ struct segment_union {
             const auto& it = *ito;
             chmin(added_segment.first, it->first);
             chmax(added_segment.second, it->second);
+            removed_segments.emplace_back(*it);
             s.erase(it);
         }
         
@@ -84,10 +87,13 @@ struct segment_union {
             if (added_segment.second < it->first) break;
             chmin(added_segment.first, it->first);
             chmax(added_segment.second, it->second);
+            removed_segments.emplace_back(*it);
             s.erase(it);
         }
 
         s.emplace(move(added_segment));
+
+        return removed_segments;
     }
 
     // 区間 [l, r) を意味する seg = {l, r} を追加; S <- S ∪ [l, r)
