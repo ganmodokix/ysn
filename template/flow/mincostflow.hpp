@@ -48,6 +48,7 @@ struct min_cost_flow {
             while (q.size()) {
                 const auto du = q.top(); q.pop();
                 auto [d, u] = du;
+                if (d > dist[u]) continue;
                 REP(i, g[u].size()) {
                     auto [to, cap, cost, rev] = g[u][i];
                     if (cap > 0 && chmin(dist[to], dist[u] + cost + h[u] - h[to])) {
