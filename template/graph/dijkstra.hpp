@@ -1,13 +1,14 @@
 #pragma once
 #include "base_template.hpp"
 #include "graph.hpp"
+#include "radix_heap.hpp"
 pair<vector<ll>, vector<ll>> dist_dijkstra(ll root, const graph &g) {
     vector<ll> dist(g.size(), LINF);
     vector<ll> from(g.size(), -1LL);
-    priority_queue<pair<ll, ll>, vector<pair<ll, ll>>, greater<pair<ll, ll>>> q;
+    auto q = radix_heap<ll, ll>{};
     q.emplace(dist[root] = 0, root);
     while (q.size()) {
-        auto [du, u] = q.top(); q.pop();
+        const auto [du, u] = q.pop();
         if (du > dist[u]) continue;
         for (auto [v, d] : g.adjacent_list[u]) {
             if (chmin(dist[v], dist[u] + d)) {

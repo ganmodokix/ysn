@@ -1,5 +1,6 @@
 #pragma once
 #include "base_template.hpp"
+#include "radix_heap.hpp"
 // 最小費用流 ポテンシャル付き O(FElogV)
 // 費用について負閉路がない必要がある
 // CapacityとCostは符号付き整数型である必要がある（整数型でないと停止しない場合がある，符号付きでないと逆辺がバグる）
@@ -39,15 +40,13 @@ struct min_cost_flow {
         while (maxf > 0) {
 
             // Dijkstra法+ポテンシャルで最短路を見つける
-            using qitem = pair<Cost, size_t>;
-            priority_queue<qitem, vector<qitem>, greater<qitem>> q;
+            auto q = radix_heap<Cost, size_t>{};
             vector<Cost> dist(n, CINF);
             vector<size_t> prevv(n), preve(n);
             dist[s] = 0;
             q.emplace(0, s);
             while (q.size()) {
-                const auto du = q.top(); q.pop();
-                auto [d, u] = du;
+                const auto [d, u] = q.pop();
                 if (d > dist[u]) continue;
                 REP(i, g[u].size()) {
                     auto [to, cap, cost, rev] = g[u][i];
