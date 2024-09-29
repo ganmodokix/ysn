@@ -25,4 +25,6 @@ struct graph {
         }
         return g;
     }
+    // auto& operator[](size_t u) { return adjacent_list[u]; }
+    const auto& operator[](size_t u) const { return adjacent_list[u]; }
 };
