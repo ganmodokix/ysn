@@ -3,7 +3,7 @@
 #include "modint_petit.hpp"
 #include "garner.hpp"
 #include "conv/butterfly.hpp"
-#include "number/ceillog2.hpp"
+
 // 精度に寄りけりだがconv1回で済むFFTの方がいい場合もあることに留意
 // Cooley-Tukey型 高速フーリエ変換 O(NlogN)
 template <ll pdiv = 998244353, ll prim = 3, typename T>
@@ -15,20 +15,23 @@ auto ntt(T&& a, const bool inv = false) {
     }
 }
 template <ll pdiv = 998244353, ll prim = 3, typename T>
-T intt(T&& a) {
+auto intt(T&& a) {
     return ntt(forward<T>(a), true);
 }
 
 // 適切な原始根の存在する法での畳み込み
 template <ll pdiv, ll prim, typename T, typename U>
 vector<ll> convolve_p(T&& x, U&& y) {
-    size_t t = x.size() + y.size() - 1;
-    size_t h = 1LL << ceillog2(t);
+    assert(!x.empty() && !y.empty());
+    const auto t = x.size() + y.size() - 1;
+    const auto h = bit_ceil(t);
     auto a = forward<T>(x); a.resize(h, 0);
     auto b = forward<U>(y); b.resize(h, 0);
     a = butterfly<pdiv, prim>(move(a));
     b = butterfly<pdiv, prim>(move(b));
-    for (size_t i = 0; i < a.size(); i++) (a[i] *= b[i]) %= pdiv;
+    for (auto i = size_t{0}; i < a.size(); i++) {
+        (a[i] *= b[i]) %= pdiv;
+    }
     a = butterfly_inv<pdiv, prim>(move(a));
     a.resize(t);
     return a;

@@ -1,6 +1,5 @@
 #pragma once
 #include "base_template.hpp"
-#include "number/ceillog2.hpp"
 // 領域木：矩形領域の総和をオンラインクエリで取る
 // compile(): 前処理 O(NlogN)
 // fetch(l1, l2, r1, r2): [l1, l2)×[r1, r2) を取得 O((logN)^2)
@@ -45,6 +44,11 @@ struct range_tree {
         assert(!compiled);
         compiled = true;
 
+        ranges::sort(items, less{}, [](const auto& item) {
+            const auto& [i, j, x] = item;
+            return pair{i, j};
+        });
+
         // index compression
         for (const auto& [i, j, x] : items) {
             inv_sahz_i.push_back(i);
@@ -56,7 +60,7 @@ struct range_tree {
         inv_sahz_i.push_back(numeric_limits<index_type>::max());
 
         // building binary tree
-        binary_size = 1LL << ceillog2(ranges::size(inv_sahz_i) - 1);
+        binary_size = bit_ceil(ranges::size(inv_sahz_i) - 1);
         node = vector(binary_size * 2 - 1, vector<pair<index_type, value_type>>{});
         for (auto&& [i_, j, x] : items) {
             const auto i = sahz_i[i_];
