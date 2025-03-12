@@ -1,7 +1,6 @@
 #pragma once
 #include "base_template.hpp"
 #include "modint_petit.hpp"
-#include "number/ceillog2.hpp"
 // 2段ずつのバタフライ演算
 // 参考実装: ACL https://github.com/atcoder/ac-library/blob/master/atcoder/convolution.hpp
 
@@ -9,7 +8,7 @@
 template <ll pdiv, ll prim>
 struct butterfly_proprocess {
     
-    static constexpr ll rank2 = __builtin_ctz(pdiv - 1);
+    static constexpr ll rank2 = countr_zero<ull>(pdiv - 1);
     array<ll, rank2 + 1> root;
     array<ll, rank2 + 1> iroot;
     array<ll, max(0LL, rank2 - 1)> rate2;
@@ -45,7 +44,7 @@ struct butterfly_proprocess {
     }
 
     static butterfly_proprocess<pdiv, prim>& singleton() noexcept {
-        static butterfly_proprocess<pdiv, prim> prep;
+        static auto prep = butterfly_proprocess<pdiv, prim>{};
         return prep;
     }
 
@@ -54,12 +53,13 @@ struct butterfly_proprocess {
 // ACL実装のバタフライ演算
 template <ll pdiv = 998244353, ll prim = 3>
 vector<ll> butterfly(vector<ll>&& a_) {
-    assert(!a_.empty() && popcountll(a_.size()) == 1);
+    assert(has_single_bit(a_.size()));  // 長さが2冪か
+    assert(countr_zero<ull>(pdiv - 1) >= countr_zero(a_.size()));  // 1の|A|乗根が求まるか
 
     vector<ll> a = move(a_);
     
-    const ll n = a.size();
-    const ll h = ceillog2(n);
+    const auto n = (ll)a.size();
+    const auto h = (ll)countr_zero<ull>(n);
 
     static const auto& prep = butterfly_proprocess<pdiv, prim>::singleton();
 
@@ -79,7 +79,7 @@ vector<ll> butterfly(vector<ll>&& a_) {
                     ar = l + pdiv - r; if (ar >= pdiv) ar -= pdiv;
                 }
                 if (s + 1 != s_len) {
-                    (rot *= prep.rate2[__builtin_ctzll(~(ull)s)]) %= pdiv;
+                    (rot *= prep.rate2[countr_zero(~(ull)s)]) %= pdiv;
                 }
             }
             len++;
@@ -106,7 +106,7 @@ vector<ll> butterfly(vector<ll>&& a_) {
                     (a[i + offset + p * 3] = a0 + na2 + (pdiv2 - a1na3imag)) %= pdiv;
                 }
                 if (s + 1 != s_len) {
-                    (rot *= prep.rate3[__builtin_ctzll(~(ull)s)]) %= pdiv;
+                    (rot *= prep.rate3[countr_zero(~(ull)s)]) %= pdiv;
                 }
             }
             len += 2;
@@ -124,12 +124,13 @@ vector<ll> butterfly(const vector<ll>& a) {
 // ACL実装の逆バタフライ演算
 template <ll pdiv = 998244353, ll prim = 3>
 vector<ll> butterfly_inv(vector<ll>&& a_) {
-    assert(!a_.empty() && popcountll(a_.size()) == 1);
+    assert(has_single_bit(a_.size()));  // 長さが2冪か
+    assert(countr_zero<ull>(pdiv - 1) >= countr_zero(a_.size()));  // 1の|A|乗根が求まるか
 
     vector<ll> a = move(a_);
     
-    const ll n = a.size();
-    const ll h = ceillog2(n);
+    const auto n = (ll)a.size();
+    const auto h = (ll)countr_zero<ull>(n);
 
     static const auto& prep = butterfly_proprocess<pdiv, prim>::singleton();
 
@@ -150,7 +151,7 @@ vector<ll> butterfly_inv(vector<ll>&& a_) {
                     (ar *= irot) %= pdiv;
                 }
                 if (s + 1 != s_len) {
-                    (irot *= prep.irate2[__builtin_ctzll(~(ull)(s))]) %= pdiv;
+                    (irot *= prep.irate2[countr_zero(~(ull)(s))]) %= pdiv;
                 }
             }
             len--;
@@ -173,7 +174,7 @@ vector<ll> butterfly_inv(vector<ll>&& a_) {
                     (a[i + offset + p * 3] = (a0 + (pdiv - a1) + (pdiv - a2na3iimag)) * irot3) %= pdiv;
                 }
                 if (s + 1 != s_len) {
-                    (irot *= prep.irate3[__builtin_ctzll(~(ull)(s))]) %= pdiv;
+                    (irot *= prep.irate3[countr_zero(~(ull)(s))]) %= pdiv;
                 }
             }
             len -= 2;

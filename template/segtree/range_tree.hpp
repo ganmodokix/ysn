@@ -45,6 +45,11 @@ struct range_tree {
         assert(!compiled);
         compiled = true;
 
+        ranges::sort(items, less{}, [](const auto& item) {
+            const auto& [i, j, x] = item;
+            return pair{i, j};
+        });
+
         // index compression
         for (const auto& [i, j, x] : items) {
             inv_sahz_i.push_back(i);

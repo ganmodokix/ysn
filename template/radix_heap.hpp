@@ -50,31 +50,41 @@ struct radix_heap {
     void push(const key_type key, T&& value) {
         ++size_;
         const auto index = encode_key(key);
-        varr[find_bucket(index, last_)].emplace_back(index, forward<T>(value));
+        varr[find_bucket(index, last_)].emplace_back(index, value_type(forward<T>(value)));
     }
 
     template <typename... Args>
     void emplace(const key_type key, Args&&... args) {
         ++size_;
         const auto index = encode_key(key);
-        varr[find_bucket(index, last_)].emplace_back(index, forward<Args>(args)...);
+        varr[find_bucket(index, last_)].emplace_back(index, value_type(forward<Args>(args)...));
+    }
+
+    void pull() {
+        if (!varr.front().empty()) return;
+
+        auto idx = index_type{1};
+        while (varr[idx].empty()) ++idx;
+        last_ = min_element(ALL(varr[idx]))->first;
+        
+        for (auto&& p : varr[idx]) {
+            const auto dst = find_bucket(p.first, last_);
+            varr[dst].emplace_back(move(p));
+        }
+        varr[idx] = {};
     }
 
     pair<key_type, value_type> pop() {
-        if (varr.front().empty()) {
-            auto idx = index_type{1};
-            while (varr[idx].empty()) ++idx;
-            last_ = min_element(ALL(varr[idx]))->first;
-            
-            for (auto&& p : varr[idx]) {
-                const auto dst = find_bucket(p.first, last_);
-                varr[dst].emplace_back(move(p));
-            }
-            varr[idx] = {};
-        }
+        pull();
         --size_;
         auto index_value = move(varr[0].back());
         varr[0].pop_back();
+        return {decode_key(index_value.first), move(index_value.second)};
+    }
+
+    pair<key_type, value_type> top() {
+        pull();
+        const auto index_value = varr[0].back();
         return {decode_key(index_value.first), move(index_value.second)};
     }
 };
