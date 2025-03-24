@@ -1,17 +1,23 @@
 #pragma once
 #include "base_template.hpp"
 // Manacher's Algorithm: {s[i] = iを中心にした最長の回文の半径} を返す．線形時間．
-template<typename RandomAccessIterator>
-vector<size_t> manacher(RandomAccessIterator first, RandomAccessIterator last) {
-    size_t i = 0, j = 0;
-    assert(last - first >= 0);
-    size_t n = last - first;
-    vector<size_t> r(n, 0);
-    while (i < n) {
-        while (i >= j && i + j < n && *(first + i-j) == *(first + i+j)) j++;
+template <
+    ranges::random_access_range R,
+    predicate Pred = ranges::equal_to,
+    regular_invocable Proj = identity
+>
+vector<size_t> manacher(R&& r, Pred pred = {}, Proj proj = {}) {
+    const auto n = ranges::size(r);
+    auto r = vector(n, size_t{0});
+    const auto begin = ranges::begin(r);
+    for (auto i = size_t{0}, j = size_t{0}; i < n; ) {
+        while (
+            i >= j && i + j < n &&
+            invoke(pred, *(begin + i - j), *(begin + i + j))
+        ) j++;
         r[i] = j;
-        size_t k = 1;
-        while (i >= k && k + r[i-k] < j) r[i+k] = r[i-k], k++;
+        auto k = size_t{1};
+        while (i >= k && k + r[i - k] < j) r[i + k] = r[i - k], ++k;
         i += k;
         j -= k;
     }
