@@ -3,8 +3,8 @@
 // Manacher's Algorithm: {s[i] = iを中心にした最長の回文の半径} を返す．線形時間．
 template <
     ranges::random_access_range R,
-    predicate Pred = ranges::equal_to,
-    regular_invocable Proj = identity
+    typename Pred = ranges::equal_to,
+    typename Proj = identity
 >
 vector<size_t> manacher(R&& r, Pred pred = {}, Proj proj = {}) {
     const auto n = ranges::size(r);
