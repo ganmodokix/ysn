@@ -1,27 +1,27 @@
 #pragma once
 #include "base_template.hpp"
 #include "segtree/bit.hpp"
+#include "ranges_to.hpp"
 // BITを用いて数列の転倒数を求める　O(NlogN)
-template <typename T>
-size_t inversion(vector<T> &x0) {
-    
-    vector<T> x = x0;
-    const int n = x0.size();
-    
+template <ranges::forward_range R>
+size_t inversion(R&& r) {
+
+    using T = ranges::range_value_t<R>;
+
     // 座圧
-    vector<T> unq = x;
-    sort(unq.begin(), unq.end());
-    unq.erase(unique(unq.begin(), unq.end()), unq.end());
-    map<T, int> sahz;
-    for (size_t i = 0; i < unq.size(); i++) sahz[unq[i]] = i;
-    for (size_t i = 0; i < x.size(); i++) x[i] = sahz[x[i]];
+    auto unq = r | to_vector<T>{};
+    const auto n = unq.size();
+    UNIQUE(unq);
+    auto sahz = unordered_map<T, size_t>{};
+    for (auto i = size_t{0}; i < unq.size(); ++i) sahz[unq[i]] = i;
     
     // BITで転倒数を求める
-    size_t ans = 0;
-    BIT<int> bit(n);
-    for (int i = 0; i < n; i++) {
-        ans += bit.sum(x[i]+1, n);
-        bit.add(x[i], 1);
+    auto ans = size_t{0};
+    auto bit = BIT<size_t>(n);
+    for (const auto x : r) {
+        const auto i = sahz[x];
+        ans += bit.sum(i + 1, n);
+        bit.add(i, 1);
     }
     
     return ans;
