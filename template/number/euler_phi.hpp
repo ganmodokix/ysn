@@ -2,7 +2,7 @@
 #include "base_template.hpp"
 
 template <integral T>
-consteval T euler_phi(T n) {
+constexpr T euler_phi(T n) {
     assert(n > 0);
 
     auto phi = n;

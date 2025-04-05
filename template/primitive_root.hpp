@@ -6,7 +6,7 @@
 
 namespace primitive_root_detail {
     template<integral T>
-    consteval pair<T, vector<pair<T, T>>> phi_prime_factors(const T n) {
+    constexpr pair<T, vector<pair<T, T>>> phi_prime_factors(const T n) {
         assert(n >= 2);
         auto pf = vector<pair<T, T>>{};
         const auto phi = euler_phi(n);
@@ -27,7 +27,7 @@ namespace primitive_root_detail {
 }
 
 // 乱択で原始根を求める
-consteval ll random_primitive_root(const ll pdiv) {
+constexpr ll random_primitive_root(const ll pdiv) {
     assert(pdiv >= 2);
 
     // 素因数分解
@@ -51,7 +51,7 @@ consteval ll random_primitive_root(const ll pdiv) {
 
 // 最小の原始根を総当たりで求める pdiv が素数であればすぐ終わるはず
 // コンパイル時に行ってしまうことを推奨
-consteval ll primitive_root(const ll pdiv) {
+constexpr ll primitive_root(const ll pdiv) {
     assert(pdiv >= 2);
 
     // 素因数分解

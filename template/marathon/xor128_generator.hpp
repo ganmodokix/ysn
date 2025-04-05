@@ -8,9 +8,9 @@ struct xor128_generator {
     uint32_t z = 521288629u;
     uint32_t w = 88675123u;
 
-    consteval xor128_generator(const uint32_t seed = 0) { x ^= seed; }
+    constexpr xor128_generator(const uint32_t seed = 0) { x ^= seed; }
 
-    consteval uint32_t operator()() {
+    constexpr uint32_t operator()() {
         auto t = uint32_t{};
         t = x ^ (x << 11);
         x = y; y = z; z = w;
