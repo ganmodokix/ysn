@@ -6,6 +6,30 @@ namespace ganmodokix {
     ostream& __dump_single(const char* value);
     ostream& __dump_single(string_view value);
     ostream& __dump_single(const string& value);
+    #if defined(__SIZEOF_INT128__)
+    ostream& __dump_single(__int128_t value) {
+        auto s = string{};
+        const auto sg = value < 0;
+        if (value < 0) value = -value;
+        while (value > 0) {
+            s += (char)('0' + value % 10);
+            value /= 10;
+        }
+        if (s.empty()) s = "0";
+        ranges::reverse(s);
+        return cerr << "\e[33m" << "+-"[sg] << s << "\e[m";
+    }
+    ostream& __dump_single(__uint128_t value) {
+        auto s = string{};
+        while (value > 0) {
+            s += (char)('0' + value % 10);
+            value /= 10;
+        }
+        if (s.empty()) s = "0";
+        ranges::reverse(s);
+        return cerr << "\e[33m" << s << "U\e[m";
+    }
+    #endif
     template <typename T>
     ostream& __dump_single(optional<T> value);
     template <typename Container>

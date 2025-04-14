@@ -5,7 +5,7 @@ template <typename T>
 struct median_multiset {
 
     multiset<T> s, t;
-    median_multiset<T>() = default;
+    median_multiset() = default;
 
     void regularize() {
         while (s.size() && t.size() && *s.rbegin() > *t.begin()) {
@@ -43,7 +43,8 @@ struct median_multiset {
 
     T median() const {
         if (s.size() == t.size()) {
-            return (*s.rbegin() + *t.begin()) / 2;
+            assert(!s.empty());
+            return midpoint(*s.rbegin(), *t.begin());
         } else {
             return *t.begin();
         }
