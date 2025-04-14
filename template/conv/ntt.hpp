@@ -24,6 +24,14 @@ template <ll pdiv, ll prim, typename T, typename U>
 vector<ll> convolve_p(T&& x, U&& y) {
     assert(!x.empty() && !y.empty());
     const auto t = x.size() + y.size() - 1;
+    if (min(x.size(), y.size()) <= size_t{60}) {
+        auto r = vector(t, 0LL);
+        REP(i, x.size()) REP(j, y.size()) {
+            r[i + j] += x[i] * y[j] % pdiv;
+            if (r[i + j] >= pdiv) r[i + j] -= pdiv;
+        }
+        return r;
+    }
     const auto h = bit_ceil(t);
     auto a = forward<T>(x); a.resize(h, 0);
     auto b = forward<U>(y); b.resize(h, 0);
