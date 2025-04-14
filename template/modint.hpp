@@ -1,6 +1,8 @@
 #pragma once
-template <long long pdiv>
+template <long long pdiv_>
+requires (pdiv_ >= 1)
 struct moduloint {
+    static constexpr auto pdiv = pdiv_;
     long long x = 0;
     constexpr moduloint(long long _x = 0) noexcept: x(regularize(_x)) {}
     static constexpr long long regularize(long long x) noexcept { x %= pdiv; x += pdiv; return x - (x >= pdiv ? pdiv : 0); }
