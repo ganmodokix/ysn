@@ -1,4 +1,5 @@
-// #REQ: base_template
+#pragma once
+#include "base_template.hpp"
 
 // a * b mod 2^61-1
 // https://qiita.com/keymoon/items/11fac5627672a6d6a9f6
