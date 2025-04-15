@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit.hpp"
+#include "modint_petit_p.hpp"
 #include "sspp.hpp"
 
 // ref: https://suisen-kyopro.hatenablog.com/entry/2023/11/22/201600
@@ -62,7 +62,7 @@ namespace factorial_batch_998244353 {
             return it->second;
         }
         if (n % b * 2 >= b && n / b + 1 < (ll)batch.size()) {
-            auto ans = modinv(batch[n / b + 1], pdiv);
+            auto ans = modinv_p<pdiv>(batch[n / b + 1]);
             DSRNG(x, (n / b + 1) * b, n + 1) {
                 (ans *= x) %= pdiv;
             }

@@ -6,6 +6,7 @@
 // FPS 商 O(NlogN)
 template <ll pdiv, ll prim>
 vector<ll> fps_quotient(vector<ll> f, vector<ll> g) {
+    assert(false); // bullshit below
     const auto n = f.size();
     const auto m = g.size();
     assert(n >= m);

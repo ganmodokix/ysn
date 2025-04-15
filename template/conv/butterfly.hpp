@@ -1,6 +1,7 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit.hpp"
+#include "modint_petit_p.hpp"
+#include "number/primitive_root.hpp"
 // 2段ずつのバタフライ演算
 // 参考実装: ACL https://github.com/atcoder/ac-library/blob/master/atcoder/convolution.hpp
 
@@ -17,8 +18,8 @@ struct butterfly_proprocess {
     array<ll, max(0LL, rank2 - 2)> irate3;
 
     constexpr butterfly_proprocess() noexcept {
-        root[rank2] = modpow(prim, (pdiv - 1) >> rank2, pdiv);
-        iroot[rank2] = modinv(root[rank2], pdiv);
+        root[rank2] = modpow_p<pdiv>(prim, (pdiv - 1) >> rank2);
+        iroot[rank2] = modinv_p<pdiv>(root[rank2]);
         DSRNG(i, rank2 - 1, 0) {
             root[i] = root[i + 1] * root[i + 1] % pdiv;
             iroot[i] = iroot[i + 1] * iroot[i + 1] % pdiv;
@@ -181,7 +182,7 @@ vector<ll> butterfly_inv(vector<ll>&& a_) {
         }
     }
 
-    const ll iz = modinv(1 << h, pdiv);
+    const ll iz = modinv_p<pdiv>(1 << h);
     for (auto&& x : a) (x *= iz) %= pdiv;
 
     return a;

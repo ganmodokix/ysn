@@ -19,7 +19,7 @@ auto intt(T&& a) {
     return ntt(forward<T>(a), true);
 }
 
-// 適切な原始根の存在する法での畳み込み
+// \mathbb{F}_{m} での畳み込み
 template <ll pdiv, ll prim, typename T, typename U>
 vector<ll> convolve_p(T&& x, U&& y) {
     assert(!x.empty() && !y.empty());

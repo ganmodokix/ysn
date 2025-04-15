@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit.hpp"
+#include "modint_petit_p.hpp"
 #include "fps/log.hpp"
 #include "fps/exp.hpp"
 
@@ -26,8 +26,8 @@ vector<ll> fps_pow(vector<ll> f, ll n) {
     ll offset = find_if(ALL(f), [](auto x) { return x != 0; }) - f.begin();
     if (offset == (ll)f.size()) return f;
 
-    const auto multiplier_total = modpow(f[offset], n, pdiv);
-    const auto multiplier_inv = modinv(f[offset], pdiv);
+    const auto multiplier_total = modpow_p<pdiv>(f[offset], n);
+    const auto multiplier_inv = modinv_p<pdiv>(f[offset]);
 
     if (offset > 0) { 
 
