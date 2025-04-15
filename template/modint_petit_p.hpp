@@ -7,7 +7,7 @@
 // mod pdiv 上での a^n (pdiv は素数である必要が**ある**)
 // フェルマーの小定理を用いて負のべき乗も計算可能としたもの
 template <ll pdiv>
-requires (is_prime_by_trial_division(pdiv))
+requires (is_prime(pdiv))
 constexpr ll modpow_p(ll a, ll n) {
     a %= pdiv; if (a < 0) a += pdiv;
     n %= pdiv - 1; if (n < 0) n += pdiv - 1;
