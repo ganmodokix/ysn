@@ -26,5 +26,5 @@ constexpr ll modinv(const ll a, const ll pdiv) { return modpow(a, pdiv-2, pdiv);
 // 素数moduloがコンパイル時に分かっている場合
 template <ll pdiv>
 constexpr ll modinv_p(const ll a) {
-    return modpow_p<pdiv>(a);
+    return modpow_p<pdiv>(a, pdiv - 2);
 }
