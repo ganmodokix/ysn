@@ -6,9 +6,9 @@
 template <long long pdiv_>
 requires (pdiv_ >= 1)
 struct moduloint {
-private:
+    // テンプレートパラメータにできるリテラルクラス型にできるよう public にしているが基本 item() を使用すること
     long long x = 0;
-public:
+    
     static constexpr auto pdiv = pdiv_;
     constexpr moduloint(long long _x = 0) noexcept: x(regularize(_x)) {}
     static constexpr long long regularize(long long x) noexcept { x %= pdiv; x += pdiv; return x - (x >= pdiv ? pdiv : 0); }
@@ -44,14 +44,23 @@ constexpr moduloint<pdiv> operator* (const long long a, const moduloint<pdiv> b)
 template <long long pdiv>
 constexpr moduloint<pdiv> operator/ (const long long a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) / b; }
 
+// DUMP()対応
+template <ll pdiv>
+ostream& __dump_single(const moduloint<pdiv> value) {
+    return cerr << "\e[35m" << value.item() << "\e[2m_" << pdiv << "\e[m";
+}
+
 // 剰余類環 modint であることを表すコンセプト
 template <typename T>
 concept mod_integral =
-requires(const T a, const T b) {
+requires(const T a, const T b, ll n) {
     { a + b } -> std::convertible_to<T>;
     { a - b } -> std::convertible_to<T>;
     { a * b } -> std::convertible_to<T>;
     { a / b } -> std::convertible_to<T>;
+    { -a } -> std::convertible_to<T>;
+    { a.pow(n) } -> std::convertible_to<T>;
+    { a.inv() } -> std::convertible_to<T>;
     { a.item() } -> std::integral;
 } &&
 requires(T& a, const T b) {
