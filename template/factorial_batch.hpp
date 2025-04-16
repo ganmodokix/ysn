@@ -66,7 +66,7 @@ namespace factorial_batch_998244353 {
             DSRNG(x, (n / b + 1) * b, n + 1) {
                 (ans *= x) %= pdiv;
             }
-            return cache[n] = modinv(ans, pdiv);
+            return cache[n] = modinv_p<pdiv>(ans);
         } else {
             auto ans = batch[n / b];
             RANGE(x, n / b * b + 1, n) {
@@ -88,7 +88,7 @@ namespace factorial_batch_998244353 {
         a %= pdiv;
         if (a == 0) return 0;
         b %= pdiv;
-        return fac(b) * modinv(fac(a-1), pdiv) % pdiv;
+        return fac(b) * modinv_p<pdiv>(fac(a-1)) % pdiv;
     }
     // 初項 a, 公差 b, 長さ n の等差数列の総積 mod pdiv
     // \prod_{k=0}^{n-1} (a + kb)
@@ -97,7 +97,7 @@ namespace factorial_batch_998244353 {
         if ((b %= pdiv) == 0) {
             return modpow(a, n, pdiv);
         }
-        const auto offset = (a * modinv(b, pdiv)) % pdiv;
+        const auto offset = (a * modinv_p<pdiv>(b)) % pdiv;
         return seqprod(offset, offset + n - 1) * modpow(b, n, pdiv) % pdiv;
     }
 
