@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit.hpp"
+#include "modint/modint_petit.hpp"
 #include "garner.hpp"
 #include "conv/butterfly.hpp"
 

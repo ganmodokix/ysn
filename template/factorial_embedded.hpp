@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit_p.hpp"
+#include "modint/modint_petit_p.hpp"
 
 namespace factorial_bucket_cache_998244353 {
     constexpr auto pdiv = 998244353LL;

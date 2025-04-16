@@ -1,7 +1,7 @@
 #pragma once
 #include "base_template.hpp"
 #include "number/divisor.hpp"
-#include "modint_petit.hpp"
+#include "modint/modint_petit.hpp"
 #include "number/miller_rabin.hpp"
 
 // 剰余演算ライブラリ (小): 剰余と逆元だけ欲しいときに使う軽量ライブラリ

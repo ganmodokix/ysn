@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit_p.hpp"
+#include "modint/modint_petit_p.hpp"
 #include "fps/log.hpp"
 #include "fps/exp.hpp"
 

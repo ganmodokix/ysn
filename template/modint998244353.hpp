@@ -1,7 +1,7 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint.hpp"
-#include "modint_factorial_cache.hpp"
+#include "modint/modint.hpp"
+#include "modint/modint_factorial_cache.hpp"
 using modint = moduloint<998244353LL>;
 
 // IO

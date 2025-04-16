@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit.hpp"
+#include "modint/modint_petit.hpp"
 #include "number/euler_phi.hpp"
 #include "marathon/xor128_generator.hpp"
 

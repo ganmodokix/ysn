@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit_p.hpp"
+#include "modint/modint_petit_p.hpp"
 // Garnerのアルゴリズム O(|w|^2)
 // w[i] = {x[i], m[i]} とすると {x === x[i] mod m[i]} から x mod pdiv を復元
 // w[i].second (m[i]) は pairwise 互いに素である必要がある

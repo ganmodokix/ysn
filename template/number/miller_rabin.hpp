@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit.hpp"
+#include "modint/modint_petit.hpp"
 
 // n 素数である、すなわち約数をちょうど 2 個持つ iff trueを返す
 // ! 負整数 n は約数 1, n, -n を持ち3つ以上

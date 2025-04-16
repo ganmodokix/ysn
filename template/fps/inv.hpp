@@ -1,7 +1,7 @@
 #pragma once
 #include "base_template.hpp"
 #include "conv/ntt.hpp"
-#include "modint_petit.hpp"
+#include "modint/modint_petit.hpp"
 
 // FPS逆元, 入力と同じ次数 O(NlogN)
 template <ll pdiv, ll prim>

@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit_p.hpp"
+#include "modint/modint_petit_p.hpp"
 #include "sspp.hpp"
 
 // ref: https://suisen-kyopro.hatenablog.com/entry/2023/11/22/201600

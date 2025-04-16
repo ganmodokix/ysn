@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit_p.hpp"
+#include "modint/modint_petit_p.hpp"
 
 // 剰余類環 \mathbb{Z}/n\mathbb{Z}
 template <long long pdiv_>
