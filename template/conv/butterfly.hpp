@@ -1,113 +1,116 @@
 #pragma once
 #include "base_template.hpp"
 #include "modint/modint_petit_p.hpp"
+#include "modint/modint.hpp"
 #include "number/primitive_root.hpp"
+#include "number/miller_rabin.hpp"
+
 // 2段ずつのバタフライ演算
 // 参考実装: ACL https://github.com/atcoder/ac-library/blob/master/atcoder/convolution.hpp
 
 // (pdiv, prim) ごとに前計算可能なもの
-template <ll pdiv, ll prim>
+template <mod_integral T, T prim>
 struct butterfly_proprocess {
     
-    static constexpr ll rank2 = countr_zero<ull>(pdiv - 1);
-    array<ll, rank2 + 1> root;
-    array<ll, rank2 + 1> iroot;
-    array<ll, max(0LL, rank2 - 1)> rate2;
-    array<ll, max(0LL, rank2 - 1)> irate2;
-    array<ll, max(0LL, rank2 - 2)> rate3;
-    array<ll, max(0LL, rank2 - 2)> irate3;
+    static constexpr ll rank2 = countr_zero<ull>(T::pdiv - 1);
+    array<T, rank2 + 1> root;
+    array<T, rank2 + 1> iroot;
+    array<T, max(0LL, rank2 - 1)> rate2;
+    array<T, max(0LL, rank2 - 1)> irate2;
+    array<T, max(0LL, rank2 - 2)> rate3;
+    array<T, max(0LL, rank2 - 2)> irate3;
 
     constexpr butterfly_proprocess() noexcept {
-        root[rank2] = modpow_p<pdiv>(prim, (pdiv - 1) >> rank2);
-        iroot[rank2] = modinv_p<pdiv>(root[rank2]);
+        root[rank2] = prim.pow((T::pdiv - 1) >> rank2);
+        iroot[rank2] = root[rank2].inv();
         DSRNG(i, rank2 - 1, 0) {
-            root[i] = root[i + 1] * root[i + 1] % pdiv;
-            iroot[i] = iroot[i + 1] * iroot[i + 1] % pdiv;
+            root[i] = root[i + 1] * root[i + 1];
+            iroot[i] = iroot[i + 1] * iroot[i + 1];
         }
         {
-            ll prod = 1, iprod = 1;
+            auto prod = T{1};
+            auto iprod = T{1};
             REP(i, rank2 - 1) {
-                rate2[i] = root[i + 2] * prod % pdiv;
-                irate2[i] = iroot[i + 2] * iprod % pdiv;
-                (prod *= iroot[i + 2]) %= pdiv;
-                (iprod *= root[i + 2]) %= pdiv;
+                rate2[i] = root[i + 2] * prod;
+                irate2[i] = iroot[i + 2] * iprod;
+                prod *= iroot[i + 2];
+                iprod *= root[i + 2];
             }
         }
         {
-            ll prod = 1, iprod = 1;
+            auto prod = T{1};
+            auto iprod = T{1};
             REP(i, rank2 - 2) {
-                rate3[i] = root[i + 3] * prod % pdiv;
-                irate3[i] = iroot[i + 3] * iprod % pdiv;
-                (prod *= iroot[i + 3]) %= pdiv;
-                (iprod *= root[i + 3]) %= pdiv;
+                rate3[i] = root[i + 3] * prod;
+                irate3[i] = iroot[i + 3] * iprod;
+                prod *= iroot[i + 3];
+                iprod *= root[i + 3];
             }
         }
     }
 
-    static butterfly_proprocess<pdiv, prim>& singleton() noexcept {
-        static auto prep = butterfly_proprocess<pdiv, prim>{};
+    static butterfly_proprocess<T, prim>& singleton() noexcept {
+        static auto prep = butterfly_proprocess<T, prim>{};
         return prep;
     }
 
 };
 
 // ACL実装のバタフライ演算
-template <ll pdiv = 998244353, ll prim = 3>
-vector<ll> butterfly(vector<ll>&& a_) {
-    assert(has_single_bit(a_.size()));  // 長さが2冪か
-    assert(countr_zero<ull>(pdiv - 1) >= countr_zero(a_.size()));  // 1の|A|乗根が求まるか
+template <mod_integral T, T prim>
+requires (is_prime(T::pdiv))
+vector<T> butterfly(vector<T> a) {
 
-    vector<ll> a = move(a_);
-    
+    assert(has_single_bit(a.size()));  // 長さが2冪か
+    assert(countr_zero<ull>(T::pdiv - 1) >= countr_zero(a.size()));  // 1の|A|乗根が求まるか
+
     const auto n = (ll)a.size();
     const auto h = (ll)countr_zero<ull>(n);
 
-    static const auto& prep = butterfly_proprocess<pdiv, prim>::singleton();
+    static const auto& prep = butterfly_proprocess<T, prim>::singleton();
 
     // 飛ばし飛ばしのバタフライ演算で定数倍を改善
-    for (ll len = 0; len < h; ) {
-        ll rot = 1;
+    for (auto len = 0LL; len < h; ) {
+        auto rot = T{1};
         if (len + 1 == h) {
-            const ll p = 1LL << (h - len - 1);
+            const auto p = 1LL << (h - len - 1);
             REP(s, 1 << len) {
-                const ll offset = s << (h - len);
+                const auto offset = s << (h - len);
                 REP(i, p) {
-                    auto &al = a[i + offset];
-                    auto &ar = a[i + offset + p];
-                    const ll l = al;
-                    const ll r = ar * rot % pdiv;
-                    al = l + r; if (al >= pdiv) al -= pdiv;
-                    ar = l + pdiv - r; if (ar >= pdiv) ar -= pdiv;
+                    auto&& al = a[i + offset];
+                    auto&& ar = a[i + offset + p];
+                    const auto l = al;
+                    const auto r = ar * rot;
+                    al = l + r;
+                    ar = l - r;
                 }
-                if (s + 1 != s_len) {
-                    (rot *= prep.rate2[countr_zero(~(ull)s)]) %= pdiv;
-                }
+                if (s + 1 == s_len) break;
+                rot *= prep.rate2[countr_zero(~(ull)s)];
             }
             len++;
         } else {
             // 4-base
             const ll p = 1 << (h - len - 2);
-            const ll imag = prep.root[2];
+            const auto imag = prep.root[2];
             REP(s, 1 << len) {
-                const ll rot2 = rot * rot % pdiv;
-                const ll rot3 = rot2 * rot % pdiv;
+                const auto rot2 = rot * rot;
+                const auto rot3 = rot2 * rot;
                 const ll offset = s << (h - len);
                 REP(i, p) {
-                    const ull pdiv2 = (ull)pdiv * (ull)pdiv;
-                    const ull a0 = a[i + offset        ];
-                    const ull a1 = a[i + offset + p    ] * rot;
-                    const ull a2 = a[i + offset + p * 2] * rot2;
-                    const ull a3 = a[i + offset + p * 3] * rot3;
-                    const ull a1na3 = (a1 + pdiv2 - a3) % pdiv;
-                    const ull a1na3imag = a1na3 * (ull)imag % pdiv;
-                    const ull na2 = pdiv2 - a2;
-                    (a[i + offset        ] = a0 + a2 + a1 + a3) %= pdiv;
-                    (a[i + offset + p    ] = a0 + a2 + (pdiv2 * 2 - (a1 + a3))) %= pdiv;
-                    (a[i + offset + p * 2] = a0 + na2 + a1na3imag) %= pdiv;
-                    (a[i + offset + p * 3] = a0 + na2 + (pdiv2 - a1na3imag)) %= pdiv;
+                    const auto a0 = a[i + offset        ];
+                    const auto a1 = a[i + offset + p    ] * rot;
+                    const auto a2 = a[i + offset + p * 2] * rot2;
+                    const auto a3 = a[i + offset + p * 3] * rot3;
+                    const auto a1na3 = a1 - a3;
+                    const auto a1na3imag = a1na3 * imag;
+                    const auto na2 = -a2;
+                    a[i + offset        ] = a0 + a2 + a1 + a3;
+                    a[i + offset + p    ] = a0 + a2 + - (a1 + a3);
+                    a[i + offset + p * 2] = a0 + na2 + a1na3imag;
+                    a[i + offset + p * 3] = a0 + na2 - a1na3imag;
                 }
                 if (s + 1 != s_len) {
-                    (rot *= prep.rate3[countr_zero(~(ull)s)]) %= pdiv;
+                    rot *= prep.rate3[countr_zero(~(ull)s)];
                 }
             }
             len += 2;
@@ -117,78 +120,65 @@ vector<ll> butterfly(vector<ll>&& a_) {
     return a;
 }
 
-template <ll pdiv = 998244353, ll prim = 3>
-vector<ll> butterfly(const vector<ll>& a) {
-    return butterfly<pdiv, prim>(vector<ll>(a));
-}
-
 // ACL実装の逆バタフライ演算
-template <ll pdiv = 998244353, ll prim = 3>
-vector<ll> butterfly_inv(vector<ll>&& a_) {
-    assert(has_single_bit(a_.size()));  // 長さが2冪か
-    assert(countr_zero<ull>(pdiv - 1) >= countr_zero(a_.size()));  // 1の|A|乗根が求まるか
+template <mod_integral T, T prim>
+vector<T> butterfly_inv(vector<T> a) {
+    assert(has_single_bit(a.size()));  // 長さが2冪か
+    assert(countr_zero<ull>(T::pdiv - 1) >= countr_zero(a.size()));  // 1の|A|乗根が求まるか
 
-    vector<ll> a = move(a_);
-    
     const auto n = (ll)a.size();
     const auto h = (ll)countr_zero<ull>(n);
 
-    static const auto& prep = butterfly_proprocess<pdiv, prim>::singleton();
+    static const auto& prep = butterfly_proprocess<T, prim>::singleton();
 
     // 飛ばし飛ばしのバタフライ演算で定数倍を改善
     for (ll len = h; len; ) {
         const ll p = 1 << (h - len);
-        ll irot = 1;
+        auto irot = T{1};
         if (len == 1) {
             REP(s, 1 << (len - 1)) {
-                const ll offset = s << (h - len + 1);
+                const auto offset = s << (h - len + 1);
                 REP(i, p) {
-                    auto &al = a[i + offset];
-                    auto &ar = a[i + offset + p];
-                    const ll l = al;
-                    const ll r = ar;
-                    al = l + r; if (al >= pdiv) al -= pdiv;
-                    ar = l + pdiv - r; if (ar >= pdiv) ar -= pdiv;
-                    (ar *= irot) %= pdiv;
+                    auto&& al = a[i + offset];
+                    auto&& ar = a[i + offset + p];
+                    const auto l = al;
+                    const auto r = ar;
+                    al = l + r;
+                    ar = l - r;
+                    ar *= irot;
                 }
-                if (s + 1 != s_len) {
-                    (irot *= prep.irate2[countr_zero(~(ull)(s))]) %= pdiv;
-                }
+                if (s + 1 == s_len) break;
+                irot *= prep.irate2[countr_zero(~(ull)(s))];
             }
             len--;
         } else {
             // 4-base
-            const ll iimag = prep.iroot[2];
+            const auto iimag = prep.iroot[2];
             REP(s, 1 << (len - 2)) {
-                const ll irot2 = irot * irot % pdiv;
-                const ll irot3 = irot2 * irot % pdiv;
-                const ll offset = s << (h - len + 2);
+                const auto irot2 = irot * irot;
+                const auto irot3 = irot2 * irot;
+                const auto offset = s << (h - len + 2);
                 REP(i, p) {
-                    const ull a0 = a[i + offset        ];
-                    const ull a1 = a[i + offset + p    ];
-                    const ull a2 = a[i + offset + p * 2];
-                    const ull a3 = a[i + offset + p * 3];
-                    const ull a2na3iimag = (a2 + pdiv - a3) * iimag % pdiv;
-                    (a[i + offset        ] = a0 + a1 + a2 + a3) %= pdiv;
-                    (a[i + offset + p    ] = (a0 + (pdiv - a1) + a2na3iimag) * irot) %= pdiv;
-                    (a[i + offset + p * 2] = (a0 + a1 + (pdiv - a2) + (pdiv - a3)) * irot2) %= pdiv;
-                    (a[i + offset + p * 3] = (a0 + (pdiv - a1) + (pdiv - a2na3iimag)) * irot3) %= pdiv;
+                    const auto a0 = a[i + offset        ];
+                    const auto a1 = a[i + offset + p    ];
+                    const auto a2 = a[i + offset + p * 2];
+                    const auto a3 = a[i + offset + p * 3];
+                    const auto a2na3iimag = (a2 - a3) * iimag;
+                    a[i + offset        ] = a0 + a1 + a2 + a3;
+                    a[i + offset + p    ] = (a0 + - a1 + a2na3iimag) * irot;
+                    a[i + offset + p * 2] = (a0 + a1 + - a2 - a3) * irot2;
+                    a[i + offset + p * 3] = (a0 - a1 - a2na3iimag) * irot3;
                 }
                 if (s + 1 != s_len) {
-                    (irot *= prep.irate3[countr_zero(~(ull)(s))]) %= pdiv;
+                    irot *= prep.irate3[countr_zero(~(ull)(s))];
                 }
             }
             len -= 2;
         }
     }
 
-    const ll iz = modinv_p<pdiv>(1 << h);
-    for (auto&& x : a) (x *= iz) %= pdiv;
+    const auto iz = T{1 << h}.inv();
+    for (auto&& x : a) x *= iz;
 
     return a;
-}
-
-template <ll pdiv = 998244353, ll prim = 3>
-vector<ll> butterfly_inv(const vector<ll>& a) {
-    return butterfly_inv<pdiv, prim>(vector<ll>(a));
 }

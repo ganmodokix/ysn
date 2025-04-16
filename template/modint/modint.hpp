@@ -1,6 +1,7 @@
 #pragma once
 #include "base_template.hpp"
 #include "modint/modint_petit_p.hpp"
+#include "ranges_to.hpp"
 
 // 剰余類環 \mathbb{Z}/n\mathbb{Z}
 template <long long pdiv_>
@@ -48,6 +49,16 @@ constexpr moduloint<pdiv> operator/ (const long long a, const moduloint<pdiv> b)
 template <ll pdiv>
 ostream& __dump_single(const moduloint<pdiv> value) {
     return cerr << "\e[35m" << value.item() << "\e[2m_" << pdiv << "\e[m";
+}
+
+// ranges_to 対応
+namespace ganmodokix {
+    template <ll pdiv, integral To>
+    struct _Converter<moduloint<pdiv>, To> {
+        constexpr To operator() (const moduloint<pdiv>& x) const {
+            return static_cast<To>(x.item());
+        }
+    };
 }
 
 // 剰余類環 modint であることを表すコンセプト
