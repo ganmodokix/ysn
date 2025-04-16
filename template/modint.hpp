@@ -1,6 +1,8 @@
 #pragma once
 #include "base_template.hpp"
+#include "modint_petit_p.hpp"
 
+// 剰余類環 \mathbb{Z}/n\mathbb{Z}
 template <long long pdiv_>
 requires (pdiv_ >= 1)
 struct moduloint {
@@ -11,18 +13,9 @@ public:
     constexpr moduloint(long long _x = 0) noexcept: x(regularize(_x)) {}
     static constexpr long long regularize(long long x) noexcept { x %= pdiv; x += pdiv; return x - (x >= pdiv ? pdiv : 0); }
     static constexpr long long regularize(moduloint a) noexcept { return a.x; }
-    static constexpr long long llpow(long long a, long long n) noexcept {
-        a %= pdiv; if (a < 0) a += pdiv;
-        n %= pdiv-1; if (n < 0) n += pdiv-1;
-        long long result = 1;
-        for (long long base = a; n; n >>= 1) {
-            if (n & 1) (result *= base) %= pdiv;
-            (base *= base) %= pdiv;
-        }
-        return result;
-    }
-    static constexpr long long llinv(long long a) noexcept { return llpow(a, pdiv-2); }
-    static constexpr long long llinv(moduloint a) noexcept { return a.pow(pdiv-2).x; }
+    static constexpr long long llpow(long long a, long long n) noexcept { return modpow_p<pdiv>(a, n); }
+    static constexpr long long llinv(long long a) noexcept { return modinv_p<pdiv>(a); }
+    static constexpr long long llinv(moduloint a) noexcept { return modinv_p<pdiv>(a.x); }
     constexpr moduloint pow(long long n) const noexcept { return moduloint(llpow(x, n)); }
     constexpr moduloint inv() const noexcept { return moduloint(llinv(x)); }
     constexpr moduloint& operator+= (moduloint a) noexcept { x +=        a.x; if (x >= pdiv) x -= pdiv; return *this; }
@@ -40,7 +33,6 @@ public:
     constexpr moduloint operator- () const noexcept { return moduloint(pdiv - x); }
     friend constexpr bool operator==(const moduloint& x, const moduloint& y) { return regularize(x) == regularize(y); }
     friend constexpr bool operator!=(const moduloint& x, const moduloint& y) { return !(x == y); }
-    static auto modulo() { return pdiv; }
     constexpr auto item() const { return x; }
 };
 template <long long pdiv>
