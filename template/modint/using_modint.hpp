@@ -8,10 +8,8 @@
 #define USING_MODINT(PDIV) \
     using modint = moduloint<(PDIV)>; \
     \
-    /* IO */ \
+    /* Literal */ \
     constexpr modint operator"" _p(unsigned long long _x) noexcept { return modint(_x); } \
-    ostream& operator<< (ostream& ost, const modint a) { return ost << a.item(); } \
-    istream& operator>> (istream& ist, modint &a) { long long x = {}; ist >> x; a = modint(x); return ist; } \
     \
     /* Factorial n! */ \
     factorial_cache<modint> fac_cache; \

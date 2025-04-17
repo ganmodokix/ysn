@@ -45,6 +45,12 @@ constexpr moduloint<pdiv> operator* (const long long a, const moduloint<pdiv> b)
 template <long long pdiv>
 constexpr moduloint<pdiv> operator/ (const long long a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) / b; }
 
+// I/O 対応
+template <ll pdiv>
+ostream& operator<< (ostream& ost, const moduloint<pdiv> a) { return ost << a.item(); }
+template <ll pdiv>
+istream& operator>> (istream& ist, moduloint<pdiv> &a) { long long x = {}; ist >> x; a = x; return ist; }
+
 // DUMP()対応
 template <ll pdiv>
 ostream& __dump_single(const moduloint<pdiv> value) {

@@ -3,7 +3,7 @@
 template <typename T>
 struct factorial_cache {
 
-    vector<T> fac = {T(1)}, invfac = {T(1)};
+    vector<T> fac = {T{1}}, invfac = {T{1}};
 
     void prepare(long long nmax) {
 
@@ -22,3 +22,10 @@ struct factorial_cache {
     }
 
 };
+
+
+template<typename T>
+factorial_cache<T>& get_fac_cache_singleton() {
+    static auto fac_cache = factorial_cache<T>{};
+    return fac_cache;
+}
