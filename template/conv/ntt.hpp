@@ -4,18 +4,21 @@
 #include "garner.hpp"
 #include "conv/butterfly.hpp"
 #include "number/primitive_root.hpp"
+#include "number/miller_rabin.hpp"
 #include "ranges_to.hpp"
 
 // 精度に寄りけりだがconv1回で済むFFTの方がいい場合もあることに留意
 // Cooley-Tukey型 高速フーリエ変換 O(NlogN)
 // 原始根 prim_ が指定されない場合は最小の原始根が指定される
-template <mod_integral T, ll prim_ = -1>
-auto ntt(T&& a, const bool inv = false) -> vector<T> {
-    constexpr auto prim = T{prim_ != -1 ? prim_ : primitive_root(T::pdiv)};
+template <typename T, ll prim_ = -1>
+requires mod_integral<typename T::value_type>
+auto ntt(T&& a, const bool inv = false) -> vector<typename T::value_type> {
+    using V = typename T::value_type;
+    constexpr auto prim = V{prim_ != -1 ? prim_ : primitive_root(V::pdiv)};
     if (inv) {
-        return butterfly_inv<T, prim>(forward<T>(a));
+        return butterfly_inv<V, prim>(forward<T>(a));
     } else {
-        return butterfly<T, prim>(forward<T>(a));
+        return butterfly<V, prim>(forward<T>(a));
     }
 }
 template <mod_integral T, ll prim_ = -1>
