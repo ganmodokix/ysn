@@ -1,5 +1,6 @@
 #pragma once
 #include "base_template.hpp"
+#include "base_template/fast.hpp"
 #include "modint/modint_petit_p.hpp"
 #include "modint/modint.hpp"
 #include "number/primitive_root.hpp"
