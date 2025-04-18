@@ -1,6 +1,6 @@
 #pragma once
 #include "base_template.hpp"
-#include "modint_petit.hpp"
+#include "modint/modint_petit_p.hpp"
 
 namespace factorial_bucket_cache_998244353 {
     constexpr auto pdiv = 998244353LL;
@@ -49,16 +49,16 @@ namespace factorial_bucket_cache_998244353 {
         a %= pdiv;
         if (a == 0) return 0;
         b %= pdiv;
-        return fac_bucket(b) * modinv(fac_bucket(a-1), pdiv) % pdiv;
+        return fac_bucket(b) * modinv_p<pdiv>(fac_bucket(a-1)) % pdiv;
     }
     // 初項 a, 公差 b, 長さ n の等差数列の総積 mod pdiv
     // \prod_{k=0}^{n-1} (a + kb)
     ll aritprod(ll a, ll b, ll n) {
         if (n == 0) return 1;
         if ((b %= pdiv) == 0) {
-            return modpow(a, n, pdiv);
+            return modpow_p<pdiv>(a, n);
         }
         const auto offset = (a * modinv(b, pdiv)) % pdiv;
-        return seqprod(offset, offset + n - 1) * modpow(b, n, pdiv) % pdiv;
+        return seqprod(offset, offset + n - 1) * modpow_p<pdiv>(b, n) % pdiv;
     }
 }

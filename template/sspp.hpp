@@ -1,92 +1,73 @@
 #pragma once
 #include "base_template.hpp"
+#include "modint/modint.hpp"
+#include "modint/modint_factorial_cache.hpp"
 #include "conv/ntt.hpp"
 
 // Shift of Sampling Points of Polynomial
 // ref: https://suisen-cp.github.io/cp-library-cpp/library/polynomial/shift_of_sampling_points.hpp
-// verify: https://judge.yosupo.jp/submission/271976
-namespace sspp_998244353 {
-
-    namespace fac_cache {
-
-        constexpr auto pdiv = 998244353LL;
-
-        vector<ll> fac = {1};
-        vector<ll> invfac = {1};
-        void make_cache(ll new_size) {
-            const auto old_size = (ll)fac.size();
-            if (new_size <= old_size) return;
-            fac.resize(new_size);
-            invfac.resize(new_size);
-            RANGE(k, old_size, new_size - 1) {
-                fac[k] = fac[k - 1] * k % pdiv;
-            }
-            invfac[new_size - 1] = modinv(fac[new_size - 1], pdiv);
-            DSRNG(k, new_size - 2, old_size) {
-                invfac[k] = invfac[k + 1] * (k + 1) % pdiv;
-            }
-        }
-    };
-
-    constexpr auto pdiv = 998244353LL;
-    constexpr auto prim = 3LL;
+// verify: https://judge.yosupo.jp/submission/279497
+namespace sspp {
 
     // Finds (a_i)_{i=0}^{N-1} s.t. f(x) = \sum_{i=0}^{N-1} a_i x^\underline{n}
     // f: sampling points (f(i))_{i=0}^{N-1}
-    vector<ll> find_falling_factorial_poly(vector<ll> f) {
+    template<mod_integral T>
+    vector<T> find_falling_factorial_poly(vector<T> f) {
         // a_i = \sum_{i=0}^{N-1} \frac{f(j)}{j!} \cdot \frac{(-1)^{i-j}}{(i-j)!}
         const auto n = f.size();
 
-        fac_cache::make_cache(n);
-        using fac_cache::invfac;
+        auto& fac_cache = get_fac_cache_singleton<T>();
+        fac_cache.prepare(n);
+        const auto& invfac = fac_cache.invfac;
 
         REP(i, n) {
-            (f[i] *= invfac[i]) %= pdiv;
+            f[i] *= invfac[i];
         }
 
-        auto v = vector<ll>(invfac.begin(), invfac.begin() + n);
+        auto v = vector(invfac.begin(), invfac.begin() + n);
         STEP(i, 1, n-1, 2) {
-            v[i] = v[i] == 0 ? 0 : pdiv - v[i];
+            v[i] = -v[i];
         }
         
-        auto wv = convolve_p<pdiv, prim>(f, v);
+        auto wv = convolve_p(f, v);
         wv.resize(n);
         return wv;
     }
 
-    // ssps
-    vector<ll> sspp(vector<ll> f, const ll c_, const ll m) {
-        const auto c = (c_ % pdiv + pdiv) % pdiv;
+    
+    // ssps, (f(i))_{i=0}^{N-1} が得られているときに (f(c + i))_{i=0}^{M-1} を求める
+    template<mod_integral T>
+    vector<T> sspp(vector<T> f, const ll c_, const size_t m) {
+        const auto c = T{c_};
         const auto n = f.size();
         
-        fac_cache::make_cache(max<ll>(n, m));
-        using fac_cache::fac;
-        using fac_cache::invfac;
-        
         auto a = find_falling_factorial_poly(move(f));
+        
+        auto& fac_cache = get_fac_cache_singleton<T>();
+        fac_cache.prepare((ll)max(n, m));
+        const auto& fac = fac_cache.fac;
+        const auto& invfac = fac_cache.invfac;
 
         REP(i, n) {
-            (a[i] *= fac[i]) %= pdiv;
+            a[i] *= fac[i];
         }
-        ranges::reverse(a);
 
-        auto cffp = vector<ll>(n, 1LL);
-        RANGE(i, 1, n-1) {
-            cffp[i] = cffp[i-1] * (c + pdiv - i + 1) % pdiv;
+        auto rcffp = vector(n, T{1});
+        REP(i, n - 1) {
+            rcffp[n - i - 2] = rcffp[n - i - 1] * (c - i);
         }
-        REP(i, n) (cffp[i] *= invfac[i]) %= pdiv;
+        REP(i, n) rcffp[i] *= invfac[n - 1 - i];
 
-        auto b = convolve_p<pdiv, prim>(move(cffp), move(a));
-        b.resize(n);
+        auto b = convolve_p(move(rcffp), move(a));
+        b.erase(b.begin(), b.end() - n);
 
-        ranges::reverse(b);
-        REP(i, n) (b[i] *= invfac[i]) %= pdiv;
+        REP(i, n) b[i] *= invfac[i];
 
-        auto invfacn = vector<ll>(invfac.begin(), invfac.begin() + m);
-        auto ans = convolve_p<pdiv, prim>(move(b), move(invfacn));
+        auto invfacn = vector(invfac.begin(), invfac.begin() + m);
+        auto ans = convolve_p(move(b), move(invfacn));
         ans.resize(m);
         REP(i, m) {
-            (ans[i] *= fac[i]) %= pdiv;
+            ans[i] *= fac[i];
         }
 
         return ans;
