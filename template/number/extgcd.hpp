@@ -5,9 +5,9 @@
 // ax+by=gcd(a,b) の解 {gcd(a, b), x, y} を返す
 // http://noshi91.hatenablog.com/entry/2019/04/01/184957
 template<signed_integral T>
-tuple<T, T, T> extgcd(const T a, const T b) {
+constexpr tuple<T, T, T> extgcd(const T a, const T b) {
 
-    if (abs(a) < abs(b)) {
+    if ((a < 0 ? -a : a) < (b < 0 ? -b : b)) {
         const auto [g, y, x] = extgcd(b, a);
         return {g, x, y};
     }

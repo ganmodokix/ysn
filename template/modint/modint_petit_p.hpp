@@ -25,7 +25,7 @@ constexpr ll modpow_p(ll a, ll n) {
 constexpr ll modinv_p(const ll a, const ll pdiv) { return modpow(a, pdiv-2, pdiv); }
 
 // mod pdiv 上での逆元を求める (pdiv は素数じゃなくてもOKだがaとpdivが互いに素でなければ不存在、エラー)
-ll modinv_extgcd(const ll a, const ll pdiv) {
+constexpr ll modinv_extgcd(const ll a, const ll pdiv) {
     const auto [g, x, y] = extgcd(a, pdiv);
     assert(g == 1);
     return x % pdiv + (x < 0 ? pdiv : 0);

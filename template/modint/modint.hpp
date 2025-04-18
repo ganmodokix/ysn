@@ -3,53 +3,125 @@
 #include "modint/modint_petit_p.hpp"
 #include "ranges_to.hpp"
 
+using moduloint_item_t = long signed long;
+
 // 剰余類環 \mathbb{Z}/n\mathbb{Z}
-template <long long pdiv_>
+template <moduloint_item_t pdiv_>
 requires (pdiv_ >= 1)
 struct moduloint {
     // テンプレートパラメータにできるリテラルクラス型にできるよう public にしているが基本 item() を使用すること
-    long long x = 0;
+    moduloint_item_t x = 0;
     
     static constexpr auto pdiv = pdiv_;
-    constexpr moduloint(long long _x = 0) noexcept: x(regularize(_x)) {}
-    static constexpr long long regularize(long long x) noexcept { x %= pdiv; x += pdiv; return x - (x >= pdiv ? pdiv : 0); }
-    static constexpr long long regularize(moduloint a) noexcept { return a.x; }
-    static constexpr long long llpow(long long a, long long n) noexcept { return modpow_p<pdiv>(a, n); }
-    static constexpr long long llinv(long long a) noexcept { return modinv_p<pdiv>(a); }
-    static constexpr long long llinv(moduloint a) noexcept { return modinv_p<pdiv>(a.x); }
-    constexpr moduloint pow(long long n) const noexcept { return moduloint(llpow(x, n)); }
-    constexpr moduloint inv() const noexcept { return moduloint(llinv(x)); }
-    constexpr moduloint& operator+= (moduloint a) noexcept { x +=        a.x; if (x >= pdiv) x -= pdiv; return *this; }
-    constexpr moduloint& operator-= (moduloint a) noexcept { x += pdiv - a.x; if (x >= pdiv) x -= pdiv; return *this; }
-    constexpr moduloint& operator*= (moduloint a) noexcept { (x *=       a.x ) %= pdiv; return *this; }
-    constexpr moduloint& operator/= (moduloint a) noexcept { (x *= llinv(a.x)) %= pdiv; return *this; }
-    template <typename T> constexpr moduloint& operator+= (T a) noexcept { return *this += moduloint(a); }
-    template <typename T> constexpr moduloint& operator-= (T a) noexcept { return *this -= moduloint(a); }
-    template <typename T> constexpr moduloint& operator*= (T a) noexcept { return *this *= moduloint(a); }
-    template <typename T> constexpr moduloint& operator/= (T a) noexcept { return *this /= moduloint(a); }
-    template <typename T> constexpr moduloint operator+ (T a) const noexcept { return moduloint(*this) += a; }
-    template <typename T> constexpr moduloint operator- (T a) const noexcept { return moduloint(*this) -= a; }
-    template <typename T> constexpr moduloint operator* (T a) const noexcept { return moduloint(*this) *= a; }
-    template <typename T> constexpr moduloint operator/ (T a) const noexcept { return moduloint(*this) /= a; }
-    constexpr moduloint operator- () const noexcept { return moduloint(pdiv - x); }
-    friend constexpr bool operator==(const moduloint& x, const moduloint& y) { return regularize(x) == regularize(y); }
-    friend constexpr bool operator!=(const moduloint& x, const moduloint& y) { return !(x == y); }
-    constexpr auto item() const { return x; }
+
+    // 2乗がオーバーフローしないことを確認
+    static_assert((pdiv - 1) <= numeric_limits<moduloint_item_t>::max() / (pdiv - 1));
+
+    constexpr moduloint(moduloint_item_t _x = 0) noexcept: x(regularize(_x)) {}
+    
+    private:
+    // unsafe ctor
+    struct __regularized {};
+    constexpr moduloint(moduloint_item_t _x, __regularized) noexcept: x(_x) {}
+    public:
+    
+    static constexpr moduloint_item_t regularize(moduloint_item_t x) noexcept {
+        const auto y = x % pdiv;
+        return y < 0 ? y + pdiv : y;
+    }
+    static constexpr moduloint_item_t llpow(moduloint_item_t a, moduloint_item_t n) noexcept {
+        return modpow_p<pdiv>(a, n);
+    }
+    static constexpr moduloint_item_t llinv(moduloint_item_t a) noexcept {
+        // return modinv_p<pdiv>(a);
+        return modinv_extgcd(a, pdiv);
+    }
+    constexpr moduloint pow(moduloint_item_t n) const noexcept {
+        return moduloint(llpow(x, n), __regularized{});
+    }
+    constexpr moduloint inv() const noexcept {
+        return moduloint(llinv(x), __regularized{});
+    }
+    constexpr moduloint& operator+= (const moduloint a) noexcept {
+        x += a.x; if (x >= pdiv) x -= pdiv;
+        return *this;
+    }
+    constexpr moduloint& operator-= (const moduloint a) noexcept {
+        x -= a.x; if (x < 0) x += pdiv;
+        return *this;
+    }
+    constexpr moduloint& operator*= (const moduloint a) noexcept {
+        (x *= a.x) %= pdiv;
+        return *this;
+    }
+    constexpr moduloint& operator/= (const moduloint a) noexcept {
+        (x *= llinv(a.x)) %= pdiv;
+        return *this;
+    }
+    template <integral T> constexpr moduloint& operator+= (const T a) noexcept {
+        return *this += moduloint(a);
+    }
+    template <integral T> constexpr moduloint& operator-= (const T a) noexcept {
+        return *this -= moduloint(a);
+    }
+    template <integral T> constexpr moduloint& operator*= (const T a) noexcept {
+        return *this *= moduloint(a);
+    }
+    template <integral T> constexpr moduloint& operator/= (const T a) noexcept {
+        return *this /= moduloint(a);
+    }
+    template <integral T> constexpr moduloint operator+ (const T a) const noexcept {
+        return moduloint(*this) += a;
+    }
+    template <integral T> constexpr moduloint operator- (const T a) const noexcept {
+        return moduloint(*this) -= a;
+    }
+    template <integral T> constexpr moduloint operator* (const T a) const noexcept {
+        return moduloint(*this) *= a;
+    }
+    template <integral T> constexpr moduloint operator/ (const T a) const noexcept {
+        return moduloint(*this) /= a;
+    }
+    constexpr moduloint operator+ (const moduloint a) const noexcept {
+        const auto y = x + a.x;
+        return moduloint(y >= pdiv ? y - pdiv : y, __regularized{});
+    }
+    constexpr moduloint operator- (const moduloint a) const noexcept {
+        const auto y = x - a.x;
+        return moduloint(y < 0 ? y + pdiv : y, __regularized{});
+    }
+    constexpr moduloint operator* (const moduloint a) const noexcept {
+        return moduloint(x * a.x % pdiv, __regularized{});
+    }
+    constexpr moduloint operator/ (const moduloint a) const noexcept {
+        return moduloint(x * llinv(a.x) % pdiv, __regularized{});
+    }
+    
+    constexpr moduloint operator- () const noexcept {
+        return moduloint(x ? pdiv - x : 0, __regularized{});
+    }
+    friend constexpr bool operator==(const moduloint a, const moduloint b) noexcept {
+        return a.x == b.x;
+    }
+    friend constexpr bool operator!=(const moduloint a, const moduloint b) noexcept {
+        return !(a == b);
+    }
+    constexpr auto item() const noexcept { return x; }
 };
-template <long long pdiv>
-constexpr moduloint<pdiv> operator+ (const long long a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) + b; }
-template <long long pdiv>
-constexpr moduloint<pdiv> operator- (const long long a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) - b; }
-template <long long pdiv>
-constexpr moduloint<pdiv> operator* (const long long a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) * b; }
-template <long long pdiv>
-constexpr moduloint<pdiv> operator/ (const long long a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) / b; }
+template <moduloint_item_t pdiv>
+constexpr moduloint<pdiv> operator+ (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) + b; }
+template <moduloint_item_t pdiv>
+constexpr moduloint<pdiv> operator- (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) - b; }
+template <moduloint_item_t pdiv>
+constexpr moduloint<pdiv> operator* (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) * b; }
+template <moduloint_item_t pdiv>
+constexpr moduloint<pdiv> operator/ (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) / b; }
 
 // I/O 対応
 template <ll pdiv>
 ostream& operator<< (ostream& ost, const moduloint<pdiv> a) { return ost << a.item(); }
 template <ll pdiv>
-istream& operator>> (istream& ist, moduloint<pdiv> &a) { long long x = {}; ist >> x; a = x; return ist; }
+istream& operator>> (istream& ist, moduloint<pdiv>& a) { auto x = moduloint_item_t{}; ist >> x; a = x; return ist; }
 
 // DUMP()対応
 template <ll pdiv>
