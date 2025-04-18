@@ -1,31 +1,33 @@
 #pragma once
 #include "base_template.hpp"
+#include "modint/modint.hpp"
 #include "fps/log.hpp"
 #include "conv/ntt.hpp"
 
 // FPS exp
-template <ll pdiv, ll prim>
-vector<ll> fps_exp(const vector<ll>& f) {
+template <mod_integral T>
+vector<T> fps_exp(const vector<T>& f) {
 
-    assert(f[0] % pdiv == 0);
-    auto g = vector<ll>{1};
+    assert(f[0] == 0);
+    auto g = vector<T>{1};
 
     while (g.size() < f.size()) {
-        const auto ngg = g.size() * 2;
+        const auto n = g.size();
 
         // 1 - log g + f
         auto gg = g;
-        gg.resize(ngg, 0);
-        gg = fps_log<pdiv, prim>(move(gg));
-        REP(i, ngg) {
-            gg[i] = (!i + pdiv - gg[i] + (i < (ll)f.size() ? f[i] : 0)) % pdiv;
+        gg.resize(n * 2, T{0});
+        gg = fps_log(move(gg));
+        REP(i, n * 2) {
+            gg[i] = -gg[i] + (i < (ll)f.size() ? f[i] : 0);
         }
+        gg[0] += 1;
 
         // g (1 - log g + f)
-        g = convolve_p<pdiv, prim>(move(g), gg);
-        g.resize(ngg, 0);
+        g = convolve_p(move(g), move(gg));
+        g.resize(n * 2, 0);
     }
     
-    g.resize(f.size(), 0);
+    g.resize(f.size(), T{0});
     return g;
 }
