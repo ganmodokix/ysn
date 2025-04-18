@@ -51,18 +51,16 @@ namespace sspp {
         REP(i, n) {
             a[i] *= fac[i];
         }
-        ranges::reverse(a);
 
-        auto cffp = vector(n, T{1});
-        RANGE(i, 1, n-1) {
-            cffp[i] = cffp[i-1] * (c - i + 1);
+        auto rcffp = vector(n, T{1});
+        REP(i, n - 1) {
+            rcffp[n - i - 2] = rcffp[n - i - 1] * (c - i);
         }
-        REP(i, n) cffp[i] *= invfac[i];
+        REP(i, n) rcffp[i] *= invfac[n - 1 - i];
 
-        auto b = convolve_p(move(cffp), move(a));
-        b.resize(n);
+        auto b = convolve_p(move(rcffp), move(a));
+        b.erase(b.begin(), b.end() - n);
 
-        ranges::reverse(b);
         REP(i, n) b[i] *= invfac[i];
 
         auto invfacn = vector(invfac.begin(), invfac.begin() + m);
