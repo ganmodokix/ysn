@@ -3,40 +3,45 @@
 #include "modint/modint_petit_p.hpp"
 #include "ranges_to.hpp"
 
-using moduloint_item_t = long signed long;
-
 // 剰余類環 \mathbb{Z}/n\mathbb{Z}
-template <moduloint_item_t pdiv_>
-requires (pdiv_ >= 1)
+template <int64_t pdiv_, signed_integral Item = int64_t, signed_integral Extended = int64_t>
 struct moduloint {
-    // テンプレートパラメータにできるリテラルクラス型にできるよう public にしているが基本 item() を使用すること
-    moduloint_item_t x = 0;
     
-    static constexpr auto pdiv = pdiv_;
+    using item_type = Item;  // 保持する型
+    using extended_type = Extended;  // 乗算の計算途中で膨らみうる値のための型
+    
+    static constexpr auto pdiv = Extended{pdiv_};
 
-    // 2乗がオーバーフローしないことを確認
-    static_assert((pdiv - 1) <= numeric_limits<moduloint_item_t>::max() / (pdiv - 1));
+    // テンプレートパラメータにできるリテラルクラス型にできるよう public にしているが基本 item() を使用すること
+    Item x = 0;
 
-    constexpr moduloint(moduloint_item_t _x = 0) noexcept: x(regularize(_x)) {}
+    // 加減のオーバーフローチェック
+    static_assert(pdiv - 1 <= numeric_limits<Item>::max() / 2);
+    static_assert(numeric_limits<Item>::lowest() + pdiv - 1 <= 0);
+    // 乗算がオーバーフローしないことを確認
+    // モンゴメリ乗算があれば不要
+    static_assert((pdiv - 1) <= numeric_limits<Extended>::max() / (pdiv - 1));
+    
+    constexpr moduloint(Extended _x = 0) noexcept: x(regularize(_x)) {}
     
     private:
     // unsafe ctor
     struct __regularized {};
-    constexpr moduloint(moduloint_item_t _x, __regularized) noexcept: x(_x) {}
+    constexpr moduloint(Item _x, __regularized) noexcept: x(_x) {}
     public:
     
-    static constexpr moduloint_item_t regularize(moduloint_item_t x) noexcept {
+    static constexpr Item regularize(Extended x) noexcept {
         const auto y = x % pdiv;
-        return y < 0 ? y + pdiv : y;
+        return static_cast<Item>(y < 0 ? y + pdiv : y);
     }
-    static constexpr moduloint_item_t llpow(moduloint_item_t a, moduloint_item_t n) noexcept {
-        return modpow_p<pdiv>(a, n);
+    static constexpr Item llpow(Item a, int64_t n) noexcept {
+        return static_cast<Item>(modpow_p<pdiv>(a, n));
     }
-    static constexpr moduloint_item_t llinv(moduloint_item_t a) noexcept {
+    static constexpr Item llinv(Item a) noexcept {
         // return modinv_p<pdiv>(a);
         return modinv_extgcd(a, pdiv);
     }
-    constexpr moduloint pow(moduloint_item_t n) const noexcept {
+    constexpr moduloint pow(int64_t n) const noexcept {
         return moduloint(llpow(x, n), __regularized{});
     }
     constexpr moduloint inv() const noexcept {
@@ -51,11 +56,11 @@ struct moduloint {
         return *this;
     }
     constexpr moduloint& operator*= (const moduloint a) noexcept {
-        (x *= a.x) %= pdiv;
+        x = Extended{x} * Extended{a.x} % pdiv;
         return *this;
     }
     constexpr moduloint& operator/= (const moduloint a) noexcept {
-        (x *= llinv(a.x)) %= pdiv;
+        x = Extended{x} * Extended{llinv(a.x)} % pdiv;
         return *this;
     }
     template <integral T> constexpr moduloint& operator+= (const T a) noexcept {
@@ -91,10 +96,10 @@ struct moduloint {
         return moduloint(y < 0 ? y + pdiv : y, __regularized{});
     }
     constexpr moduloint operator* (const moduloint a) const noexcept {
-        return moduloint(x * a.x % pdiv, __regularized{});
+        return moduloint(Extended{x} * Extended{a.x} % pdiv, __regularized{});
     }
     constexpr moduloint operator/ (const moduloint a) const noexcept {
-        return moduloint(x * llinv(a.x) % pdiv, __regularized{});
+        return moduloint(Extended{x} * Extended{llinv(a.x)} % pdiv, __regularized{});
     }
     
     constexpr moduloint operator- () const noexcept {
@@ -108,30 +113,30 @@ struct moduloint {
     }
     constexpr auto item() const noexcept { return x; }
 };
-template <moduloint_item_t pdiv>
-constexpr moduloint<pdiv> operator+ (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) + b; }
-template <moduloint_item_t pdiv>
-constexpr moduloint<pdiv> operator- (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) - b; }
-template <moduloint_item_t pdiv>
-constexpr moduloint<pdiv> operator* (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) * b; }
-template <moduloint_item_t pdiv>
-constexpr moduloint<pdiv> operator/ (const moduloint_item_t a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) / b; }
+template <int64_t pdiv, integral T>
+constexpr moduloint<pdiv> operator+ (const T a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) + b; }
+template <int64_t pdiv, integral T>
+constexpr moduloint<pdiv> operator- (const T a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) - b; }
+template <int64_t pdiv, integral T>
+constexpr moduloint<pdiv> operator* (const T a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) * b; }
+template <int64_t pdiv, integral T>
+constexpr moduloint<pdiv> operator/ (const T a, const moduloint<pdiv> b) noexcept { return moduloint<pdiv>(a) / b; }
 
 // I/O 対応
-template <ll pdiv>
+template <int64_t pdiv>
 ostream& operator<< (ostream& ost, const moduloint<pdiv> a) { return ost << a.item(); }
-template <ll pdiv>
-istream& operator>> (istream& ist, moduloint<pdiv>& a) { auto x = moduloint_item_t{}; ist >> x; a = x; return ist; }
+template <int64_t pdiv>
+istream& operator>> (istream& ist, moduloint<pdiv>& a) { auto x = (typename moduloint<pdiv>::item_type){}; ist >> x; a = x; return ist; }
 
 // DUMP()対応
-template <ll pdiv>
+template <int64_t pdiv>
 ostream& __dump_single(const moduloint<pdiv> value) {
     return cerr << "\e[35m" << value.item() << "\e[2m_" << pdiv << "\e[m";
 }
 
 // ranges_to 対応
 namespace ganmodokix {
-    template <ll pdiv, integral To>
+    template <int64_t pdiv, integral To>
     struct _Converter<moduloint<pdiv>, To> {
         constexpr To operator() (const moduloint<pdiv>& x) const {
             return static_cast<To>(x.item());
@@ -142,7 +147,7 @@ namespace ganmodokix {
 // 剰余類環 modint であることを表すコンセプト
 template <typename T>
 concept mod_integral =
-requires(const T a, const T b, ll n) {
+requires(const T a, const T b, const int64_t n) {
     { a + b } -> std::convertible_to<T>;
     { a - b } -> std::convertible_to<T>;
     { a * b } -> std::convertible_to<T>;
