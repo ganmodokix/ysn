@@ -5,7 +5,7 @@
 #include "modint/modint_factorial_cache.hpp"
 #include "sspp.hpp"
 
-// (任意)! mod pdiv を O(\sqrt{P} logP) で行う
+// (任意)! mod pdiv を O(\sqrt{P} logP) で行う (SSPP版)
 // ref: https://suisen-kyopro.hatenablog.com/entry/2023/11/22/201600
 // verify: https://atcoder.jp/contests/abc385/submissions/64926029
 namespace factorial_batch {
@@ -90,13 +90,13 @@ namespace factorial_batch {
     T seqprod(ll a, ll b) {
         assert(a <= b);
         if (a < 0) {
-            const auto t = (-a + pdiv - 1) / pdiv * pdiv;
+            const auto t = (-a + T::pdiv - 1) / T::pdiv * T::pdiv;
             return seqprod<T>(a + t, b + t);
         }
         if (a / T::pdiv != b / T::pdiv) return 0;
-        a %= pdiv;
+        a %= T::pdiv;
         if (a == 0) return 0;
-        b %= pdiv;
+        b %= T::pdiv;
         return fac<T>(b) / fac<T>(a-1);
     }
     // 初項 a, 公差 b, 長さ n の等差数列の総積 mod pdiv

@@ -2,7 +2,7 @@
 #include "base_template.hpp"
 #include "modint/modint.hpp"
 
-// FPS 微分 O(N)
+// 多項式微分 O(N)
 template <mod_integral T>
 vector<T> fps_derivative(vector<T> f) {
     if (f.empty()) return {};
