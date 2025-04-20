@@ -12,7 +12,7 @@
 // 原始根 prim_ が指定されない場合は最小の原始根が指定される
 template <typename T, ll prim_ = -1>
 requires mod_integral<typename T::value_type>
-auto ntt(T&& a, const bool inv = false) -> vector<typename T::value_type> {
+constexpr auto ntt(T&& a, const bool inv = false) -> vector<typename T::value_type> {
     using V = typename T::value_type;
     constexpr auto prim = V{prim_ != -1 ? prim_ : primitive_root(V::pdiv)};
     if (inv) {
@@ -29,7 +29,7 @@ auto intt(T&& a) -> vector<T> {
 // \mathbb{F}_{m} での畳み込み
 template <ranges::random_access_range X, ranges::random_access_range Y>
 requires convertible_to<ranges::range_value_t<X>, ranges::range_value_t<Y>>
-auto convolve_p(X&& x, Y&& y)
+constexpr auto convolve_p(X&& x, Y&& y)
     -> vector<remove_cvref_t<ranges::range_value_t<X>>>
 {
     using T = remove_cvref_t<ranges::range_value_t<X>>;
