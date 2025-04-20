@@ -4,6 +4,7 @@
 #include "modint/modint.hpp"
 
 // FPS逆元 (f(x))^{-1} mod x^N, 入力と同じ次数 O(NlogN)
+// verify: https://judge.yosupo.jp/submission/280173
 template <mod_integral T>
 vector<T> fps_inv(const vector<T>& f) {
 

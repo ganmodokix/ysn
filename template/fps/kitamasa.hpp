@@ -42,10 +42,11 @@ vector<T> kitamasa_coefficients(const vector<T>& c, ll n) {
     return f;
 }
 
-// 高速kitamasa法 O(N(logN)^2)
+// Fiduccia’s algorithm (高速kitamasa法) O(N(logN)^2)
 // 線形漸化式 a_{i+N} = \sum_{k=0}^{N-1} a_{i + k} c_{k}
 //  + 初項 a_k (k = 0, 1, ..., N-1)
 // に対して、a_n を modint で求める
+// verify: https://atcoder.jp/contests/abc300/submissions/64971205
 template <mod_integral T>
 T fast_kitamasa(vector<T> c, const vector<T>& a, ll n) {
     assert(n >= 0);
