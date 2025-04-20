@@ -4,28 +4,10 @@
 #include "modint/modint_petit_p.hpp"
 #include "modint/modint_factorial_cache.hpp"
 #include "fps/multipoint.hpp"
-
+#include "fps/factorial_poly.hpp"
 
 // ⚠️遅いので非推奨、前計算ですら2sに間に合わない
 // 代わりに factorial_batch.hpp (SSPP版) を強く推奨
-
-
-// 不定元 x の上昇階乗冪 x^\bar{k} = x(x+1) ... (x+k-1) の多項式を求める O(K(logK)^2)
-// \prod_{i=0}^{k-1} (x + i * \mathrm{step})
-// result[i] = 1st-kind Starling (k, i)
-template <mod_integral T>
-constexpr vector<T> raising_factorial_poly(const ll k, const T step = T{1}) {
-    assert(k >= 0);
-    if (k == 0) return {1};
-    auto f = vector(k * 2 - 1, vector<T>{});
-    REP(i, k) {
-        f[k - 1 + i] = {step * i, 1};
-    }
-    DSRNG(i, k - 2, 0) {
-        f[i] = convolve_p(move(f[i * 2 + 1]), move(f[i * 2 + 2]));
-    }
-    return f[0];
-}
 
 template <mod_integral T, size_t b>
 requires (b > 0)
