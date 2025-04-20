@@ -35,6 +35,6 @@ namespace ganmodokix {
 template <typename T>
 struct to_vector : ganmodokix::_To<vector<T>> {};
 template <typename T>
-struct to_unorderd_set : ganmodokix::_To<unordered_set<T>> {};
+struct to_unordered_set : ganmodokix::_To<unordered_set<T>> {};
 template <typename T>
 struct to_set : ganmodokix::_To<set<T>> {};
