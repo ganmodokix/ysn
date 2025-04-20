@@ -63,11 +63,11 @@ def exec(exec_path):
 
     debug_print(f"Executing {exec_path} ...")
 
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     execution = subprocess.run([os.path.join(".", exec_path)])
 
-    end_time = time.time()
+    end_time = time.perf_counter()
     duration = end_time - start_time
 
     if execution.returncode == 0:
