@@ -9,7 +9,7 @@
 // https://nyaannyaan.github.io/library/fps/formal-power-series.hpp.html
 // verify: https://atcoder.jp/contests/abc300/submissions/65053375
 template <mod_integral T>
-vector<T> polynomial_quotient(vector<T> f, vector<T> g) {
+constexpr vector<T> polynomial_quotient(vector<T> f, vector<T> g) {
     assert(!g.empty());
     if (f.size() < g.size()) {
         return vector<T>{0}; // 0

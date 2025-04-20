@@ -8,7 +8,7 @@
 
 // FPS log O(NlogN)
 template <mod_integral T>
-vector<T> fps_log(vector<T> f) {
+constexpr vector<T> fps_log(vector<T> f) {
     assert(f[0] == 1);
     const auto n = f.size();
     auto derf = fps_derivative(f);

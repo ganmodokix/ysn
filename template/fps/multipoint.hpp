@@ -8,7 +8,7 @@
 // https://37zigen.com/multipoint-evaluation/
 // verify: https://judge.yosupo.jp/submission/279884
 template <mod_integral T, ranges::forward_range X>
-vector<T> multipoint_evaluate(vector<T> f, X&& x_r) {
+constexpr vector<T> multipoint_evaluate(vector<T> f, X&& x_r) {
     // 重複アリで受け取っておく
     auto x = vector<T>(ranges::begin(x_r), ranges::end(x_r));
     const auto m0 = x.size();

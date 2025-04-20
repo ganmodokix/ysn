@@ -1,29 +1,11 @@
 #pragma once
 #include "base_template.hpp"
 #include "modint/modint.hpp"
+#include "conv/ntt.hpp"
 #include "fps/derivative.hpp"
 #include "fps/multipoint.hpp"
 #include "fps/quotient.hpp"
-
-// \prod_i (x - r_i) を分割統治で求める
-template <mod_integral T, ranges::input_range R>
-requires convertible_to<ranges::range_value_t<R>, T>
-vector<T> linear_prod(R&& r) {
-    auto v = vector<vector<T>>{};
-    for (auto&& a : r) {
-        v.emplace_back(vector<T>{forward<decltype(a)>(a), 1});
-    }
-    while (v.size() > 1) {
-        REP(i, v.size() / 2) {
-            v[i] = convolve_p(move(v[i * 2]), move(v[i * 2 + 1]));
-        }
-        if (v.size() % 2 == 1) {
-            v[v.size() / 2] = move(v.back());
-        }
-        v.resize((v.size() + 1) / 2);
-    }
-    return move(v[0]);
-}
+#include "fps/linear_prod.hpp"
 
 // 多項式 Lagrange 補間 O(N(logN)^2)
 // ref: https://37zigen.com/lagrange-interpolation/
@@ -31,7 +13,7 @@ vector<T> linear_prod(R&& r) {
 template <mod_integral T, ranges::forward_range X, ranges::forward_range Y>
 requires convertible_to<ranges::range_value_t<X>, T>
     && convertible_to<ranges::range_value_t<Y>, T>
-vector<T> lagrange_interpolate(X&& x_, Y&& fx_) {
+constexpr vector<T> lagrange_interpolate(X&& x_, Y&& fx_) {
     using U = decltype(declval<T>().item());
     auto evidence = unordered_map<U, T>{};
     {

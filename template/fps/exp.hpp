@@ -6,7 +6,7 @@
 
 // FPS exp
 template <mod_integral T>
-vector<T> fps_exp(const vector<T>& f) {
+constexpr vector<T> fps_exp(const vector<T>& f) {
 
     assert(f[0] == 0);
     auto g = vector<T>{1};

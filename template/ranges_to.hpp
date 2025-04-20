@@ -20,11 +20,28 @@ namespace ganmodokix {
     struct _To {
         _To() = default;
         template <ranges::input_range R>
-        friend auto operator| (R&& r, const _To) {
+        constexpr friend auto operator| (R&& r, const _To) {
             using FromT = ranges::range_value_t<R>;
             using ToT = Container::value_type;
             auto rv = r | views::transform(_Converter<FromT, ToT>{}) | views::common;
             auto result = Container(ranges::begin(rv), ranges::end(rv));
+            return result;
+        }
+    };
+
+    template <typename T, size_t N>
+    struct _To<array<T, N>> {
+        template <ranges::input_range R>
+        constexpr friend auto operator| (R&& r, const _To) {
+            using Container = array<T, N>;
+            using FromT = ranges::range_value_t<R>;
+            using ToT = Container::value_type;
+            auto rv = r | views::transform(_Converter<FromT, ToT>{});
+            auto result = array<T, N>{};
+            auto i = size_t{0};
+            for (auto&& x : rv) {
+                result[i++] = forward<decltype(x)>(x);
+            }
             return result;
         }
     };
@@ -38,3 +55,5 @@ template <typename T>
 struct to_unordered_set : ganmodokix::_To<unordered_set<T>> {};
 template <typename T>
 struct to_set : ganmodokix::_To<set<T>> {};
+template <typename T, size_t N>
+struct ranges_to_array : ganmodokix::_To<array<T, N>> {};
