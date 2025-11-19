@@ -7,7 +7,7 @@
 // 多項式剰余 f(x) mod g(x)
 // verify: https://atcoder.jp/contests/abc300/submissions/64971205
 template <mod_integral T>
-vector<T> polynomial_remainder(vector<T> f, vector<T> g) {
+constexpr vector<T> polynomial_remainder(vector<T> f, vector<T> g) {
     if (f.size() < g.size()) {
         return f;
     }

@@ -60,7 +60,7 @@ struct butterfly_preprocess {
 // ACL実装のバタフライ演算
 template <mod_integral T, T prim>
 requires (is_prime(T::pdiv))
-vector<T> butterfly(vector<T> a) {
+constexpr vector<T> butterfly(vector<T> a) {
 
     assert(has_single_bit(a.size()));  // 長さが2冪か
     assert(countr_zero<ull>(T::pdiv - 1) >= countr_zero(a.size()));  // 1の|A|乗根が求まるか
@@ -68,7 +68,7 @@ vector<T> butterfly(vector<T> a) {
     const auto n = (ll)a.size();
     const auto h = (ll)countr_zero<ull>(n);
 
-    static const auto& prep = butterfly_preprocess<T, prim>::singleton();
+    constexpr auto prep = butterfly_preprocess<T, prim>{};
 
     // 飛ばし飛ばしのバタフライ演算で定数倍を改善
     for (auto len = 0LL; len < h; ) {
@@ -120,14 +120,14 @@ vector<T> butterfly(vector<T> a) {
 
 // ACL実装の逆バタフライ演算
 template <mod_integral T, T prim>
-vector<T> butterfly_inv(vector<T> a) {
+constexpr vector<T> butterfly_inv(vector<T> a) {
     assert(has_single_bit(a.size()));  // 長さが2冪か
     assert(countr_zero<ull>(T::pdiv - 1) >= countr_zero(a.size()));  // 1の|A|乗根が求まるか
 
     const auto n = (ll)a.size();
     const auto h = (ll)countr_zero<ull>(n);
 
-    static const auto& prep = butterfly_preprocess<T, prim>::singleton();
+    constexpr auto prep = butterfly_preprocess<T, prim>{};
 
     // 飛ばし飛ばしのバタフライ演算で定数倍を改善
     for (ll len = h; len; ) {

@@ -7,7 +7,7 @@
 // FPS べき乗 f^n 
 // 注意: 0^0 = 1 を仮定
 template <mod_integral T>
-vector<T> fps_pow(vector<T> f, const ll n) {
+constexpr vector<T> fps_pow(vector<T> f, const ll n) {
     assert(n >= 0);
 
     if (n == 0) {

@@ -6,7 +6,7 @@
 
 // x^n mod c(x) を求める
 template <mod_integral T>
-vector<T> kitamasa_coefficients(const vector<T>& c, ll n) {
+constexpr vector<T> kitamasa_coefficients(const vector<T>& c, ll n) {
     assert(n >= 0);
     assert(!c.empty());
 
@@ -48,7 +48,7 @@ vector<T> kitamasa_coefficients(const vector<T>& c, ll n) {
 // に対して、a_n を modint で求める
 // verify: https://atcoder.jp/contests/abc300/submissions/64971205
 template <mod_integral T>
-T fast_kitamasa(vector<T> c, const vector<T>& a, ll n) {
+constexpr T fast_kitamasa(vector<T> c, const vector<T>& a, ll n) {
     assert(n >= 0);
     assert(a.size() == c.size());
     if (n <= (ll)a.size()) return a[n];
