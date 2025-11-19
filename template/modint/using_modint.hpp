@@ -9,7 +9,7 @@
     using modint = moduloint<(PDIV)>; \
     \
     /* Literal */ \
-    constexpr modint operator"" _p(unsigned long long _x) noexcept { return modint(_x); } \
+    constexpr modint operator""_p(unsigned long long _x) noexcept { return modint(_x); } \
     \
     /* Factorial n! */ \
     factorial_cache<modint> fac_cache; \

@@ -49,7 +49,7 @@ struct segtree_linear {
         query_type h;
         REP(i, n * n) h[i] = 0;
         REP(i, n) REP(k, n) RPE(j, n) {
-            h[i * n + j] = f[i * n + k] * g[k * n + j];
+            h[i * n + j] += f[i * n + k] * g[k * n + j];
         }
         return h;
     }

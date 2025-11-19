@@ -62,7 +62,7 @@ struct segment_union {
     // 区間 [l, r) を追加; S <- S ∪ [l, r)
     // 区間数に対してならし対数時間
     // 削除した区間を返す
-    vector<segment_type> insert(const value_type l, const value_type r) {
+    pair<segment_type, vector<segment_type>> insert(const value_type l, const value_type r) {
 
         auto added_segment = pair{l, r};
         auto removed_segments = vector<segment_type>{};
@@ -91,24 +91,25 @@ struct segment_union {
             s.erase(it);
         }
 
-        s.emplace(move(added_segment));
+        s.emplace(added_segment);
 
-        return removed_segments;
+        return {move(added_segment), move(removed_segments)};
     }
 
     // 区間 [l, r) を意味する seg = {l, r} を追加; S <- S ∪ [l, r)
     // 区間数に対してならし対数時間
     template <typename Seg>
-    void insert(const Seg& seg) {
+    vector<segment_type> insert(const Seg& seg) {
         const auto& [l, r] = seg;
-        insert(l, r);
+        return insert(l, r);
     }
 
     // 区間 [l, r) を除去; S <- S \ [l, r)
     // 区間数に対してならし対数時間
-    void erase(const value_type l, const value_type r) {
+    pair<vector<segment_type>, vector<segment_type>> erase(const value_type l, const value_type r) {
         
         auto replaced_segments = vector<segment_type>{};
+        auto emplaced_segments = vector<segment_type>{};
         const auto seg = segment_type{l, r};
 
         // 左
@@ -131,9 +132,17 @@ struct segment_union {
 
         // 除去して {l,r} を除いた区間に変換
         for (const auto& [x, y] : replaced_segments) {
-            if (x < l) s.emplace(x, l);
-            if (r < y) s.emplace(r, y);
+            if (x < l) {
+                s.emplace(x, l);
+                emplaced_segments.emplace_back(x, l);
+            }
+            if (r < y) {
+                s.emplace(r, y);
+                emplaced_segments.emplace_back(r, y);
+            }
         }
+
+        return {move(replaced_segments), move(emplaced_segments)};
         
     }
 
