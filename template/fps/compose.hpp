@@ -5,7 +5,7 @@
 #include "fps/inv.hpp"
 
 // 多項式合成 f(g(x)) Kinoshita-Li algorithm O(N(logN)^2)
-// verified at https://judge.yosupo.jp/submission/339058
+// verified at [ToDo]
 // https://noshi91.hatenablog.com/entry/2024/03/16/224034
 // https://maspypy.com/fps-%e5%90%88%e6%88%90%e3%83%bb%e9%80%86%e9%96%a2%e6%95%b0%e3%81%ae%e8%a7%a3%e8%aa%ac%ef%bc%882%ef%bc%89%e8%bb%a2%e7%bd%ae%e5%8e%9f%e7%90%86%e3%81%ab%e3%82%88%e3%82%8b%e5%90%88%e6%88%90%e3%82%a2
 // https://arxiv.org/abs/2404.05177
@@ -130,40 +130,65 @@ constexpr vector<T> fps_compose(
         q = ntt(move(q));
         // Q(-x)
         auto qnx = vector(q.size(), T{0});
-        {
-            auto increment_rev_mask = [](const ll x, const ll n) {
-                const auto lsz = ~x & (x + 1);
-                const auto rev = (n / 2) / lsz;
-                return (n - 1) & ~(rev - 1);
-            };
-            const auto n = ssize(q);
-            auto j = 1LL;
-            auto j2 = 0LL;
-            REP(i, n / 2) {
-                qnx[j] = q[j2];
-                qnx[j2] = q[j];
-                j ^= increment_rev_mask(i + n/2, n);
-                j2 ^= increment_rev_mask(i, n);
-            }
+        REP(j, ssize(q) / 2) {
+            qnx[j * 2] = q[j * 2 + 1];
+            qnx[j * 2 + 1] = q[j * 2];
         }
         // 分子 P(x)Q(-x) の x^奇数次 をとる
-        auto pqnx = ntt(move(p));
-        RPE(i, ssize(pqnx)) pqnx[i] *= qnx[i];
-        pqnx = ntt(move(pqnx), true);
+        // 実は勾配計算に使っていないので適当でOK
         auto b = vector(n * l, T{0});
-        REP(i, n / 4) REP(j, l) {
-            b[i + (n / 2) * j] = pqnx[i * 2 + 1 + n * j];
-        }
+        // 通常の畳み込み実装
+        // auto pqnx = ntt(move(p));
+        // RPE(i, ssize(pqnx)) pqnx[i] *= qnx[i];
+        // pqnx = ntt(move(pqnx), true);
+        // auto b = vector(n * l, T{0});
+        // REP(i, n / 4) REP(j, l) {
+        //     b[i + (n / 2) * j] = pqnx[i * 2 + 1 + n * j];
+        // }
+        // 奇数次だけ取れればよいので高速化
+        // constexpr auto half = 1_p / 2;
+        // RPE(i, ssize(pqnx) / 2) {
+        //     pqnx[i] = (
+        //           pqnx[i * 2    ] * qnx[i * 2    ]
+        //         - pqnx[i * 2 + 1] * qnx[i * 2 + 1]
+        //     ) * half;
+        // }
+        // pqnx.resize(ssize(pqnx) / 2, T{0});
+        // pqnx = ntt(move(pqnx), true);
+        // auto b = vector(n * l, T{0});
+        // REP(i, n / 4) REP(j, l) {
+        //     b[i + (n / 2) * j] = pqnx[i * 2 + 1 + n * j];
+        // }
+        
         // 分母 Q(x)Q(-x) の x^偶数次 をとる
         auto qqnx = move(q);
-        RPE(i, ssize(qqnx)) qqnx[i] *= qnx[i];
+        // RPE(i, ssize(qqnx)) qqnx[i] *= qnx[i];
+        // qqnx = ntt(move(qqnx), true);
+        // qqnx[0] -= 1;  // 巡回してきてはみ出た分を調整
+        // auto q2 = vector(n * l, T{0});
+        // REP(i, n / 4) REP(j, l) {
+        //     q2[i + (n / 2) * j] = qqnx[i * 2 + n * j];
+        //     q2[i + (n / 2) * j] = qqnx[i * 2 + n * j];
+        // }
+        // q2[(n / 2) * l] += 1;  // 巡回してきてはみ出た分を調整
+        
+        // 偶数次だけ取れればよいので高速化
+        constexpr auto half = 1_p / 2;
+        RPE(i, ssize(qqnx) / 2) {
+            qqnx[i] = (
+                  qqnx[i * 2    ] * qnx[i * 2    ]
+                + qqnx[i * 2 + 1] * qnx[i * 2 + 1]
+            ) * half;
+        }
+        qqnx.resize(ssize(qqnx) / 2, T{0});
         qqnx = ntt(move(qqnx), true);
         qqnx[0] -= 1;  // 巡回してきてはみ出た分を調整
         auto q2 = vector(n * l, T{0});
         REP(i, n / 4) REP(j, l) {
-            q2[i + (n / 2) * j] = qqnx[i * 2 + n * j];
+            q2[i + (n / 2) * j] = qqnx[i + n / 2 * j];
+            q2[i + (n / 2) * j] = qqnx[i + n / 2 * j];
         }
-        q2[(n / 2) * l] += 1;
+        q2[(n / 2) * l] += 1;  // 巡回してきてはみ出た分を調整
         // n 半々, l 倍々
         const auto p2 = move(b);
         return tuple{move(p2), move(q2), move(qnx), n / 2, l * 2};
