@@ -5,7 +5,7 @@
 #include "fps/inv.hpp"
 
 // 多項式合成 f(g(x)) Kinoshita-Li algorithm O(N(logN)^2)
-// verified at 
+// verified at https://judge.yosupo.jp/submission/339033
 // https://noshi91.hatenablog.com/entry/2024/03/16/224034
 // https://maspypy.com/fps-%e5%90%88%e6%88%90%e3%83%bb%e9%80%86%e9%96%a2%e6%95%b0%e3%81%ae%e8%a7%a3%e8%aa%ac%ef%bc%882%ef%bc%89%e8%bb%a2%e7%bd%ae%e5%8e%9f%e7%90%86%e3%81%ab%e3%82%88%e3%82%8b%e5%90%88%e6%88%90%e3%82%a2
 // https://arxiv.org/abs/2404.05177
