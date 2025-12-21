@@ -24,8 +24,8 @@ constexpr vector<T> power_projection(
     // Q(x) の末尾は必ず 1 なので定数倍改善の余地あり
 
     // それぞれ畳み込み用に 2 倍しておく
-    auto n = n_ * 2;  // x の最高次 + 1
-    auto l = 2LL * 2; // y の最高次 + 1
+    auto n = n_ * 2;  // (x の最高次 + 1) * 2
+    auto l = 2LL; // (y の最高次 + 1) * 2
 
     auto p = vector(n * l, T{0});
     auto q = vector(n * l, T{0});
@@ -36,13 +36,16 @@ constexpr vector<T> power_projection(
     }
 
     // Q(x, y) = 1 - yf(x)
-    q[0] = 1;
+    // -(rev_y)-> Q'(x, y) = -f(x) + y
+    q[n] = 1;
     REP(i, min<ll>(ssize(f_), n_)) {
-        q[i + n] = -f_[i];
+        q[i] = -f_[i];
     }
     
     // Graeffe’s method: Q(x) Q(-x) で n 半々, l 倍々 にしていく
     while (n > 2) {
+        assert(ssize(q) / 2 % 2 == 0);
+        assert(q[q.size() / 2] == 1);
         // Q(-x)
         auto qnx = q; STEP(i, 1, ssize(qnx), 2) qnx[i] = -qnx[i];
         qnx = ntt(move(qnx));
@@ -58,21 +61,26 @@ constexpr vector<T> power_projection(
         auto qqnx = ntt(move(q));
         RPE(i, ssize(qqnx)) qqnx[i] *= qnx[i];
         qqnx = ntt(move(qqnx), true);
+        qqnx[0] -= 1;  // 巡回してきてはみ出た分を調整
         auto q2 = vector(n * l, T{0});
         REP(i, n / 4) REP(j, l) {
             q2[i + (n / 2) * j] = qqnx[i * 2 + n * j];
         }
+        q2[(n / 2) * l] += 1;
         // n 半々, l 倍々
         p = move(b);
         q = move(q2);
         n /= 2;
         l *= 2;
     }
-
-    RPE(i, m) p[i] = p[i * n];
+    
+    assert(l == n_ * 2);
+    RPE(i, m) p[i] = p[(i + n_ - m) * n];
+    RPE(i, m) q[i] = q[(i + n_ - m + 1) * n];
     p.resize(m, T{0});
-    RPE(i, m) q[i] = q[i * n];
     q.resize(m, T{0});
+    ranges::reverse(p);
+    ranges::reverse(q);
 
     q = fps_inv(q);
     p = convolve_p(move(p), move(q));

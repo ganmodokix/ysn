@@ -51,9 +51,9 @@ constexpr vector<T> fps_compose(
         p.resize(n * l, T{0});
 
         // Q(x, y) = 1 - yf(x)
-        q[0] = 1;
+        q[n] = 1;
         REP(i, min<ll>(ssize(f_), n_)) {
-            q[i + n] = -f_[i];
+            q[i] = -f_[i];
         }
 
         return pair{move(p), move(q)};
@@ -125,6 +125,8 @@ constexpr vector<T> fps_compose(
             const ll l
         )
     {
+        assert(ssize(q) / 2 % 2 == 0);
+        assert(q[q.size() / 2] == 1);
         // Q(-x)
         auto qnx = q; STEP(i, 1, ssize(qnx), 2) qnx[i] = -qnx[i];
         qnx = ntt(move(qnx));
@@ -140,10 +142,12 @@ constexpr vector<T> fps_compose(
         auto qqnx = ntt(move(q));
         RPE(i, ssize(qqnx)) qqnx[i] *= qnx[i];
         qqnx = ntt(move(qqnx), true);
+        qqnx[0] -= 1;  // 巡回してきてはみ出た分を調整
         auto q2 = vector(n * l, T{0});
         REP(i, n / 4) REP(j, l) {
             q2[i + (n / 2) * j] = qqnx[i * 2 + n * j];
         }
+        q2[(n / 2) * l] += 1;
         // n 半々, l 倍々
         const auto p2 = move(b);
         return tuple{move(p2), move(q2), move(qnx), n / 2, l * 2};
@@ -204,8 +208,12 @@ constexpr vector<T> fps_compose(
         const auto m = n_;
         auto p = vector(m, T{0});
         auto q = vector(m, T{0});
-        RPE(i, m) p[i] = p_[i * n];
-        RPE(i, m) q[i] = q_[i * n];
+        RPE(i, m) p[i] = p_[(i + n_ - m) * n];
+        RPE(i, m) q[i] = q_[(i + n_ - m + 1) * n];
+        p.resize(m, T{0});
+        q.resize(m, T{0});
+        ranges::reverse(p);
+        ranges::reverse(q);
         auto invq = fps_inv(q);
         auto pinvq = convolve_p(p, invq);
         // p.resize(m, T{0});
@@ -217,10 +225,11 @@ constexpr vector<T> fps_compose(
         vector<T> grad_pq,
         const ll n
     ) -> vector<T> {
+        const auto m = n_;
         auto grad_p = convolve_backward_p(move(invq), move(pinvq), move(grad_pq));
         auto grad_p_ = vector(n_ * n * 2, T{0});
         // DUMP(ssize(grad_p_), n);
-        RPE(i, n_) grad_p_[i * n] = grad_p[i];
+        RPE(i, n_) grad_p_[(i + n_ - m) * n] = grad_p.rbegin()[i];
         return grad_p_;
     };
 
@@ -228,7 +237,7 @@ constexpr vector<T> fps_compose(
     // 便宜上 y = x^n として実装を進める
     // Q(x) の末尾は必ず 1 なので定数倍改善の余地あり
 
-    auto nls = vector<pair<ll, ll>>{{n_ * 2, 2LL * 2}};
+    auto nls = vector<pair<ll, ll>>{{n_ * 2, 2LL}};
     auto pqs = vector<pair<vector<T>, vector<T>>>{};
     auto qnxs = vector<vector<T>>{};
 
