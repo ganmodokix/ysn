@@ -21,7 +21,7 @@ constexpr vector<T> compositional_inverse(vector<T> f)
         REP(i, ssize(f)) f[i] *= cinv;
         auto result = compositional_inverse(move(f));
 
-        auto base = 1_p;
+        auto base = T{1};
         REP(i, ssize(result)) {
             result[i] *= base;
             if (i + 1 == i_len) break;
@@ -45,11 +45,11 @@ constexpr vector<T> compositional_inverse(vector<T> f)
     // g(x) / x
     goxpmn.resize(n_ - 1);
     auto gox = fps_log(move(goxpmn));
-    const auto m1on = -1_p / (n - 1);
+    const auto m1on = -T{1} / (n - 1);
     REP(i, ssize(gox)) gox[i] *= m1on;
     gox = fps_exp(gox);
     
     // g(x)
-    gox.emplace(gox.begin(), 0_p);
+    gox.emplace(gox.begin(), T{0});
     return gox;
 }

@@ -112,7 +112,7 @@ constexpr vector<T> fps_compose(
         // 分母 Q(x)Q(-x) の x^偶数次 をとる
         // 偶数次だけ取れればよいので高速化
         auto qqnx = move(q);
-        constexpr auto half = 1_p / 2;
+        constexpr auto half = T{1} / 2;
         RPE(i, ssize(qqnx) / 2) {
             qqnx[i] = (
                   qqnx[i * 2    ] * qnx[i * 2    ]

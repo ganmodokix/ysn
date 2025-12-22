@@ -77,7 +77,7 @@ constexpr vector<T> power_projection(
         auto pqnx = move(p);
         auto b = vector<T>{};
         {
-            constexpr auto half = 1_p / 2;
+            constexpr auto half = T{1} / 2;
             REP(i, ssize(pqnx) / 2) {
                 pqnx[i] = (
                       pqnx[i * 2    ] * qnx[i * 2    ]
@@ -101,7 +101,7 @@ constexpr vector<T> power_projection(
         auto q2 = vector<T>{};
         {
             REP(i, ssize(qqnx) / 2) {
-                constexpr auto half = 1_p / 2;
+                constexpr auto half = T{1} / 2;
                 qqnx[i] = (
                     qqnx[i * 2    ] * qnx[i * 2    ]
                     + qqnx[i * 2 + 1] * qnx[i * 2 + 1]
