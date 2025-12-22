@@ -4,18 +4,14 @@
 #include "conv/ntt.hpp"
 
 // Bostan-Mori [x^m] f(x) / g(x) を求める O(NlogNlogM) (N: deg g)
-// verified at https://judge.yosupo.jp/submission/336936
-// verified at https://atcoder.jp/contests/abc436/submissions/71731332
+// verified at https://judge.yosupo.jp/submission/339373
+// verified at https://atcoder.jp/contests/abc436/submissions/71918989
 template <mod_integral T>
 constexpr T bostan_mori(vector<T> f, vector<T> g, ll m) {
     assert(m >= 0);
     assert(!g.empty());
     assert(g[0] != 0);
     assert(ssize(f) < ssize(g));
-    if (m == 0) {
-        if (f.empty()) return 0;
-        return f[0] / g[0];
-    }
     // P(x)Q(-x) = A(x^2) + x B(x^2),
     // Q(x)Q(-x) = R(x^2) ∵ Q(x)Q(-x) は偶
     // 以上のように分解すると
@@ -28,25 +24,113 @@ constexpr T bostan_mori(vector<T> f, vector<T> g, ll m) {
 
     // ステップごとにmが半減するのでダブリングの要領で O(NlogNlogM)
     // P,Qの次数は畳み込んで半減なので±1を除いて変わらず
+
+    // 先にNTT用の長さにしておく
+    const auto fg_size = (ll)bit_ceil<ull>(max(ssize(f), ssize(g)) * 2 - 1);
+    f.resize(fg_size, T{0});
+    g.resize(fg_size, T{0});
     
-    // 分母
-    auto gnx = g;  // g(-x)
-    STEP(i, 1, ssize(gnx) - 1, 2) {
-        gnx[i] *= -1;
-    }
-    auto rx2 = convolve_p(move(g), gnx);
-    auto r = vector<T>{};
-    r.reserve((rx2.size() + 1) / 2);
-    STEP(i, 0, ssize(rx2) - 1, 2) {
-        r.emplace_back(rx2[i]);
+    // 周波数領域ずらし用前計算 (ω_{2n}^BitReverse(i))_i=0^{n-1}
+    auto ntt_coeff_rev = vector(fg_size / 2, T{0});
+    auto ntt_coeff_inv = vector(fg_size / 2, T{0});
+    {
+        constexpr auto prim = T{primitive_root(T::pdiv)};
+        const auto root = prim.pow((T::pdiv - 1) / fg_size);
+        // const auto root_inv = prim.pow((T::pdiv - 1) / fg_size).inv();
+        const auto root_inv = root.inv();
+        auto coeff = T{1};
+        auto coeff_inv = T{1};
+        ntt_coeff_rev[0] = coeff;
+        ntt_coeff_inv[0] = coeff_inv;
+        auto idx = 0LL;
+        REP(i, fg_size / 2 - 1) {
+            // bit-reverse
+            auto bit = ~i & (i + 1);
+            auto rev = (fg_size / 4) / bit;
+            idx ^= (fg_size / 2 - 1) & ~(rev - 1);
+            // non-one coeff
+            ntt_coeff_rev[i + 1] = (coeff *= root);  // ⚠️ NOT bit reversed!
+            ntt_coeff_inv[idx] = (coeff_inv *= root_inv);
+        }
     }
 
-    auto ab = convolve_p(move(f), move(gnx));
-    auto ab2 = vector<T>{};
-    ab2.reserve((ssize(ab) + (m + 1) % 2) / 2);
-    STEP(i, m % 2, ssize(ab) - 1, 2) {
-        ab2.emplace_back(ab[i]);
-    }
+    // 周波数領域に写しておく
+    f = ntt(move(f));
+    g = ntt(move(g));
 
-    return bostan_mori(move(ab2), move(r), m / 2);
+    auto recurse = [fg_size, &ntt_coeff_rev, &ntt_coeff_inv](
+        const auto recurse, vector<T> f, vector<T> g, ll m
+    ) -> T {
+
+        if (m == 0) {
+            // if (f.empty()) return 0;
+            // return f[0] / g[0];
+            return accumulate(ALL(f), T{0}) / accumulate(ALL(g), T{0});
+        }
+
+        // g(-x)
+        auto gnx = vector(fg_size, T{0});
+        REP(j, fg_size / 2) {
+            gnx[j * 2] = g[j * 2 + 1];
+            gnx[j * 2 + 1] = g[j * 2];
+        }
+        
+        // 分母 g(x)g(-x) の偶数部分
+        constexpr auto half = T{1} / 2;
+        REP(i, fg_size / 2) {
+            g[i] = (
+                  g[i * 2    ] * gnx[i * 2    ]
+                + g[i * 2 + 1] * gnx[i * 2 + 1]
+            ) * half;
+        }
+        g.resize(fg_size / 2, T{0});
+        
+        // 2倍ゼロ埋めリサイズ　-> 「2 倍の長さの DFT の計算」
+        auto gt = ntt(g, true);
+        g.resize(fg_size, T{0});
+        REP(i, fg_size / 2) {
+            gt[i] *= ntt_coeff_rev[i];
+        }
+        gt = ntt(move(gt));
+        DSRNG(i, fg_size / 2 - 1, 0) {
+            g[i] = g[i];
+            g[i + fg_size / 2] = gt[i];
+        }
+
+        // 分子 f(x)g(-x) の偶数 or 奇数部分
+        if (m % 2) {
+            REP(i, fg_size / 2) {
+                f[i] = (
+                      f[i * 2    ] * gnx[i * 2    ]
+                    - f[i * 2 + 1] * gnx[i * 2 + 1]
+                ) * half * ntt_coeff_inv[i];
+            }
+        } else {
+            REP(i, fg_size / 2) {
+                f[i] = (
+                      f[i * 2    ] * gnx[i * 2    ]
+                    + f[i * 2 + 1] * gnx[i * 2 + 1]
+                ) * half;
+            }
+        }
+        f.resize(fg_size / 2, T{0});
+
+        // 2倍ゼロ埋めリサイズ　-> 「2 倍の長さの DFT の計算」
+        auto ft = ntt(f, true);
+        f.resize(fg_size, T{0});
+        REP(i, fg_size / 2) {
+            ft[i] *= ntt_coeff_rev[i];
+        }
+        ft = ntt(move(ft));
+        DSRNG(i, fg_size / 2 - 1, 0) {
+            f[i] = f[i];
+            f[i + fg_size / 2] = ft[i];
+        }
+
+        return recurse(recurse, move(f), move(g), m / 2);
+
+    };
+
+    return recurse(recurse, move(f), move(g), m);
+
 }
