@@ -8,6 +8,7 @@
 
 // FPS 合成に対する逆関数 O(N(logN)^2)
 // f に対して g(f(x)) = f(g(x)) なる g を返す
+// verified at https://judge.yosupo.jp/submission/339294
 // https://maspypy.com/fps-%E5%90%88%E6%88%90%E3%83%BB%E9%80%86%E9%96%A2%E6%95%B0%E3%81%AE%E8%A7%A3%E8%AA%AC-1-%E9%80%86%E9%96%A2%E6%95%B0%E3%81%A8-power-projection
 template <mod_integral T>
 constexpr vector<T> compositional_inverse(vector<T> f)
@@ -18,7 +19,7 @@ constexpr vector<T> compositional_inverse(vector<T> f)
     if (f[1] != 1) {
         const auto cinv = f[1].inv();
         REP(i, ssize(f)) f[i] *= cinv;
-        auto result = compositional_inverse(f);
+        auto result = compositional_inverse(move(f));
 
         auto base = 1_p;
         REP(i, ssize(result)) {
@@ -37,7 +38,7 @@ constexpr vector<T> compositional_inverse(vector<T> f)
     // [x^{n-1-i}] (g(x) / x)^{-n} = n/i * [x^{n-1}] f(x)^i
     // ... Lagrange Inversion Theorem
     const auto one = vector<T>{1};
-    auto goxpmn = power_projection(f, one, n);
+    auto goxpmn = power_projection(move(f), move(one), n);
     RANGE(i, 1 + n - n_, n - 1) goxpmn[i] *= modint(n - 1) / i;
     ranges::reverse(goxpmn);
     
