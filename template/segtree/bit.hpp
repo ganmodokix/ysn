@@ -25,7 +25,7 @@ public:
     {
         auto i = size_t{0};
         for (auto&& x : r) {
-            addition(i++, forward<decltype(x)>(x));
+            add(i++, forward<decltype(x)>(x));
         }
     }
 
@@ -51,6 +51,6 @@ public:
     T sum(ptrdiff_t l, ptrdiff_t r) {
         chmax(l, 0);
         chmin(r, static_cast<ptrdiff_t>(n));
-        return addition(get(static_cast<T>(r)), negate(get(static_cast<T>(l))));
+        return addition(get(r), negate(get(l)));
     }
 };
