@@ -6,9 +6,11 @@
 // Query: 作用素
 // Apply: 作用素をモノイド元に適用 (Query, Value) -> Value
 // Composite: 作用素の合成 (Query, Query) -> Query, (f, g) |-> f○g
+// ⚠️ iterative segment tree 型実装をとっていて、葉が [N+1, 2N+1) となっている
 // [References]
 // - https://hcpc-hokudai.github.io/archive/structure_segtree_001.pdf
 // - https://qiita.com/hotman78/items/b52e0b84ed7082761bad
+// - https://codeforces.com/blog/entry/18051
 template<typename Value, typename Op, typename Query, typename Apply, typename Composite>
 class lazy_segtree {
 
@@ -145,6 +147,116 @@ class lazy_segtree {
 
     }
 
+    // iterative segment tree で [l_, r_) を被覆する O(logN) 個の頂点を返す
+    // 格納順は左から右になる; eval(roots[0]) op ... op eval(roots.end()[-1]) で求まる
+    // time も O(logN) のはず
+    vector<size_t> find_roots(ll l_, ll r_) const {
+        auto [l, r] = regularize_segment(l_, r_);
+
+        auto roots = vector<size_t>{};
+        {
+            auto rleft = vector<size_t>{};
+            auto rright = vector<size_t>{};
+            const auto offset = n + 1;
+            l += offset;
+            r += offset;
+            while (l < r) {
+                if (l & 1) rleft.emplace_back(l++);
+                if (r & 1) rright.emplace_back(--r);
+                l >>= 1;
+                r >>= 1;
+            }
+            // roots = rleft + rright[::-1]
+            roots = move(rleft);
+            ranges::copy(rright | views::reverse, back_inserter(roots));
+        }
+        return roots;
+    }
+
+    // begin/l を固定して end/r を二分探索
+    // predは Value を単一の引数として () 演算子が真偽値を返す必要がある
+    // そのとき、pred(op(v[l:r])) が false となる最大の境界 r を返す
+    // そのような境界が見つからなければ、すなわち op(v[l:]) のとき、無効値を返す
+    // ⚠️ ACL と pred の真偽が逆な点に注意（ACLは単調減少で pred(id) == true）
+    // verified at https://atcoder.jp/contests/abc426/submissions/73129083
+    template <typename Pred>
+    requires predicate<Pred, Value>
+    optional<size_t> bisection_end(ll l_, Pred pred) {
+        const auto l = l_ >= 0 ? (size_t)l_ : size_t{0};
+        assert(l <= n);
+        if (pred(identity_element)) return nullopt;
+        const auto roots = find_roots(l, n);
+        auto sum = identity_element;
+        auto advance_and_add_if = [this, &sum, &pred](
+            auto u, bool negates_prod = false
+        ) -> bool {
+            const auto term = op(sum, eval(u));
+            if (pred(term) == negates_prod) {
+                sum = term;
+                return true;
+            }
+            return false;
+        };
+        eval_topdown(l + n + 1);
+        eval_topdown(n * 2 + 1);
+        for (const auto root : roots) {
+            if (advance_and_add_if(root)) continue;
+            auto u = root;
+            const auto num_non_leaves = n + 1;
+            while (u < num_non_leaves) {
+                eval(u);
+                eval(u <<= 1);
+                if (advance_and_add_if(u)) ++u;
+            }
+            // trueの境界が端に来る場合は右端の要素(!=境界)で止まる
+            if (u < n * 2 + 1) {
+                if (advance_and_add_if(u)) ++u;
+            }
+            return u - num_non_leaves;
+        }
+        return n;
+    }
+
+    // verified at https://atcoder.jp/contests/abc426/submissions/73129132
+    template <typename Pred>
+    requires predicate<Pred, Value>
+    optional<size_t> bisection_begin(ll r_, Pred pred) {
+        assert(r_ >= 0);
+        const auto r = r_ >= 0 ? (size_t)r_ : size_t{0};
+        if (pred(identity_element)) return nullopt;
+        const auto roots = find_roots(0, r);
+        auto sum = identity_element;
+        auto chadd_if = [this, &sum, &pred](
+            const size_t u, bool negates_prod = false
+        ) -> bool {
+            const auto term = op(eval(u), sum);
+            if (pred(term) == negates_prod) {
+                sum = term;
+                return true;
+            }
+            return false;
+        };
+        eval_topdown(n + 1);
+        eval_topdown(r + n + 1);
+        for (const auto root : roots | views::reverse) {
+            if (chadd_if(root)) continue;
+            auto u = root;
+            const auto num_non_leaves = n + 1;
+            while (u < num_non_leaves) {
+                eval(u);
+                eval(u <<= 1);
+                if (++u >= n * 2 + 1) --u;
+                if (chadd_if(u)) --u;
+            }
+            // trueの境界が端に来る場合は右端の要素(!=境界)で止まる
+            if (u >= 0) {
+                if (chadd_if(u)) --u;
+            }
+            return u + 1 - num_non_leaves;
+        }
+        return 0;
+    }
+
     // a[i] を返す
     // 範囲外の場合は単位元を返す
     Value fetch_at(size_t idx) {
@@ -194,6 +306,16 @@ class lazy_segtree {
     void apply_at(size_t idx, Query f) {
         if (idx >= n) return;
         return apply_range(idx, idx + 1, f);
+    }
+
+    // モノイド (値, op) の単位元を返す
+    Value get_identity_value() const noexcept {
+        return identity_element;
+    }
+
+    // モノイド (作用素, composite) の単位元を返す
+    Query get_identity_query() const noexcept {
+        return identity_query;
     }
 
 };
