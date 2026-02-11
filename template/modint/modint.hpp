@@ -131,7 +131,7 @@ istream& operator>> (istream& ist, moduloint<pdiv>& a) { auto x = (typename modu
 // DUMP()対応
 template <int64_t pdiv>
 ostream& __dump_single(const moduloint<pdiv> value) {
-    return cerr << "\e[35m" << value.item() << "\e[2m_" << pdiv << "\e[m";
+    return cerr << "\e[35m" << value.item() << "\e[2mp\e[m";
 }
 
 // ranges_to 対応

@@ -10,6 +10,7 @@
 template <mod_integral T>
 constexpr vector<T> fps_log(vector<T> f) {
     assert(f[0] == 1);
+    if (ssize(f) == 1) return vector{T{0}};
     const auto n = f.size();
     auto derf = fps_derivative(f);
     auto invf = fps_inv(move(f));

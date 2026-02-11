@@ -11,9 +11,11 @@
 // Cooley-Tukey型 高速フーリエ変換 O(NlogN)
 // 原始根 prim_ が指定されない場合は最小の原始根が指定される
 template <typename T, ll prim_ = -1>
-requires mod_integral<typename T::value_type>
-constexpr auto ntt(T&& a, const bool inv = false) -> vector<typename T::value_type> {
-    using V = typename T::value_type;
+requires mod_integral<typename std::remove_reference_t<T>::value_type>
+constexpr auto ntt(T&& a, const bool inv = false)
+    -> vector<typename std::remove_reference_t<T>::value_type>
+{
+    using V = typename std::remove_reference_t<T>::value_type;
     constexpr auto prim = V{prim_ != -1 ? prim_ : primitive_root(V::pdiv)};
     if (inv) {
         return butterfly_inv<V, prim>(forward<T>(a));
