@@ -35,6 +35,7 @@ namespace ganmodokix::floor_sum_detail {
 // Floor-sum $\sum_{k=0}^{n-1} \lfloor \frac{ak+b}{m} \rfloor$
 // https://github.com/atcoder/ac-library/pull/88
 // https://atcoder.jp/contests/practice2/editorial/579
+// verified at https://atcoder.jp/contests/practice2/submissions/64493723
 template<typename T>
 constexpr auto floor_sum(const T n, const T m, T a, T b)
     -> ganmodokix::floor_sum_detail::promoted_ll_t<T>

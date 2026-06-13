@@ -3,7 +3,7 @@
 struct graph {
     vector<vector<pair<ll, ll>>> adjacent_list;
     graph() = default;
-    graph(size_t n): adjacent_list(n) {}
+    graph(ll n): adjacent_list(n) {}
     void add_arc(ll u, ll v, ll cost = 1) { adjacent_list[u].emplace_back(v, cost); }
     void add_edge(ll u, ll v, ll cost = 1) { add_arc(u, v, cost); add_arc(v, u, cost); }
     auto size() const { return adjacent_list.size(); }
