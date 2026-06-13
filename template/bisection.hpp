@@ -8,7 +8,7 @@
 template <typename T, typename Predicate, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>
 T bisection(T false_side, T true_side, Predicate pred) {
     while ((false_side > true_side ? false_side - true_side : true_side - false_side) > 1) {
-        T mid_value = midpoint(false_side, true_side);
+        const auto mid_value = midpoint(false_side, true_side);
         (pred(mid_value) ? true_side : false_side) = mid_value;
     }
     return true_side;
@@ -16,9 +16,9 @@ T bisection(T false_side, T true_side, Predicate pred) {
 
 template <typename T, typename Predicate, typename enable_if<is_floating_point_v<T>, nullptr_t>::type = nullptr>
 T bisection(T false_side, T true_side, Predicate pred) {
-    constexpr size_t num_bisections = sizeof(T) * 8;
-    for (size_t i = 0; i < num_bisections; i++) {
-        T mid_value = midpoint(false_side, true_side);
+    constexpr auto num_bisections = ptrdiff_t{sizeof(T) * 8};
+    for (auto i = ptrdiff_t{0}; i < num_bisections; i++) {
+        const auto mid_value = midpoint(false_side, true_side);
         (pred(mid_value) ? true_side : false_side) = mid_value;
     }
     return true_side;
@@ -31,8 +31,7 @@ template <typename T, typename Predicate>
 T exponential_search(T false_side, T true_side_direction, Predicate pred, T tolerant = 1) {
     assert(true_side_direction != 0);
     assert(!is_integral_v<T> || tolerant == 1);
-    ll true_side = false_side;
-    ll offset = (true_side_direction > 0) - (true_side_direction < 0);
+    const auto offset = (true_side_direction > 0) - (true_side_direction < 0);
     while (!pred(false_side + offset)) offset *= 2;
-    return bisection(false_side, false_side + offset, pred, tolerant);
+    return bisection(false_side, false_side + offset, pred);
 }
