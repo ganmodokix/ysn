@@ -1,4 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-source `dirname "$0"`/../.env/bin/activate
-python `dirname "$0"`/find.py "$@"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJ_DIR="$(dirname "$SCRIPT_DIR")"
+VENV_ACTIVATE="$PROJ_DIR/.env/bin/activate"
+
+if [ ! -f "$VENV_ACTIVATE" ]; then
+    printf 'Python environment is missing. Run ./setup.sh from %s first.\n' "$PROJ_DIR" >&2
+    exit 1
+fi
+
+# shellcheck disable=SC1090
+source "$VENV_ACTIVATE"
+exec python "$SCRIPT_DIR/find.py" "$@"

@@ -1,6 +1,13 @@
-#!/bin/bash
-SCRIPT_DIR=$(cd $(dirname $0); pwd)
-PROJ_DIR=$(dirname $SCRIPT_DIR)
-TEMPLATE_DIR=$PROJ_DIR/template
+#!/usr/bin/env bash
+set -euo pipefail
 
-tree $TEMPLATE_DIR
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJ_DIR="$(dirname "$SCRIPT_DIR")"
+TEMPLATE_DIR="$PROJ_DIR/template"
+
+if ! command -v tree >/dev/null 2>&1; then
+    printf 'tree command is missing. Install tree to use ly.\n' >&2
+    exit 1
+fi
+
+exec tree "$TEMPLATE_DIR"
