@@ -3,7 +3,6 @@
 import argparse
 import os
 
-from engine import rewrite
 from run import execute
 
 def normalize_source_path(source_path: str) -> str:
@@ -40,6 +39,8 @@ if __name__ == "__main__":
     if args.install is None and args.remove is None:
         execute(normalized_source_path, just=args.just, force=args.force)
     else:
+        from engine import rewrite
+
         installed_modules = args.install if args.install is not None else []
         removed_modules = args.remove if args.remove is not None else []
 
