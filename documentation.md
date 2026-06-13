@@ -30,6 +30,7 @@
 ├── .vscode/                # VS Code 用ローカル設定
 ├── CMakeLists.txt          # GTest 実行用 CMake 設定
 ├── vcpkg.json              # C++ 依存関係定義
+├── pyproject.toml          # Python 依存関係定義
 ├── dependency.md           # テンプレート依存関係に関するメモ
 ├── README.md               # 基本的な使い方
 └── setup.sh                # セットアップ用スクリプト
@@ -102,8 +103,9 @@ ly
 
 ### セットアップと依存
 
-`setup.sh` は `.env` を作成し、Python 依存として `networkx` と `graphviz` を導入します。
-また、テンプレート一覧表示などに使う `tree` と `graphviz` をシステムへ導入します。
+`setup.sh` は `.env` を作成し、`pyproject.toml` に記述された Python 依存を導入します。
+`uv` が使える環境では `uv venv` と `uv pip install` を使い、なければ標準の `venv` と `pip` にフォールバックします。
+`ly` や Graphviz 出力で使う `tree` と `dot` コマンドが見つからない場合は、追加で必要なシステムコマンドとして案内します。
 
 C++ 側のテストは `CMakeLists.txt` と `vcpkg.json` で管理されます。
 `vcpkg.json` では `gtest` を依存として宣言し、`test/` 以下の `.cpp` を GTest 実行ファイルとしてビルドします。
