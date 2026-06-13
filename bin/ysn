@@ -5,9 +5,42 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJ_DIR="$(dirname "$SCRIPT_DIR")"
 VENV_ACTIVATE="$PROJ_DIR/.env/bin/activate"
 
+# Most paths still need Python, so fail early with a setup hint if the venv is missing.
 if [ ! -f "$VENV_ACTIVATE" ]; then
     printf 'Python environment is missing. Run ./setup.sh from %s first.\n' "$PROJ_DIR" >&2
     exit 1
+fi
+
+# Fast path for the hot loop: `ysn a` can directly run `a.exe` when it is newer
+# than `a.cpp`. Any option, dotted path, missing binary, or stale binary falls
+# through to the Python implementation.
+if [ "$#" -eq 1 ] && [[ "$1" != -* ]] && [[ "$1" != *.* ]]; then
+    SOURCE_PATH="$1.cpp"
+    EXEC_PATH="$1.exe"
+
+    if [ -f "$SOURCE_PATH" ] && [ -x "$EXEC_PATH" ] && [ "$EXEC_PATH" -nt "$SOURCE_PATH" ]; then
+        if [[ "$EXEC_PATH" = /* ]]; then
+            RUN_PATH="$EXEC_PATH"
+        else
+            RUN_PATH="./$EXEC_PATH"
+        fi
+
+        printf '\033[32m\033[1m[ysn]\033[m Fast path: Executing %s ...\n' "$EXEC_PATH" >&2
+        start_us="${EPOCHREALTIME/./}"
+        set +e
+        "$RUN_PATH"
+        status="$?"
+        set -e
+        end_us="${EPOCHREALTIME/./}"
+        duration_ms="$(((end_us - start_us) / 1000))"
+
+        if [ "$status" -eq 0 ]; then
+            printf '\033[32m\033[1m[ysn]\033[m Successfully exited in %s ms\n' "$duration_ms" >&2
+        else
+            printf '\033[31m\033[1m[ysn]\033[m Execution failed in return code %s after %s ms\n' "$status" "$duration_ms" >&2
+        fi
+        exit "$status"
+    fi
 fi
 
 # shellcheck disable=SC1090

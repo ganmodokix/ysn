@@ -1,7 +1,6 @@
 import os
 import subprocess
 
-from engine import rewrite
 from message import debug_print
 from path import BIN_PATH
 
@@ -31,6 +30,8 @@ def compile(source_path):
             base_cpp = fp.read()
         with open(source_path, "w", encoding="utf8") as fp:
             fp.write(base_cpp)
+        from engine import rewrite
+
         rewrite(source_path, [], [])
 
     debug_print(f"Compiling {source_path} ...")
