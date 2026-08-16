@@ -37,6 +37,8 @@ else
     python -m pip install "${python_dependencies[@]}"
 fi
 
+.env/bin/python bin/build_pch.py
+
 missing_commands=()
 
 if ! command -v tree >/dev/null 2>&1; then

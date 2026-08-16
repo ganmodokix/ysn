@@ -105,6 +105,7 @@ ly
 
 `setup.sh` は `.env` を作成し、`pyproject.toml` に記述された Python 依存を導入します。
 `uv` が使える環境では `uv venv` と `uv pip install` を使い、なければ標準の `venv` と `pip` にフォールバックします。
+セットアップ時には `.env/pch/` に `bits/stdc++.h` 用のローカル PCH も作成し、以後の C++ コンパイルで利用します。
 `ly` や Graphviz 出力で使う `tree` と `dot` コマンドが見つからない場合は、追加で必要なシステムコマンドとして案内します。
 
 C++ 側のテストは `CMakeLists.txt` と `vcpkg.json` で管理されます。

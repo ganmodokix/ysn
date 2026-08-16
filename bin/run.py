@@ -1,10 +1,35 @@
 import os
 import subprocess
+from pathlib import Path
 
 from message import debug_print
-from path import BIN_PATH
+from path import BIN_PATH, PROJ_PATH
 
 import time
+
+COMPILER = "g++-15"
+COMPILE_FLAGS = [
+    "-std=gnu++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-march=native",
+    # "-flto=auto",
+    "-fopenmp",
+    "-pthread",
+    "-ftrivial-auto-var-init=zero",
+    "-fconstexpr-depth=1024",
+    "-fconstexpr-loop-limit=524288",
+    "-fconstexpr-ops-limit=2097152",
+    "-DYSN_DEBUG",
+]
+PCH_BUILD_FLAGS = COMPILE_FLAGS.copy()
+LINK_FLAGS = [
+    "-lstdc++exp",
+]
+PCH_CONTENT = "#include <bits/stdc++.h>\n"
+PCH_HEADER = Path(PROJ_PATH) / ".env" / "pch" / "stdcxx_all.hpp"
+PCH_GCH = Path(str(PCH_HEADER) + ".gch")
 
 def exec_path_of(source_path):
     return os.path.splitext(source_path)[0] + ".exe"
@@ -36,25 +61,14 @@ def compile(source_path):
 
     debug_print(f"Compiling {source_path} ...")
     start_time = time.time()
+    pch_flags = ["-I", str(PCH_HEADER.parent), "-include", PCH_HEADER.name] if PCH_GCH.exists() else []
     compilation = subprocess.run([
-        "g++-15",
-        "-std=gnu++23",
-        "-O2",
-        "-Wall",
-        "-Wextra",
-        "-march=native",
-        "-flto=auto",
-        "-fmodules",
-        "-fopenmp",
-        "-pthread",
-        "-lstdc++exp",
-        "-ftrivial-auto-var-init=zero",
-        "-fconstexpr-depth=1024",
-        "-fconstexpr-loop-limit=524288",
-        "-fconstexpr-ops-limit=2097152",
-        "-DYSN_DEBUG",
+        COMPILER,
+        *COMPILE_FLAGS,
+        *pch_flags,
         source_path,
-        "-o", exec_path
+        "-o", exec_path,
+        *LINK_FLAGS,
     ])
     end_time = time.time()
     duration = end_time - start_time
