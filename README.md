@@ -8,12 +8,11 @@ Requirements:
 - `g++-15` (for AtCoder-compatible compilation)
 - `uv` is optional; `setup.sh` falls back to `venv` and `pip`
 - `tree` is optional for `ly`
-- Graphviz `dot` is optional for Graphviz output
 
 Run the setup script from the repository root:
 
 ```
-$ ./setup.sh
+$ bash setup.sh
 ```
 
 The script creates `.env` and installs the Python dependencies listed in `pyproject.toml`.
@@ -29,12 +28,27 @@ $ export PATH="$PWD/bin:$PATH"
 You may want to put the corresponding absolute path in your shell configuration.
 
 ## Usage
-Runs `hoge.cpp` (create and copy the base template if not created) by
+Create, compile, and run `hoge.cpp` with:
+
 ```
 $ ysn hoge
 ```
 
+Pass the source path without the `.cpp` extension. If `hoge.cpp` does not
+exist, `ysn` creates it from the base template. The compiled executable is
+written to `hoge.exe`.
+
+Compile without running, or force recompilation, with:
+
+```
+$ ysn hoge --just
+$ ysn hoge --force
+```
+
+The short forms are `-j` and `-f`, respectively.
+
 Install or remove templates as
+
 ```
 $ ysn hoge --install modint1e9p7 --remove modint998244353
 ```
@@ -43,8 +57,14 @@ or briefly
 $ ysn hoge -i modint1e9p7 -r modint998244353
 ```
 
-(for debigging) you can see the dependency graph by
+Template names are paths relative to `template/`; the `.hpp` extension is
+optional. Dependencies included with `#include "..."` are expanded
+recursively. Installing or removing templates only rewrites the source, so run
+`ysn hoge` afterward to compile and execute it.
+
+Search or list available templates with:
+
 ```
-$ ysn hoge -i modint1e9p7 -r modint998244353 -d hoge.svg
+$ lf modint
+$ ly
 ```
-(`.svg` can be replaced by `.pdf`, `.png` etc)
