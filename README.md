@@ -18,6 +18,7 @@ $ ./setup.sh
 
 The script creates `.env` and installs the Python dependencies listed in `pyproject.toml`.
 If `uv` is available, it uses `uv venv` and `uv pip install`; otherwise it uses the standard `venv` module and `pip`.
+It also builds a local precompiled header under `.env/pch/` to speed up repeated C++ compilations.
 
 Add `bin/` to your `PATH` so the tools can be invoked with short command names:
 
