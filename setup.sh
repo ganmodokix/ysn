@@ -45,11 +45,7 @@ if ! command -v tree >/dev/null 2>&1; then
     missing_commands+=("tree")
 fi
 
-if ! command -v dot >/dev/null 2>&1; then
-    missing_commands+=("graphviz")
-fi
-
 if [ "${#missing_commands[@]}" -ne 0 ]; then
     printf 'Missing optional system command(s): %s\n' "${missing_commands[*]}"
-    printf 'Install them with your system package manager if you use ly or Graphviz output.\n'
+    printf 'Install them with your system package manager if you use ly.\n'
 fi

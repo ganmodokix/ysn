@@ -23,14 +23,38 @@ def normalize_module_name(module_name: str) -> str:
 
 if __name__ == "__main__":
     
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog="ysn",
+        description="Create, compile, run, and rewrite a templated C++ source.",
+        epilog=(
+            "Pass SOURCE without the .cpp extension (for example, 'ysn a' uses "
+            "a.cpp). --install and --remove only rewrite the source; run ysn "
+            "again without them to compile and execute. Use 'lf QUERY' to find "
+            "templates and 'ly' to list the template directory tree."
+        ),
+    )
 
-    parser.add_argument("source_path", type=str, help="C++ source file to be templated")
-    parser.add_argument("--force", "-f", action="store_true", help="compile even though the source is not modified")
-    parser.add_argument("--just", "-j", action="store_true", help="just compile, not execute")
-    parser.add_argument("--install", "-i", type=str, nargs="*", help="install template if specified")
-    parser.add_argument("--remove", "-r", type=str, nargs="*", help="remove template if specified")
-    parser.add_argument("--dependency-graph", "-d", type=str, help="output dependency graph if specified")
+    parser.add_argument(
+        "source_path",
+        metavar="SOURCE",
+        help="source path without the .cpp extension",
+    )
+    parser.add_argument(
+        "--force", "-f", action="store_true",
+        help="recompile even when the executable is newer than the source",
+    )
+    parser.add_argument(
+        "--just", "-j", action="store_true",
+        help="compile without executing",
+    )
+    parser.add_argument(
+        "--install", "-i", metavar="MODULE", nargs="*",
+        help="install templates (paths relative to template/, .hpp optional)",
+    )
+    parser.add_argument(
+        "--remove", "-r", metavar="MODULE", nargs="*",
+        help="remove installed templates (.hpp optional)",
+    )
 
     args = parser.parse_args()
 

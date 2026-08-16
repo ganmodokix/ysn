@@ -5,6 +5,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJ_DIR="$(dirname "$SCRIPT_DIR")"
 TEMPLATE_DIR="$PROJ_DIR/template"
 
+if [ "$#" -gt 0 ]; then
+    if [ "$#" -eq 1 ] && { [ "$1" = "-h" ] || [ "$1" = "--help" ]; }; then
+        printf 'usage: ly\n\nList the template/ directory tree.\n'
+        exit 0
+    fi
+
+    printf 'ly: unexpected argument: %s\n' "$1" >&2
+    printf 'usage: ly\n' >&2
+    exit 2
+fi
+
 if ! command -v tree >/dev/null 2>&1; then
     printf 'tree command is missing. Install tree to use ly.\n' >&2
     exit 1

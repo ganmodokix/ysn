@@ -6,7 +6,7 @@ PROJ_DIR="$(dirname "$SCRIPT_DIR")"
 VENV_ACTIVATE="$PROJ_DIR/.env/bin/activate"
 
 if [ ! -f "$VENV_ACTIVATE" ]; then
-    printf 'Python environment is missing. Run ./setup.sh from %s first.\n' "$PROJ_DIR" >&2
+    printf 'Python environment is missing. Run bash setup.sh from %s first.\n' "$PROJ_DIR" >&2
     exit 1
 fi
 
