@@ -3,7 +3,11 @@
 // 基数ヒープ https://dl.acm.org/doi/10.1145/77600.77615
 // 最後にpopしたindexより小さいものをpushした場合UB
 // empty() のとき pop() してもUB
-template <typename K, typename V>
+template <integral K, move_constructible V>
+requires (
+    !same_as<remove_cv_t<K>, bool> &&
+    numeric_limits<K>::digits <= numeric_limits<uint64_t>::digits
+)
 struct radix_heap {
     using index_type = uint64_t;
     using key_type = K;
@@ -21,32 +25,25 @@ struct radix_heap {
     }
 
     constexpr static index_type encode_key(const key_type key) {
-        if constexpr (is_integral_v<key_type>) {
-            if constexpr (is_unsigned_v<key_type>) {
-                return key;
-            } else {
-                constexpr auto bit_length = std::numeric_limits<index_type>::digits;
-                return static_cast<index_type>(key) ^ (index_type{1} << (bit_length - 1));
-            }
+        if constexpr (is_unsigned_v<key_type>) {
+            return key;
         } else {
-            throw invalid_argument("Non-integral key not supported");
+            constexpr auto bit_length = std::numeric_limits<index_type>::digits;
+            return static_cast<index_type>(key) ^ (index_type{1} << (bit_length - 1));
         }
     }
 
     constexpr static key_type decode_key(const index_type key) {
-        if constexpr (is_integral_v<key_type>) {
-            if constexpr (is_unsigned_v<key_type>) {
-                return key;
-            } else {
-                constexpr auto bit_length = std::numeric_limits<index_type>::digits;
-                return static_cast<key_type>(key ^ (index_type{1} << (bit_length - 1)));
-            }
+        if constexpr (is_unsigned_v<key_type>) {
+            return key;
         } else {
-            throw invalid_argument("Non-integral key not supported");
+            constexpr auto bit_length = std::numeric_limits<index_type>::digits;
+            return static_cast<key_type>(key ^ (index_type{1} << (bit_length - 1)));
         }
     }
 
     template <typename T>
+    requires constructible_from<value_type, T>
     void push(const key_type key, T&& value) {
         ++size_;
         const auto index = encode_key(key);
@@ -54,6 +51,7 @@ struct radix_heap {
     }
 
     template <typename... Args>
+    requires constructible_from<value_type, Args...>
     void emplace(const key_type key, Args&&... args) {
         ++size_;
         const auto index = encode_key(key);
@@ -71,7 +69,7 @@ struct radix_heap {
             const auto dst = find_bucket(p.first, last_);
             varr[dst].emplace_back(move(p));
         }
-        varr[idx] = {};
+        varr[idx].clear();
     }
 
     pair<key_type, value_type> pop() {
@@ -82,9 +80,11 @@ struct radix_heap {
         return {decode_key(index_value.first), move(index_value.second)};
     }
 
-    pair<key_type, value_type> top() {
+    pair<key_type, value_type> top()
+    requires copy_constructible<value_type>
+    {
         pull();
-        const auto index_value = varr[0].back();
-        return {decode_key(index_value.first), move(index_value.second)};
+        const auto& index_value = varr[0].back();
+        return {decode_key(index_value.first), index_value.second};
     }
 };

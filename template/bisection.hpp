@@ -5,7 +5,7 @@
 // false_sideを含まずtrue_sideを含む区間の元であって、predがtrueとなるような、最もfalse_sideに近い値を返す
 // pred(false_side) == false かつ pred(true_side) == true かつ pred が広義単調　が必要
 // ⚠️ pred(false_side) および pred(true_side) は呼ばれない
-template <typename T, typename Predicate, typename enable_if<is_integral_v<T>, nullptr_t>::type = nullptr>
+template <integral T, typename Predicate>
 T bisection(T false_side, T true_side, Predicate pred) {
     while ((false_side > true_side ? false_side - true_side : true_side - false_side) > 1) {
         const auto mid_value = midpoint(false_side, true_side);
@@ -14,7 +14,7 @@ T bisection(T false_side, T true_side, Predicate pred) {
     return true_side;
 }
 
-template <typename T, typename Predicate, typename enable_if<is_floating_point_v<T>, nullptr_t>::type = nullptr>
+template <floating_point T, typename Predicate>
 T bisection(T false_side, T true_side, Predicate pred) {
     constexpr auto num_bisections = ptrdiff_t{sizeof(T) * 8};
     for (auto i = ptrdiff_t{0}; i < num_bisections; i++) {
