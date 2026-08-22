@@ -2,14 +2,19 @@
 #include "base_template.hpp"
 #include "array/sahz.hpp"
 // LIS の長さを返す O(NlogN)
-template <typename T>
-size_t lis_length(const vector<T> &x) {
+template <ranges::forward_range R>
+size_t lis_length(R&& x) {
     auto [xm, mi] = sahz(x);
-    vector<ll> y = x;
-    FOREACH(yi, y) yi = xm[yi];
-    vector<T> dp(mi.size(), numeric_limits<T>::max());
-    REP(i, y.size()) {
-        *lower_bound(ALL(dp), y[i]) = y[i];
+    auto dp = vector<ptrdiff_t>{};
+    dp.reserve(mi.size());
+    for (auto&& xi : x) {
+        const auto yi = xm[xi];
+        const auto it = ranges::lower_bound(dp, yi);
+        if (it == dp.end()) {
+            dp.emplace_back(yi);
+        } else {
+            *it = yi;
+        }
     }
-    return lower_bound(ALL(dp), LINF) - dp.begin();
+    return dp.size();
 }
