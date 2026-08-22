@@ -6,7 +6,7 @@ from collections import deque
 from functools import cache
 import os
 
-MODULE_HEADER = "//  Modules below installed "
+MODULE_HEADER = "//  Modules below installed (code published @ https://github.com/ganmodokix/ysn/tree/main/template) "
 MODULE_LIST_PREFIX = "//      "
 QUOTE_HEADER = "//  Quote "
 QUOTE_FOOTER = "//  Unquote "
